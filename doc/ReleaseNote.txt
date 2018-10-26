@@ -1,0 +1,3 @@
+2018-10-26
+# 处理端：支持 MicroFocus IDOL 中的 query 类型日记的处理
+# 输出端：支持输出到 MySQL
