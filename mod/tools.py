@@ -1,6 +1,27 @@
 # -*- coding:utf-8 -*-
 
+import re
 import pymysql
+
+class LogAnalyze(object):
+    """
+    此类作用是判断日记属于什么规则，结果返回布尔值，匹配则返回 True，不匹配则返回 False
+    """
+    def __init__(self, rule, logline):
+        self.rule = rule
+        self.logline = logline
+
+    # 从日记开头开始匹配，如果符合则返回 True
+    def log_start(self):
+        return self.logline[0:len(self.rule)] == self.rule
+
+    # 从日记结尾开始匹配，如果符合则返回 True
+    def log_end(self):
+        return self.logline[-len(self.rule)-1:-1] == self.rule
+
+    # 利用正则表达式来进行全局匹配，如果符合则返回 True
+    def log_regex(self):
+        return re.findall(self.rule, self.logline) != []
 
 # 定义错误消息
 def pop_error(content):
