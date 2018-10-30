@@ -74,3 +74,19 @@ def sql_table_idol_query(tab_name):
     "`status` varchar(40)," \
     "`finsh_time` varchar(10)," \
     "primary key(id));"
+
+# 模板，创建符合 CBK-Agent-Summary 的数据表
+def sql_table_cbk_summary(tab_name):
+    return "create table if not exists " + "`" + tab_name + "`" + " (" \
+    "`id` int not null auto_increment," \
+    "`log_line` int," \
+    "`Agent_version` varchar(10)," \
+    "`Agent_type` varchar(3)," \
+    "`Agent_account` varchar(11)," \
+    "`Agent_action` varchar(25)," \
+    "`Action_time` varchar(43)," \
+    "`Action_status` varchar(25)," \
+    "`Warnings` text," \
+    "`Errors` text," \
+    "`Diagnostics` text," \
+    "primary key(id));"
