@@ -11,7 +11,7 @@ def CBK_ZipAgent_Summary(queue1, queue2):
     Is_Start = False
     Agent_events = {}
     Agent_list = [False, 'Warnings', 'Errors', 'Diagnostics']
-    event_info = Agent_list[0]  # 与 Agent_list 配合使用，判断该行内容处于那个事件内容
+    event_info = Agent_list[0]  # 与 Agent_list 配合使用，判断该行内容处于哪个事件内容
 
     # 从 queue1 获取日记，并开始分析
     while n:
@@ -43,13 +43,13 @@ def CBK_ZipAgent_Summary(queue1, queue2):
 
             ################-开头结束-###################################################################################
 
-            # 判断日记的开头是否是 '----------' 并且 Is_Start = False，是则代表事件的开始
+            # 判断日记的开头是否是 '----------' 并且 Is_start = False，是则代表事件的开始
             elif LogAnalyze('----------', line).log_start() and Is_Start == False:
                 Is_Start = True
                 Agent_events[index_id] = {'Agent_version': Agent_version, 'Agent_Type': Agent_type,
                                           'Agent_account': Agent_account, 'log_line': log_line}
 
-            # 判断日记的开头是否是 '----------' 并且 Is_Finsh = False，是则代表上一个事件的结束，以及下一个事件的开始
+            # 判断日记的开头是否是 '----------' 并且 Is_start = False，是则代表上一个事件的结束，以及下一个事件的开始
             elif LogAnalyze('----------', line).log_start() and Is_Start == True:
                 event_info = Agent_list[0]  # 0 为 False
                 queue2.put(Agent_events.pop(index_id))
@@ -104,6 +104,7 @@ def CBK_ZipAgent_Summary(queue1, queue2):
                 Agent_events[index_id]['Agent_action'] = 'Backup'
                 Agent_events[index_id]['Action_time'] = str(re.findall('\d+/\d+/\d+ \d+[.:]\d+ [AP]?M?.*- \d+/\d+/\d+ \d+[.:]\d+ [AP]?M?',line))[2:-2].strip()
 
+            # 判断日记的开头是否是 'Backup outcome:',是则代表是备份事件的结果
             elif LogAnalyze('Backup outcome:', line).log_start():
                 Agent_events[index_id]['Action_status'] = line[len('Backup outcome: '):-1]
 
