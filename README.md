@@ -10,7 +10,7 @@
 
 ## 支持情况
 
-#### MicroFocus IDOL
+#### MicroFocus
 + ConnectedBackup
     + Agent 生成的汇总信息，文件格式：Agent_*****-*****_mm-dd-YYYY_HH-MM.txt
 
