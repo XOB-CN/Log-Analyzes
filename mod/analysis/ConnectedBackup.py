@@ -19,10 +19,10 @@ def CBK_ZipAgent_Summary(queue1, queue2):
         if line == False:
             n = False
         else:
-            line = line.strip()
+            line = line.strip()+'\n'
             log_line += 1
 
-            ################-账户信息-###############################################################################################
+            ################-账户信息-###################################################################################
 
             # 判断日记的开头是否是 'Account Number:'
             if LogAnalyze('Account Number:', line).log_start():
@@ -41,12 +41,13 @@ def CBK_ZipAgent_Summary(queue1, queue2):
                 Agent_version = line.split(':')[-1][:(line.split(':')[-1]).index('(')].strip()
                 Agent_events[index_id] = {'Agent_version': Agent_version, 'Agent_Type': Agent_type}
 
-            ################-开头结束-###############################################################################################
+            ################-开头结束-###################################################################################
 
             # 判断日记的开头是否是 '----------' 并且 Is_Start = False，是则代表事件的开始
             elif LogAnalyze('----------', line).log_start() and Is_Start == False:
                 Is_Start = True
-                Agent_events[index_id] = {'Agent_version': Agent_version, 'Agent_Type': Agent_type, 'Agent_account': Agent_account, 'log_line': log_line}
+                Agent_events[index_id] = {'Agent_version': Agent_version, 'Agent_Type': Agent_type,
+                                          'Agent_account': Agent_account, 'log_line': log_line}
 
             # 判断日记的开头是否是 '----------' 并且 Is_Finsh = False，是则代表上一个事件的结束，以及下一个事件的开始
             elif LogAnalyze('----------', line).log_start() and Is_Start == True:
@@ -54,54 +55,60 @@ def CBK_ZipAgent_Summary(queue1, queue2):
                 result = Agent_events.pop(index_id)
                 print(result)
                 index_id += 1
-                Agent_events[index_id] = {'Agent_version': Agent_version, 'Agent_Type': Agent_type, 'Agent_account': Agent_account, 'log_line': log_line}
+                Agent_events[index_id] = {'Agent_version': Agent_version, 'Agent_Type': Agent_type,
+                                          'Agent_account': Agent_account, 'log_line': log_line}
 
-            ################-注册事件-###############################################################################################
+            ################-注册事件-###################################################################################
 
             # 判断日记的结尾是否是 'Account registration', 是则代表注册事件
             elif LogAnalyze('Account registration', line).log_end():
                 Agent_events[index_id]['Agent_action'] = 'Account registration'
                 Agent_events[index_id]['Action_time'] = str(
-                    re.findall('\d+/\d+/\d+, \d+[.:]\d+ [AP]?M?.*- \d+/\d+/\d+, \d+[.:]\d+ [AP]?M?', line))
+                    re.findall('\d+/\d+/\d+, \d+[.:]\d+ [AP]?M?.*- \d+/\d+/\d+, \d+[.:]\d+ [AP]?M?', line))[2:-2]
 
             # 判断日记的开头是否是 'Account registration outcome:'，是则代表注册事件结果
             elif LogAnalyze('Account registration outcome:', line).log_start():
                 Agent_events[index_id]['Action_status'] = line[len('Account registration outcome: '):-1]
 
-            ################-内部诊断-###############################################################################################
+            ################-内部诊断-###################################################################################
 
             # 判断日记的结尾是否是 'Internal diagnostic', 是则代表内部诊断 -- Agent Type 为 Mac
             elif LogAnalyze('Internal diagnostic', line).log_end():
                 Agent_events[index_id]['Agent_action'] = 'Internal diagnostic'
+                Agent_events[index_id]['Action_time'] = line[:line.index('Internal')].strip()
 
             # 判断日记的开头是否是 '日期 - 日期', 是则代表内部诊断 -- Agent Type 为 PC，且不带 AM/PM
             elif LogAnalyze('\d+/\d+/\d+ \d+:\d+ - \d+/\d+/\d+ \d+:\d+$', line).log_regex():
                 Agent_events[index_id]['Agent_action'] = 'Internal diagnostic'
+                Agent_events[index_id]['Action_time'] = str(re.findall('\d+/\d+/\d+ \d+:\d+ - \d+/\d+/\d+ \d+:\d+$',line))[2:-2]
 
             # 判断日记的开头是否是 '日期 - 日期', 是则代表内部诊断 -- Agent Type 为 PC，且带 AM/PM
             elif LogAnalyze('\d+/\d+/\d+ \d+:\d+ [AP]M - \d+/\d+/\d+ \d+:\d+ [AP]M$', line).log_regex():
                 Agent_events[index_id]['Agent_action'] = 'Internal diagnostic'
+                Agent_events[index_id]['Action_time'] = str(re.findall('\d+/\d+/\d+ \d+:\d+ [AP]M - \d+/\d+/\d+ \d+:\d+ [AP]M$',line))[2:-2]
 
             # 判断日记的开头是否是 'Internal diagnostic',是则代表是内部诊断的结果
             elif LogAnalyze('Internal diagnostic outcome:', line).log_start():
                 Agent_events[index_id]['Action_status'] = line[len('Internal diagnostic outcome: '):-1]
 
-            ################-备份事件-###############################################################################################
+            ################-备份事件-###################################################################################
 
             # 判断日记的开头是否是 '日期 - 日期 Backup'，是则代表是 Backup 事件 -- Agent Type 为 Mac
             elif LogAnalyze('\d+/\d+/\d+, \d+[.:]\d+ [AP]?M?.*- \d+/\d+/\d+, \d+[.:]\d+ [AP]?M?.* Backup',
                             line).log_regex():
                 Agent_events[index_id]['Agent_action'] = 'Backup'
+                Agent_events[index_id]['Action_time'] = str(re.findall('\d+/\d+/\d+, \d+[.:]\d+ [AP]?M?.*- \d+/\d+/\d+, \d+[.:]\d+ [AP]?M?',line))[2:-2]
 
             # 判断日记的开头是否是 '日期 - 日期 Backup'，是则代表是 Backup 事件 -- Agent Type 为 PC
             elif LogAnalyze('\d+/\d+/\d+ \d+[.:]\d+ [AP]?M?.*- \d+/\d+/\d+ \d+[.:]\d+ [AP]?M?.* Backup',
                             line).log_regex():
                 Agent_events[index_id]['Agent_action'] = 'Backup'
+                Agent_events[index_id]['Action_time'] = str(re.findall('\d+/\d+/\d+ \d+[.:]\d+ [AP]?M?.*- \d+/\d+/\d+ \d+[.:]\d+ [AP]?M?',line))[2:-2].strip()
 
             elif LogAnalyze('Backup outcome:', line).log_start():
                 Agent_events[index_id]['Action_status'] = line[len('Backup outcome: '):-1]
 
-            ################-事件详情-###############################################################################################
+            ################-事件详情-###################################################################################
 
             # 进入 Warnings level，并读取其中的内容
             elif LogAnalyze('Warnings', line).log_start():
@@ -133,5 +140,5 @@ def CBK_ZipAgent_Summary(queue1, queue2):
                 Agent_events[index_id]['Diagnostics'] = newline
 
     # 将最后一个事件数据放入 queue2 中，最后在放入 False
-    Agent_events.pop(index_id)
+    queue2.put(Agent_events.pop(index_id))
     queue2.put(False)
