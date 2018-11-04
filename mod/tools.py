@@ -23,6 +23,38 @@ class LogAnalyze(object):
     def log_regex(self):
         return re.findall(self.rule, self.logline) != []
 
+class CheckInput(object):
+    """
+    此类作用为检查用户输入的参数是否正确
+    """
+    def __init__(self, input_list):
+        self.input_list = input_list
+
+    # 判断输出端是否是 csv
+    def chk_csv(self):
+        have_f = '-f' in self.input_list
+        have_out = '-out' in self.input_list
+        try:
+            have_f_data = self.input_list[self.input_list.index('-f') + 1]
+            have_out_data = self.input_list[self.input_list.index('-out') + 1] == 'csv'
+        except:
+            return False
+
+        # 此处不等于 0 的原因是因为第一个参数永远是文件本身，所以参数个数肯定是奇数
+        return have_f and have_f_data and have_out and have_out_data and (len(self.input_list) %2 != 0)
+
+    # 判断输出端是否是 mysql
+    def chk_mysql(self):
+        have_f = '-f' in self.input_list
+        have_t = '-t' in self.input_list
+        try:
+            have_f_data = self.input_list[self.input_list.index('-f')+1]
+            have_t_data = self.input_list[self.input_list.index('-t')+1]
+        except:
+            return False
+        return have_f and have_t and have_f_data and have_t_data and (len(self.input_list) %2 != 0)
+
+
 # 定义错误消息
 def pop_error(content):
     print(content)
@@ -35,6 +67,23 @@ def pop_warn(content):
 # 定义要输出的消息
 def pop_info(content):
     print(content)
+
+# 定义帮助信息
+def pop_help():
+    print("\n"
+          "To MySQL:\n"
+          "-f   必须：指定要读取的文件名\n"
+          "-t   必须：指定要保存的数据表的名字\n"
+          "-u   可选：连接数据库的用户名\n"
+          "-h   可选：连接数据库的主机\n"
+          "-d   可选：需要创建的数据库名，默认为当前时间\n"
+          "-p   可选：连接数据库的密码\n"
+          "-P   可选：连接数据库的端口，默认为 3306\n"
+          "-out 可选：指定要输出的地点，默认为 mysql\n\n"
+          "To CSV:\n"
+          "-f   必须：指定要读取的文件名\n"
+          "-out 必须：指定要输出的地点，默认为 mysql，此处应该设定为 csv\n")
+    exit()
 
 # 创建数据库
 def sql_set_database(hostname, username, password, database, port):

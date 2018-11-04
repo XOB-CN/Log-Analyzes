@@ -2,17 +2,26 @@
 
 import sys, time
 from mod import tools
+from mod.tools import CheckInput
 
 # 读取输入的参数, 并以字典形式返回输入的参数值
 def read_args():
     sys_list = sys.argv
-    for_list = ['-f','-u','-p','-h','-P','-d','-t']
+    for_list = ['-f','-u','-p','-h','-P','-d','-t','-out']
     idx_dict = {}
     arg_dict = {}
+    type = ''
 
-    # 检查输入的数据
-    if len(sys_list)%2 == 0 or len(sys_list) == 1 :
-        tools.pop_error("输入的参数个数不正确，请检查后重新输入")
+    # 检查输出的类型
+    out_type = CheckInput(sys_list)
+
+    # 判断输入的参数是否有错误
+    if out_type.chk_csv():
+        type = 'csv'
+    elif out_type.chk_mysql():
+        type = 'mysql'
+    else:
+        tools.pop_help()
 
     # 将输入的参数以字典的形式分别对应
     for i in for_list:
@@ -21,18 +30,21 @@ def read_args():
             idx_dict[i] = sys_list[index+1]
 
     # 处理输入的参数
-    try:
-        arg_dict['filename'] = idx_dict['-f']
+    arg_dict['filename'] = idx_dict['-f']
+    if type == 'mysql':
         arg_dict['tab_name'] = idx_dict['-t']
-        arg_dict['username'] = set_args(idx_dict,'-u','root')
-        arg_dict['password'] = set_args(idx_dict,'-p','')
-        arg_dict['hostname'] = set_args(idx_dict,'-h','localhost')
-        arg_dict['database'] = set_args(idx_dict,'-d',time.strftime("%Y%m%d%H%M%S"))
-        arg_dict['port'] = set_args(idx_dict,'-P','3306')
-    except:
-        tools.pop_error("输入的参数不正确，请检查后重新输入")
+    arg_dict['username'] = set_args(idx_dict,'-u','root')
+    arg_dict['password'] = set_args(idx_dict,'-p','')
+    arg_dict['hostname'] = set_args(idx_dict,'-h','localhost')
+    arg_dict['database'] = set_args(idx_dict,'-d',time.strftime("%Y%m%d%H%M%S"))
+    arg_dict['port'] = set_args(idx_dict,'-P','3306')
+    arg_dict['output'] = set_args(idx_dict, '-out', 'mysql')
 
-    return arg_dict
+    # 额外处理一下 -out 参数的值，在这里检查会比较方便
+    if arg_dict['output'] == 'mysql' or arg_dict['output'] == 'csv':
+        return arg_dict
+    else:
+        tools.pop_help()
 
 
 # 读取参数的值，如果没有则采用默认值

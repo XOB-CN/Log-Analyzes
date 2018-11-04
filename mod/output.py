@@ -54,3 +54,13 @@ def to_mysql(arg_dict, queue, sql_table_func):
 
     # 待数据全部插入后，关闭连接
     db.close()
+
+# 将获得的数据写入到 csv 文件中
+def to_csv(arg_dict, queue, headers):
+    n = True
+    while n:
+        data_dict = queue.get()
+        if data_dict == False:
+            n = False
+        else:
+            print(data_dict)
