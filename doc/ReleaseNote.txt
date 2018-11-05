@@ -1,5 +1,9 @@
+2018-11-05 v0.3 Beta
+# 输出端：支持输出到 csv
+
 2018-10-30 v0.2 Beta
 # 处理端：支持 MicroFocus ConnectedBackup Agent 端 ZipAgent 中的汇总日记（文件格式：Agent_*****-*****_mm-dd-YYYY_HH-MM.txt）
+         注意：目前该功能暂不支持日语的汇总日记
 
 2018-10-26 v0.1 Beta
 # 处理端：支持 MicroFocus IDOL 中的 query 类型日记的处理

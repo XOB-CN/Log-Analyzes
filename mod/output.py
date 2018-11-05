@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 
-import pymysql
+import pymysql, os, csv
 from mod import tools
 
 # 将获得的数据写入到指定的内容中
@@ -58,9 +58,21 @@ def to_mysql(arg_dict, queue, sql_table_func):
 # 将获得的数据写入到 csv 文件中
 def to_csv(arg_dict, queue, headers):
     n = True
+    data_list = []
+    base_path = os.getcwd() # os.getcwd() --> 返回 shell 提示的当前目录
+    file_path = os.path.join(base_path,(arg_dict['filename']+'_output.csv'))
     while n:
         data_dict = queue.get()
         if data_dict == False:
             n = False
         else:
-            print(data_dict)
+            data_list.append(data_dict)
+
+    # csv 格式需要添加一个 newline='' 参数，否则生成的 csv 文件每行数据都会有一个空行
+    # 在 windows 这种使用 \r\n 的系统里，不用 newline='' 的话，会自动在行尾多添加个\r，导致多出一个空行，即行尾为\r\r\n
+    with open(file_path, mode='a', encoding='utf-8', newline='') as f:
+        f_csv = csv.DictWriter(f, headers)
+        f_csv.writeheader()
+        f_csv.writerows(data_list)
+
+    tools.pop_info("Log analyzes had finsh!")

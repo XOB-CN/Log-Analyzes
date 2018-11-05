@@ -8,6 +8,15 @@
 进程2：处理端，用来解析日记<br>
 进程3：输出端，输出到指定位置
 
+## 使用方法
++ 将日记内容输出到 MySQL 数据库
+    + IDOL-Query.py -f logfile -t tablename
+    
++ 将日记内容输出到 csv 文件
+    + CBK-Agent-Summary.py -f logfile -out csv
+
++ 如果不添加任何参数，则会列出所有的参数列表
+
 ## 支持情况
 
 #### MicroFocus

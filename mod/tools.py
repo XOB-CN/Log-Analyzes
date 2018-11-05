@@ -54,6 +54,11 @@ class CheckInput(object):
             return False
         return have_f and have_t and have_f_data and have_t_data and (len(self.input_list) %2 != 0)
 
+class Template(object):
+    # 输出端：csv 的 headers 模板
+    @classmethod
+    def csv_cbk_summary(self):
+        return ['Agent_version', 'Agent_Type', 'Agent_account', 'log_line', 'Agent_action', 'Action_time', 'Action_status', 'Warnings', 'Errors', 'Diagnostics']
 
 # 定义错误消息
 def pop_error(content):
