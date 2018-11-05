@@ -21,7 +21,7 @@
 
 #### MicroFocus
 + ConnectedBackup
-    + Agent 生成的汇总信息，文件格式：Agent_*****-*****_mm-dd-YYYY_HH-MM.txt
+    + Agent 生成的汇总信息，文件格式：Agent_*****-*****_mm-dd-YYYY_HH-MM.txt（仅支持英文）
 
 + IDOL
     + query 类日记，例如 content/query.log, agentstore/query.log, qms/query.log 等

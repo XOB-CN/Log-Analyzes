@@ -3,7 +3,11 @@ Thumbs.db
 ehthumbs.db
 Desktop.ini
 
+
 # Python:
 *.pyc
 .idea
 *__pycache__
+
+# Software:
+*.log
