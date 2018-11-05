@@ -2,7 +2,7 @@
 
 import sys, time
 from mod import tools
-from mod.tools import CheckInput
+from mod.tools import Input
 
 # 读取输入的参数, 并以字典形式返回输入的参数值
 def read_args():
@@ -13,7 +13,7 @@ def read_args():
     type = ''
 
     # 检查输出的类型
-    out_type = CheckInput(sys_list)
+    out_type = Input(sys_list)
 
     # 判断输入的参数是否有错误
     if out_type.chk_csv():
@@ -21,7 +21,7 @@ def read_args():
     elif out_type.chk_mysql():
         type = 'mysql'
     else:
-        tools.pop_help()
+        tools.Messages.pop_help()
 
     # 将输入的参数以字典的形式分别对应
     for i in for_list:
@@ -44,7 +44,7 @@ def read_args():
     if arg_dict['output'] == 'mysql' or arg_dict['output'] == 'csv':
         return arg_dict
     else:
-        tools.pop_help()
+        tools.Messages.pop_help()
 
 
 # 读取参数的值，如果没有则采用默认值

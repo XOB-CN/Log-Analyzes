@@ -18,7 +18,13 @@ def main():
 
     p1 = Process(target=input.log_send, args=(arg_dict['filename'], Q1))
     p2 = Process(target=IDOL.IDOL_Query, args=(Q1, Q2))
-    p3 = Process(target=output.to_mysql, args=(arg_dict,Q2,tools.sql_table_idol_query))
+
+    # 此处用来决定输出端具体的位置
+    if arg_dict['output'] == 'csv':
+        p3 = Process(target=output.to_csv, args=(arg_dict,Q2, tools.TemplateCSV.idol_query))
+    else:
+        p3 = Process(target=output.to_mysql, args=(arg_dict,Q2, tools.TemplateMySQL.idol_query))
+
     p1.start()
     p2.start()
     p3.start()

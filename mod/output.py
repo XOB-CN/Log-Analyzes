@@ -14,11 +14,11 @@ def to_mysql(arg_dict, queue, sql_table_func):
     port = int(arg_dict['port'])
 
     # 准备需要使用的 database / table
-    tools.sql_set_database(hostname, username, password, database, port)
-    tools.sql_set_table(hostname, username, password, database, port, tab_name, sql_table_func)
+    tools.Output.sql_set_database(hostname, username, password, database, port)
+    tools.Output.sql_set_table(hostname, username, password, database, port, tab_name, sql_table_func)
 
     # 显示数据库信息
-    tools.pop_info("DataBase Name: {}".format(database))
+    tools.Messages.pop_info("DataBase Name: {}".format(database))
 
     # 连接数据库,准备录入数据
     db = pymysql.connect(hostname, username, password, database, port)
@@ -50,7 +50,7 @@ def to_mysql(arg_dict, queue, sql_table_func):
                 cursor.execute(insert_sql)
                 db.commit()
             except:
-                tools.pop_warn("无法录入本条数据：{}".format(insert_sql))
+                tools.Messages.pop_warn("无法录入本条数据：{}".format(insert_sql))
 
     # 待数据全部插入后，关闭连接
     db.close()
@@ -75,4 +75,4 @@ def to_csv(arg_dict, queue, headers):
         f_csv.writeheader()
         f_csv.writerows(data_list)
 
-    tools.pop_info("Log analyzes had finsh!")
+    tools.Messages.pop_info("Log analyzes had finsh!")
