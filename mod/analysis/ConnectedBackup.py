@@ -52,6 +52,17 @@ def CBK_ZipAgent_Summary(queue1, queue2):
             # 判断日记的开头是否是 '----------' 并且 Is_start = False，是则代表上一个事件的结束，以及下一个事件的开始
             elif LogAnalyze('----------', line).log_start() and Is_Start == True:
                 event_info = Agent_list[0]  # 0 为 False
+
+                # 此段代码处理内容最后是 \n 的问题
+                if Agent_events[index_id].get('Warnings') is not None:
+                    Agent_events[index_id]['Warnings'] = Agent_events[index_id]['Warnings'].strip()
+
+                if Agent_events[index_id].get('Errors') is not None:
+                    Agent_events[index_id]['Errors'] = Agent_events[index_id]['Errors'].strip()
+
+                if Agent_events[index_id].get('Diagnostics') is not None:
+                    Agent_events[index_id]['Diagnostics'] = Agent_events[index_id]['Diagnostics'].strip()
+
                 queue2.put(Agent_events.pop(index_id))
                 index_id += 1
                 Agent_events[index_id] = {'Agent_version': Agent_version, 'Agent_Type': Agent_type,
