@@ -1,4 +1,7 @@
-2018-11-07
+2018-11-09 v0.6 Beta
+# 完善 IDOL 模块的处理逻辑
+
+2018-11-07 v0.5 Beta
 # 完善 ConnectedBackup 模块的处理逻辑
 
 2018-11-06 v0.4 Beta
@@ -9,7 +12,7 @@
 
 2018-10-30 v0.2 Beta
 # 处理端：支持 MicroFocus ConnectedBackup Agent 端 ZipAgent 中的汇总日记（文件格式：Agent_*****-*****_mm-dd-YYYY_HH-MM.txt）
-         注意：目前该功能暂不支持日语的汇总日记
+# 注意：目前该功能暂不支持日语的汇总日记
 
 2018-10-26 v0.1 Beta
 # 处理端：支持 MicroFocus IDOL 中的 query 类型日记的处理

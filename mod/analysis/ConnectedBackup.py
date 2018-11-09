@@ -53,7 +53,7 @@ def CBK_ZipAgent_Summary(queue1, queue2):
             elif LogAnalyze('----------', line).log_start() and Is_Start == True:
                 event_info = Agent_list[0]  # 0 为 False
 
-                # 此段代码处理内容最后是 \n 的问题
+                # 此段代码目的是将日记内容最后的'\n'去掉
                 if Agent_events[index_id].get('Warnings') is not None:
                     Agent_events[index_id]['Warnings'] = Agent_events[index_id]['Warnings'].strip()
 
@@ -63,6 +63,7 @@ def CBK_ZipAgent_Summary(queue1, queue2):
                 if Agent_events[index_id].get('Diagnostics') is not None:
                     Agent_events[index_id]['Diagnostics'] = Agent_events[index_id]['Diagnostics'].strip()
 
+                # 将处理完成的事件放入到 queue2 中
                 queue2.put(Agent_events.pop(index_id))
                 index_id += 1
                 Agent_events[index_id] = {'Agent_version': Agent_version, 'Agent_Type': Agent_type,
