@@ -10,26 +10,29 @@
 
 ## 使用方法
 + 将日记内容输出到 MySQL 数据库
-    + IDOL-Query.py -f logfile -t tablename
-    
+```
+IDOL-Query.py -f logfile -t tablename [-d dbname | -P 3306 | …… ]
+```  
 + 将日记内容输出到 csv 文件
-    + CBK-Agent-Summary.py -f logfile -out csv
-
+```
+CBK-Agent-Summary.py -f logfile -out csv
+```
 + 如果不添加任何参数，则会列出所有的参数列表
-    + To MySQL:<br>
-      -f   必须：指定要读取的文件名<br>
-      -t   必须：指定要保存的数据表的名字<br>
-      -u   可选：连接数据库的用户名<br>
-      -h   可选：连接数据库的主机<br>
-      -d   可选：需要创建的数据库名，默认为当前时间<br>
-      -p   可选：连接数据库的密码<br>
-      -P   可选：连接数据库的端口，默认为 3306<br>
-      -out 可选：指定要输出的地点，默认为 mysql<br>
+```
+To MySQL:
+-f   必须：指定要读取的文件名
+-t   必须：指定要保存的数据表的名字
+-u   可选：连接数据库的用户名
+-h   可选：连接数据库的主机
+-d   可选：需要创建的数据库名，默认为当前时间
+-p   可选：连接数据库的密码
+-P   可选：连接数据库的端口，默认为 3306
+-out 可选：指定要输出的地点，默认为 mysql
 
-    + To CSV:<br>
-      -f   必须：指定要读取的文件名<br>
-      -out 必须：指定要输出的地点，默认为 mysql，此处应该设定为 csv
-
+To CSV:
+-f   必须：指定要读取的文件名
+-out 必须：指定要输出的地点，默认为 mysql，此处应该设定为 csv
+```
 ## 支持情况
 
 #### MicroFocus
