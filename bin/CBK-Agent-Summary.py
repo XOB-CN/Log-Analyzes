@@ -21,6 +21,7 @@ def main():
 
     # 此处用来决定输出端具体的位置
     if arg_dict['output'] == 'csv':
+        # 这里有括号的原因是因为 tools.TemplateCSV.cbk_summary() 有返回值，类型是列表，如果没有括号后续无法处理
         p3 = Process(target=output.to_csv, args=(arg_dict,Q2, tools.TemplateCSV.cbk_summary()))
     else:
         p3 = Process(target=output.to_mysql, args=(arg_dict,Q2, tools.TemplateMySQL.cbk_summary))
