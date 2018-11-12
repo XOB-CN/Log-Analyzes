@@ -80,7 +80,7 @@ class Output(object):
         # 判断表是否存在
         cursor.execute("show tables;")
         tb_tuple = cursor.fetchall()
-        tb_name = (tab_name,)
+        tb_name = (tab_name,)   # 注意此处是 tb_name 不是 tab_name!,如果出现创建表错误，可能是多进程的参数中添加了括号
         if tb_name not in tb_tuple:
             # sql_table_func 是模板名字
             cursor.execute(sql_table_func(tab_name))
@@ -104,9 +104,9 @@ class TemplateMySQL(Output):
                "`id` int not null auto_increment," \
                "`log_line` int," \
                "`log_time` datetime," \
-               "`log_thid` varchar(4)," \
+               "`log_thid` varchar(6)," \
                "`host` varchar(128)," \
-               "`action` varchar(1024)," \
+               "`action` text," \
                "`action_id` varchar(40)," \
                "`status` varchar(40)," \
                "`finsh_time` varchar(10)," \

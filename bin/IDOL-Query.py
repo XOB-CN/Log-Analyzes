@@ -23,7 +23,7 @@ def main():
     if arg_dict['output'] == 'csv':
         p3 = Process(target=output.to_csv, args=(arg_dict,Q2, tools.TemplateCSV.idol_query()))
     else:
-        p3 = Process(target=output.to_mysql, args=(arg_dict,Q2, tools.TemplateMySQL.idol_query()))
+        p3 = Process(target=output.to_mysql, args=(arg_dict,Q2, tools.TemplateMySQL.idol_query))
 
     p1.start()
     p2.start()
