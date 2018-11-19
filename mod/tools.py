@@ -140,6 +140,17 @@ class TemplateMySQL(Output):
                "`Diagnostics` text," \
                "primary key(id));"
 
+class TemplateReport(Output):
+    # 输出端：输出模板
+    @staticmethod
+    def html_h(content, number):
+        return "<h"+str(number) + ">" + content + "</h"+str(number)+">"+ "\n"
+
+    @staticmethod
+    def html_div(content, html_class):
+        return "<div class=" + html_class + ">"+ content +"</div>" + "\n"
+
+
 # 提示信息部分
 class Messages(object):
 
