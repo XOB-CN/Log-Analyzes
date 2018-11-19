@@ -35,6 +35,18 @@ class Input(object):
             return False
         return have_f and have_t and have_f_data and have_t_data and (len(self.input_list) %2 != 0)
 
+    # 判断输出端是否是 report
+    def chk_report(self):
+        have_f = '-f' in self.input_list
+        have_out = '-out' in self.input_list
+        try:
+            have_f_data = self.input_list[self.input_list.index('-f') + 1]
+            have_out_data = self.input_list[self.input_list.index('-out') + 1] == 'report'
+        except:
+            return False
+
+        return have_f and have_f_data and have_out and have_out_data and (len(self.input_list) %2 != 0)
+
 # 处理端部分
 class LogAnalyze(object):
     """

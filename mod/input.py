@@ -20,6 +20,8 @@ def read_args():
         type = 'csv'
     elif out_type.chk_mysql():
         type = 'mysql'
+    elif out_type.chk_report():
+        type = 'report'
     else:
         tools.Messages.pop_help()
 
@@ -41,7 +43,7 @@ def read_args():
     arg_dict['output'] = set_args(idx_dict, '-out', 'mysql')
 
     # 额外处理一下 -out 参数的值，在这里检查会比较方便
-    if arg_dict['output'] == 'mysql' or arg_dict['output'] == 'csv':
+    if arg_dict['output'] == 'mysql' or arg_dict['output'] == 'csv' or arg_dict['output'] == 'report':
         return arg_dict
     else:
         tools.Messages.pop_help()
@@ -57,7 +59,14 @@ def set_args(dict,argv,default):
 
 # 日记发送模块，将读取到的日记内容发送到另一个进程
 def log_send(filename, queue):
-    with open(filename,'r',encoding='utf8') as file:
-        for line in file:
-            queue.put(line)
-    queue.put(False)
+    try:
+        with open(filename,'r',encoding='utf8') as file:
+            for line in file:
+                queue.put(line)
+        queue.put(False)
+
+    except:
+        with open(filename,'r',encoding='utf16') as file:
+            for line in file:
+                queue.put(line)
+        queue.put(False)
