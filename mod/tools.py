@@ -141,7 +141,7 @@ class TemplateMySQL(Output):
                "primary key(id));"
 
 class TemplateReport(Output):
-    # 输出端：输出模板
+    # 输出端：report 输出模板
     @staticmethod
     def html_h(content, number):
         return "<h"+str(number) + ">" + content + "</h"+str(number)+">"+ "\n"
@@ -150,6 +150,9 @@ class TemplateReport(Output):
     def html_div(content, html_class):
         return "<div class=" + html_class + ">"+ content +"</div>" + "\n"
 
+    @staticmethod
+    def html_css():
+        pass
 
 # 提示信息部分
 class Messages(object):

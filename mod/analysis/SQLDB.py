@@ -10,7 +10,8 @@ def MSSQL_Report(queue1, queue2):
     log_line = 0
 
     # 初始化分析数据
-    memory_paged_out = {'type':'memory', 'info':'内存不足', 'keyword':"A significant part of sql server process memory has been paged out", 'solution':"添加内存或限制SQL内存使用量"}
+    memory_pageout = {'type':'memory', 'info':'内存不足', 'keyword':"A significant part of sql server process memory has been paged out", 'solution':"添加内存或限制SQL内存使用量"}
+    event_lists = [memory_pageout,]
 
     while n:
         line = queue1.get()
@@ -24,15 +25,19 @@ def MSSQL_Report(queue1, queue2):
             # 内存不足
             if LogAnalyze("A significant part of sql server process memory has been paged out", line).log_regex():
                 # 该事件对应的日记行数及内容
-                tmp_log_line = memory_paged_out.get('log_line')
+                tmp_log_line = memory_pageout.get('log_line')
                 if tmp_log_line == None:
-                    memory_paged_out['log_line'] = str(log_line)
-                    memory_paged_out['detail'] = "["+ str(log_line) +"]" + " " + line.strip()
+                    memory_pageout['log_line'] = str(log_line)
+                    memory_pageout['detail'] = "["+ str(log_line) +"]" + " " + line.strip()
                 else:
-                    memory_paged_out['log_line'] = tmp_log_line + ', ' + str(log_line)
-                    memory_paged_out['detail'] = memory_paged_out['detail'] + "<br>" + "["+ str(log_line) +"]" + " " + line.strip()
+                    memory_pageout['log_line'] = tmp_log_line + ', ' + str(log_line)
+                    memory_pageout['detail'] = memory_pageout['detail'] + "<br>" + "["+ str(log_line) +"]" + " " + line.strip()
 
 
-    for i,v in memory_paged_out.items():
-        if i == 'detail':
-            print(TemplateReport.html_div(memory_paged_out[i],'log'))
+    for i in event_lists:
+        print(i['type'])
+        print(i['info'])
+        print(i['keyword'])
+        print(i['solution'])
+        print(i['log_line'])
+        print(i['detail'])
