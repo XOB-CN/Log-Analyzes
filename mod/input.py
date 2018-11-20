@@ -7,7 +7,7 @@ from mod.tools import Input
 # 读取输入的参数, 并以字典形式返回输入的参数值
 def read_args():
     sys_list = sys.argv
-    for_list = ['-f','-u','-p','-h','-P','-d','-t','-out']
+    for_list = ['-f','-u','-p','-h','-P','-d','-t','-out','-detail']
     idx_dict = {}
     arg_dict = {}
     type = ''
@@ -41,6 +41,7 @@ def read_args():
     arg_dict['database'] = set_args(idx_dict,'-d',time.strftime("%Y%m%d%H%M%S"))
     arg_dict['port'] = set_args(idx_dict,'-P','3306')
     arg_dict['output'] = set_args(idx_dict, '-out', 'mysql')
+    arg_dict['detail'] = set_args(idx_dict, '-detail', 'False')
 
     # 额外处理一下 -out 参数的值，在这里检查会比较方便
     if arg_dict['output'] == 'mysql' or arg_dict['output'] == 'csv' or arg_dict['output'] == 'report':

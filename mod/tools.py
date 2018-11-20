@@ -143,8 +143,18 @@ class TemplateMySQL(Output):
 class TemplateReport(Output):
     # 输出端：report 输出模板
     @staticmethod
+    def html_head():
+        head = """
+        <head>
+        <meta charset="utf-8">
+        <title>日记分析结果</title>
+        </head>
+        """
+        return head
+
+    @staticmethod
     def html_h(content, number):
-        return "<h"+str(number) + ">" + content + "</h"+str(number)+">"+ "\n"
+        return "<h"+str(number) + ">" + content + "</h"+str(number)+">" + "\n"
 
     @staticmethod
     def html_div(content, html_class):
@@ -152,7 +162,16 @@ class TemplateReport(Output):
 
     @staticmethod
     def html_css():
-        pass
+        css = """
+        <style>
+        h2{font-weight:bold; text-align:center;}
+        h3{font-size:18px; font-weight:bold;}
+        .log-line{font-size:12px;}
+        .keyword{font-size:12px; color:red;}
+        .detail{font-size:12px;}
+        </style>\n
+        """
+        return css
 
 # 提示信息部分
 class Messages(object):

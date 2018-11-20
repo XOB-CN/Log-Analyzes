@@ -21,14 +21,14 @@ def main():
 
     # 此处用来决定输出端具体的位置
     if arg_dict['output'] == 'report':
-        pass
-        # p3 = Process(target=output.to_csv, args=(arg_dict,Q2, 输出端模板))
+        global p3
+        p3 = Process(target=output.to_report, args=(arg_dict,Q2))
     else:
         tools.Messages.pop_error('没有这个输出方法！')
 
     p1.start()
     p2.start()
-    #p3.start()
+    p3.start()
 
 if __name__ == "__main__":
     # 将当前路径添加到系统环境变量中
