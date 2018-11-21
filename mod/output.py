@@ -76,7 +76,7 @@ def to_csv(arg_dict, queue, headers):
         f_csv.writeheader()
         f_csv.writerows(data_list)
 
-    tools.Messages.pop_info("Log analyzes had finsh!")
+    tools.Messages.pop_info("分析完成！")
 
 # 将获得的数据写入到 report 中
 def to_report(arg_dict, queue):
