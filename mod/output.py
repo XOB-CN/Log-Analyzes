@@ -83,6 +83,7 @@ def to_report(arg_dict, queue):
     n = True
     base_path = os.getcwd()  # os.getcwd() --> 返回 shell 提示的当前目录
     file_path = os.path.join(base_path, (arg_dict['filename'] + '_report.html'))
+    event_title = set()
 
     # 创建 report 文件
     with open(file_path, mode='a', encoding='utf8', newline='') as f:
@@ -94,53 +95,49 @@ def to_report(arg_dict, queue):
         # html 内容信息
         f.writelines("<body>\n")
 
+        # report 的事件模板信息
+        def event_category(f, category_title, type):
+            # 标题部分
+            if type not in event_title:
+                f.writelines(TemplateReport.html_h(category_title, 2))
+                event_title.add(type)
+            # 问题原因
+            f.writelines(TemplateReport.html_h('问题原因', 3))
+            f.writelines(TemplateReport.html_div(dict['info'], 'log-line'))
+            # 关键信息
+            f.writelines(TemplateReport.html_h('关键信息', 3))
+            f.writelines(TemplateReport.html_div(dict['keyword'], 'keyword'))
+            # 解决思路
+            f.writelines(TemplateReport.html_h('解决思路', 3))
+            f.writelines(TemplateReport.html_div(dict['solution'], 'log-line'))
+            # 对应行数
+            f.writelines(TemplateReport.html_h('对应行数', 3))
+            f.writelines(TemplateReport.html_div(dict['log_line'], 'log-line'))
+            # 详细信息
+            if arg_dict['detail'] in ['True', 'ture', 'On', 'on']:
+                f.writelines(TemplateReport.html_h('详细信息', 3))
+                f.writelines(TemplateReport.html_div(dict['detail'], 'detail'))
+
+        # 写入日记具体的分析内容
         while n:
             data_dict = queue.get()
             if data_dict == False:
                 n = False
             else:
                 for dict in data_dict:
-                    # CPU 部分内容
-                    if dict['type'] == 'CPU'and dict['log_line'] != None:
-                        # 标题部分
-                        f.writelines(TemplateReport.html_h('CPU 部分问题', 2))
-                        # 问题原因
-                        f.writelines(TemplateReport.html_h('问题原因', 3))
-                        f.writelines(TemplateReport.html_div(dict['info'], 'log-line'))
-                        # 关键信息
-                        f.writelines(TemplateReport.html_h('关键信息', 3))
-                        f.writelines(TemplateReport.html_div(dict['keyword'], 'keyword'))
-                        # 解决思路
-                        f.writelines(TemplateReport.html_h('解决思路', 3))
-                        f.writelines(TemplateReport.html_div(dict['solution'], 'log-line'))
-                        # 对应行数
-                        f.writelines(TemplateReport.html_h('对应行数', 3))
-                        f.writelines(TemplateReport.html_div(dict['log_line'], 'log-line'))
-                        # 详细信息
-                        if arg_dict['detail'] in ['True','ture','On','on']:
-                            f.writelines(TemplateReport.html_h('详细信息', 3))
-                            f.writelines(TemplateReport.html_div(dict['detail'], 'detail'))
-
                     # Memory 部分内容
-                    elif dict['type'] == 'Memory' and dict['log_line'] != None:
-                        # 标题部分
-                        f.writelines(TemplateReport.html_h('内存部分问题', 2))
-                        # 问题原因
-                        f.writelines(TemplateReport.html_h('问题原因', 3))
-                        f.writelines(TemplateReport.html_div(dict['info'], 'log-line'))
-                        # 关键信息
-                        f.writelines(TemplateReport.html_h('关键信息', 3))
-                        f.writelines(TemplateReport.html_div(dict['keyword'], 'keyword'))
-                        # 解决思路
-                        f.writelines(TemplateReport.html_h('解决思路', 3))
-                        f.writelines(TemplateReport.html_div(dict['solution'], 'log-line'))
-                        # 对应行数
-                        f.writelines(TemplateReport.html_h('对应行数', 3))
-                        f.writelines(TemplateReport.html_div(dict['log_line'], 'log-line'))
-                        # 详细信息
-                        if arg_dict['detail'] in ['True','ture','On','on']:
-                            f.writelines(TemplateReport.html_h('详细信息', 3))
-                            f.writelines(TemplateReport.html_div(dict['detail'], 'detail'))
+                    if dict['type'] == 'Memory' and dict.get('log_line') != None:
+                        event_category(f, "Memory 部分", 'Memory')
+
+                    # Security 部分内容
+                    elif dict['type'] == 'Security' and dict.get('log_line') != None:
+                        event_category(f, "Security 部分", 'Security')
+
+                    # EventID 部分内容
+                    elif dict['type'] == 'EventID' and dict.get('log_line') != None:
+                        event_category(f, "EventID 部分", 'EventID')
 
         # html 结尾
         f.writelines("</body></html>\n")
+
+    tools.Messages.pop_info("分析完成！")

@@ -1,3 +1,7 @@
+2018-11-21 v0.8 Beta
+# 处理端：支持 Microsoft SQL Server 中的 ErrorLog（仅英文）
+# 输出端：支持输出到 Report
+
 2018-11-12 v0.7 Beta
 # 修复不能写入数据库的Bug
 # 让建表的模板更加合理

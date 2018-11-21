@@ -28,27 +28,43 @@ IDOL-Query.py -f logfile -t tablename [-d dbname | -P 3306 | …… ]
 ```
 CBK-Agent-Summary.py -f logfile -out csv
 ```
+* 将日记内容分析并生成分析结果
+```
+MSSQL.py -f logfile -out report [-detail on]
+```
 * 如果不添加任何参数，则会列出所有的参数列表
 ```
 To MySQL:
--f   必须：指定要读取的文件名
--t   必须：指定要保存的数据表的名字
--u   可选：连接数据库的用户名
--h   可选：连接数据库的主机
--d   可选：需要创建的数据库名，默认为当前时间
--p   可选：连接数据库的密码
--P   可选：连接数据库的端口，默认为 3306
--out 可选：指定要输出的地点，默认为 mysql
+-f       必须：指定要读取的文件名
+-t       必须：指定要保存的数据表的名字
+-u       可选：连接数据库的用户名
+-h       可选：连接数据库的主机
+-d       可选：需要创建的数据库名，默认为当前时间
+-p       可选：连接数据库的密码
+-P       可选：连接数据库的端口，默认为 3306
+-out     可选：指定要输出的类型，默认为 mysql
 
 To CSV:
--f   必须：指定要读取的文件名
--out 必须：指定要输出的地点，默认为 mysql，此处应该设定为 csv
+-f       必须：指定要读取的文件名
+-out     必须：指定要输出的类型，默认为 mysql，此处应该设置为 csv
+
+To Report:
+-f       必须：指定要读取的文件名
+-out     必须：指定要输出的类型，默认为 mysql, 此处应该设置为 report
+-detail  可选：可以输出更详细的内容，默认不启用，当该值为 on、On、True 时生效
 ```
 ## 支持情况
 
 #### MicroFocus
 * ConnectedBackup
     * Agent客户端生成的汇总信息，文件格式：Agent_*****-*****_mm-dd-YYYY_HH-MM.txt（仅支持英文）
+        + 输出端：mysql、csv 功能
 
 * IDOL
     * query类型的日记，例如 content/query.log, agentstore/query.log, qms/query.log 等
+        + 输出端：mysql、csv 功能
+
+#### Microsoft
+* SQL Server
+    * SQL Server 生成的 ERRORLOG
+        + 输出端：report 功能
