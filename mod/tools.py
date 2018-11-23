@@ -144,13 +144,22 @@ class TemplateReport(Output):
     # 输出端：report 输出模板
     @staticmethod
     def html_head():
-        head = """
-        <head>
-        <meta charset="utf-8">
-        <title>日记分析结果</title>
-        </head>
-        """
+        head ='<!DOCTYPE html>\n' \
+              '<html>\n' \
+              '<head>\n\t' \
+              '<meta charset="utf-8"><title>日记分析结果</title>\n' \
+              '</head>\n'
         return head
+
+    @staticmethod
+    def html_css():
+        css = '<style>\n\t' \
+              'h2{font-weight:bold; text-align:center;}\n\t' \
+              'h3{font-size:18px; font-weight:bold;}\n\t' \
+              '.log-line{font-size:12px;}\n\t' \
+              '.keyword{font-size:12px; color:red;}\n\t' \
+              '.detail{font-size:12px;}\n</style>\n'
+        return css
 
     @staticmethod
     def html_h(content, number):
@@ -161,17 +170,27 @@ class TemplateReport(Output):
         return "<div class=" + html_class + ">"+ content +"</div>" + "\n"
 
     @staticmethod
-    def html_css():
-        css = """
-        <style>
-        h2{font-weight:bold; text-align:center;}
-        h3{font-size:18px; font-weight:bold;}
-        .log-line{font-size:12px;}
-        .keyword{font-size:12px; color:red;}
-        .detail{font-size:12px;}
-        </style>\n
-        """
-        return css
+    def event_write(f, category_title, type, event_title, arg_dict, dict):
+        # 标题部分
+        if type not in event_title:
+            f.writelines(TemplateReport.html_h(category_title, 2))
+            event_title.add(type)
+        # 问题原因
+        f.writelines(TemplateReport.html_h('问题原因', 3))
+        f.writelines(TemplateReport.html_div(dict['info'], 'log-line'))
+        # 关键信息
+        f.writelines(TemplateReport.html_h('关键信息', 3))
+        f.writelines(TemplateReport.html_div(dict['keyword'], 'keyword'))
+        # 解决思路
+        f.writelines(TemplateReport.html_h('解决思路', 3))
+        f.writelines(TemplateReport.html_div(dict['solution'], 'log-line'))
+        # 对应行数
+        f.writelines(TemplateReport.html_h('对应行数', 3))
+        f.writelines(TemplateReport.html_div(dict['log_line'], 'log-line'))
+        # 详细信息
+        if arg_dict['detail'] in ['True', 'ture', 'On', 'on']:
+            f.writelines(TemplateReport.html_h('详细信息', 3))
+            f.writelines(TemplateReport.html_div(dict['detail'], 'detail'))
 
 # 提示信息部分
 class Messages(object):
@@ -208,4 +227,4 @@ class Messages(object):
     @staticmethod
     def pop_error(content):
         print(content)
-        exit(1)
+        exit(0)
