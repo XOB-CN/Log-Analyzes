@@ -1,0 +1,20 @@
+﻿# -*- coding:utf-8 -*-
+
+def Log_Analyzes(queue1, queue2):
+    # 初始化参数
+    n = True
+    log_line =0
+    ...
+
+    # 读取日记信息
+    while n:
+        line = queue1.get()
+        if line == False:
+            n = False
+        else:
+            line = line.strip() + '\n'
+            log_line += 1
+        ...
+    # 将分析的结果放到 queue2 中
+    queue2.put(...) # 接收的都是字典类型数据
+    queue2.put(False)

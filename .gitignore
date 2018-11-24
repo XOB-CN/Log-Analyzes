@@ -3,7 +3,6 @@ Thumbs.db
 ehthumbs.db
 Desktop.ini
 
-
 # Python:
 *.pyc
 .idea
@@ -11,3 +10,7 @@ Desktop.ini
 
 # Software:
 *.log
+
+# Documents:
+*.doc
+*.docx

@@ -30,7 +30,7 @@ CBK-Agent-Summary.py -f logfile -out csv
 ```
 * 将日记内容分析并生成分析结果
 ```
-MSSQL.py -f logfile -out report [-detail on]
+MSSQL-ErrorLog.py -f logfile -out report [-detail on]
 ```
 * 如果不添加任何参数，则会列出所有的参数列表
 ```
@@ -68,3 +68,9 @@ To Report:
 * SQL Server
     * SQL Server 生成的 ERRORLOG
         + 输出端：report 功能
+        
+## 关于定制
+* 请参考 doc 文件夹下面的文档，里面会有在定制时需要调整的相关内容
+
+## 授权模式
+GNU General Public License v3.0
