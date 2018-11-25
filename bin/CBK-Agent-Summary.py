@@ -12,11 +12,12 @@ def main():
     # 主程序逻辑
     Q1 = Queue()
     Q2 = Queue()
+    Error_Q = Queue()
 
     # 获取输入的信息,用来决定后续的处理流程
     arg_dict = input.read_args()
 
-    p1 = Process(target=input.log_send, args=(arg_dict['filename'], Q1))
+    p1 = Process(target=input.log_send, args=(arg_dict['filename'], Q1, Error_Q))
     p2 = Process(target=ConnectedBackup.CBK_ZipAgent_Summary, args=(Q1, Q2))
 
     # 此处用来决定输出端具体的位置
@@ -29,6 +30,8 @@ def main():
         p3 = Process(target=output.to_mysql, args=(arg_dict,Q2, tools.TemplateMySQL.cbk_summary))
 
     p1.start()
+    if Error_Q.get() == False:
+        exit(1)
     p2.start()
     p3.start()
 

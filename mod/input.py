@@ -59,15 +59,21 @@ def set_args(dict,argv,default):
 
 
 # 日记发送模块，将读取到的日记内容发送到另一个进程
-def log_send(filename, queue):
+def log_send(filename, queue, error_queue):
     try:
         with open(filename,'r',encoding='utf8') as file:
+            error_queue.put(True)
             for line in file:
                 queue.put(line)
         queue.put(False)
 
+    except FileNotFoundError:
+        error_queue.put(False)
+        tools.Messages.pop_error('找不到该文件')
+
     except:
         with open(filename,'r',encoding='utf16') as file:
+            error_queue.put(True)
             for line in file:
                 queue.put(line)
         queue.put(False)
