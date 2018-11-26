@@ -18,10 +18,10 @@ def main():
     arg_dict = input.read_args()
 
     p1 = Process(target=input.log_send, args=(arg_dict['filename'], Q1, Error_Q))
-    p2 = Process(target=Fortify.Fortify_General_Analyze, args=(Q1, Q2, Rules_Fortify_WI.RulesList))
 
     # 此处用来决定输出端具体的位置
     if arg_dict['output'] == 'report':
+        p2 = Process(target=General.General_Report_LogAnalyze, args=(Q1, Q2, Rules_Fortify_WI.RulesList))
         p3 = Process(target=output.to_report, args=(arg_dict,Q2))
     else:
         tools.Messages.pop_error('没有这个输出方法！')
@@ -38,7 +38,7 @@ if __name__ == "__main__":
 
     # 加载所需的模块
     from mod import input, output, tools
-    from mod.analysis import Fortify
+    from mod.analysis import General
     from mod.rules import Rules_Fortify_WI
     from multiprocessing import Process,Queue
 

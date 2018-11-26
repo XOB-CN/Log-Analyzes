@@ -3,7 +3,7 @@
 import re
 from mod.tools import LogAnalyze
 
-def Fortify_General_Analyze(queue1, queue2, RuleList):
+def General_Report_LogAnalyze(queue1, queue2, RuleList):
     # 初始化数据
     n = True
     log_line = 0

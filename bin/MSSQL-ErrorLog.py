@@ -18,10 +18,10 @@ def main():
     arg_dict = input.read_args()
 
     p1 = Process(target=input.log_send, args=(arg_dict['filename'], Q1, Error_Q))
-    p2 = Process(target=SQLDB.MSSQL_Report, args=(Q1, Q2))
 
     # 此处用来决定输出端具体的位置
     if arg_dict['output'] == 'report':
+        p2 = Process(target=SQLDB.MSSQL_Report, args=(Q1, Q2))
         p3 = Process(target=output.to_report, args=(arg_dict,Q2))
     else:
         tools.Messages.pop_error('没有这个输出方法！')
