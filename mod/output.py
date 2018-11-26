@@ -90,7 +90,6 @@ def to_report(arg_dict, queue):
                    ['Disk','Disk 部分'],
                    ['Network','Network 部分'],
                    ['Permission','Permission 部分'],
-                   ['Security','Security 部分'],
                    ['EventID','EventID 部分'],
                    ['Others','Others 部分']]
 
