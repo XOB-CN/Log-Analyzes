@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 
-ErrorLogList = [
+RulesList = [
     {
         'name':'Memory_pageout',
         'type':'Memory',
@@ -31,6 +31,20 @@ ErrorLogList = [
         'keyword': "Error: 26073",
         'solution':'<a href="https://support.microsoft.com/zh-cn/help/2491214/non-yielding-scheduler-error-and-sql-server-2008-or-sql-server-2008-r2">'
                    'https://support.microsoft.com/zh-cn/help/2491214/non-yielding-scheduler-error-and-sql-server-2008-or-sql-server-2008-r2</a>'
+    },
+    {
+        'name': 'Warn',
+        'type': 'Others',
+        'info': '其余 Warn 信息',
+        'keyword': "Warn",
+        'rule': "line"
+    },
+    {
+        'name': 'Error',
+        'type': 'Others',
+        'info': '其余 Error 信息',
+        'keyword': "Error",
+        'rule': "line"
     },
 ]
 

@@ -1,5 +1,6 @@
 # -*- coding:utf-8 -*-
 
+import re
 from mod.tools import LogAnalyze
 
 def Fortify_General_Analyze(queue1, queue2, RuleList):
@@ -26,8 +27,8 @@ def Fortify_General_Analyze(queue1, queue2, RuleList):
 
             # 常规匹配：匹配关键字
             elif LogAnalyze(rule.get('keyword'),line).log_regex():
-                # 特殊规则：搜集信息
-                if rule.get('type') == 'Information':
+                # 特殊规则：仅搜集信息
+                if rule.get('type') == 'Information' or rule.get('type') == 'Others':
                     cmd = rule.get('rule')
                     rule['content'] = eval(cmd).strip()
 

@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 import re
 from mod.tools import LogAnalyze
-from mod.rules.Rules_MSSQL import ErrorLogList
+from mod.rules.Rules_MSSQL import RulesList
 
 def MSSQL_Report(queue1, queue2):
     # 初始化数据
@@ -11,7 +11,7 @@ def MSSQL_Report(queue1, queue2):
     rules_index = 0
 
     # 加载匹配规则
-    rules_list = ErrorLogList
+    rules_list = RulesList
 
     # 读取日记信息
     while n:
@@ -36,12 +36,18 @@ def MSSQL_Report(queue1, queue2):
 
             # 常规匹配：匹配关键字
             elif LogAnalyze(rule.get('keyword'),line).log_regex():
-                # 特殊规则：碰到是 EventID 的事件
+                # 特殊规则：EventID 的事件
                 if rule.get('type') == 'EventID':
                     # 开启 EventID_Detail 的标记，准备记录下一行内容
                     EventID_Detail = True
                     # 记下此时生效的规则位置
                     rules_index = rules_list.index(rule)
+
+                # 特殊规则：仅搜集信息
+                elif rule.get('type') == 'Information' or rule.get('type') == 'Others':
+                    cmd = rule.get('rule')
+                    rule['content'] = eval(cmd).strip()
+
                 # 常规匹配：记录内容
                 tmp_log_line = rule.get('log_line')
                 if tmp_log_line == None:
