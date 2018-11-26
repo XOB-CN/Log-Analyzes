@@ -60,6 +60,11 @@ To Report:
     * Agent客户端生成的汇总信息，文件格式：Agent_*****-*****_mm-dd-YYYY_HH-MM.txt（仅支持英文）
         + 输出端：mysql、csv 功能
 
+* Fortify
+    * SSC(Software Security Center)
+        + 输出端：report 功能
+    * WI(WebInspect)
+        + 输出端：report 功能
 * IDOL
     * query类型的日记，例如 content/query.log, agentstore/query.log, qms/query.log 等
         + 输出端：mysql、csv 功能
