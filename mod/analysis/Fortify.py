@@ -1,15 +1,14 @@
 # -*- coding:utf-8 -*-
 
 from mod.tools import LogAnalyze
-from mod.rules import Rules_Fortify_SCA
 
-def SCA_Report(queue1, queue2):
+def Fortify_General_Analyze(queue1, queue2, RuleList):
     # 初始化数据
     n = True
     log_line = 0
 
     # 加载匹配规则
-    rules_list = Rules_Fortify_SCA.RulesList
+    rules_list = RuleList
 
     # 读取日记信息
     while n:
@@ -29,7 +28,8 @@ def SCA_Report(queue1, queue2):
             elif LogAnalyze(rule.get('keyword'),line).log_regex():
                 # 特殊规则：搜集信息
                 if rule.get('type') == 'Information':
-                    pass
+                    cmd = rule.get('rule')
+                    rule['content'] = eval(cmd).strip()
 
                 # 常规匹配：记录内容
                 tmp_log_line = rule.get('log_line')

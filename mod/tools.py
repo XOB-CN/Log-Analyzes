@@ -175,22 +175,35 @@ class TemplateReport(Output):
         if type not in event_title:
             f.writelines(TemplateReport.html_h(category_title, 2))
             event_title.add(type)
-        # 问题原因
-        f.writelines(TemplateReport.html_h('问题原因', 3))
-        f.writelines(TemplateReport.html_div(dict['info'], 'log-line'))
-        # 关键信息
-        f.writelines(TemplateReport.html_h('关键信息', 3))
-        f.writelines(TemplateReport.html_div(dict['keyword'], 'keyword'))
-        # 解决思路
-        f.writelines(TemplateReport.html_h('解决思路', 3))
-        f.writelines(TemplateReport.html_div(dict['solution'], 'log-line'))
-        # 对应行数
-        f.writelines(TemplateReport.html_h('对应行数', 3))
-        f.writelines(TemplateReport.html_div(dict['log_line'], 'log-line'))
-        # 详细信息
-        if arg_dict['detail'] in ['True', 'ture', 'On', 'on']:
-            f.writelines(TemplateReport.html_h('详细信息', 3))
-            f.writelines(TemplateReport.html_div(dict['detail'], 'detail'))
+
+        if type == 'Information':
+            # 信息搜集
+            f.writelines(TemplateReport.html_h(dict['info'], 3))
+            f.writelines(TemplateReport.html_div(dict['content'], 'log-line'))
+            # 对应行数
+            f.writelines(TemplateReport.html_h('对应行数', 3))
+            f.writelines(TemplateReport.html_div(dict['log_line'], 'log-line'))
+            # 详细信息
+            if arg_dict['detail'] in ['True', 'ture', 'On', 'on']:
+                f.writelines(TemplateReport.html_h('详细信息', 3))
+                f.writelines(TemplateReport.html_div(dict['detail'], 'detail'))
+        else:
+            # 问题原因
+            f.writelines(TemplateReport.html_h('问题原因', 3))
+            f.writelines(TemplateReport.html_div(dict['info'], 'log-line'))
+            # 关键信息
+            f.writelines(TemplateReport.html_h('关键信息', 3))
+            f.writelines(TemplateReport.html_div(dict['keyword'], 'keyword'))
+            # 解决思路
+            f.writelines(TemplateReport.html_h('解决思路', 3))
+            f.writelines(TemplateReport.html_div(dict['solution'], 'log-line'))
+            # 对应行数
+            f.writelines(TemplateReport.html_h('对应行数', 3))
+            f.writelines(TemplateReport.html_div(dict['log_line'], 'log-line'))
+            # 详细信息
+            if arg_dict['detail'] in ['True', 'ture', 'On', 'on']:
+                f.writelines(TemplateReport.html_h('详细信息', 3))
+                f.writelines(TemplateReport.html_div(dict['detail'], 'detail'))
 
 # 提示信息部分
 class Messages(object):

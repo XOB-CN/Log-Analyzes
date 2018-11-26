@@ -84,14 +84,15 @@ def to_report(arg_dict, queue):
     base_path = os.getcwd()  # os.getcwd() --> 返回 shell 提示的当前目录
     file_path = os.path.join(base_path, (arg_dict['filename'] + '_report.html'))
     event_title = set()
-    event_types = [['CPU','CPU 部分'],
-                  ['Memory','Memory 部分'],
-                  ['Disk','Disk 部分'],
-                  ['Network','Network 部分'],
-                  ['Permission','Permission 部分'],
-                  ['Security','Security 部分'],
-                  ['EventID','EventID 部分'],
-                  ['Others','Others 部分']]
+    event_types = [['Information','Information 部分'],
+                   ['CPU','CPU 部分'],
+                   ['Memory','Memory 部分'],
+                   ['Disk','Disk 部分'],
+                   ['Network','Network 部分'],
+                   ['Permission','Permission 部分'],
+                   ['Security','Security 部分'],
+                   ['EventID','EventID 部分'],
+                   ['Others','Others 部分']]
 
     # 创建 report 文件
     with open(file_path, mode='w', encoding='utf8', newline='') as f:
