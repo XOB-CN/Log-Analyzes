@@ -61,9 +61,9 @@ To Report:
         + 输出端：mysql、csv 功能
 
 * Fortify
-    * SSC(Software Security Center)
+    * SSC（Software Security Center）
         + 输出端：report 功能
-    * WI(WebInspect)
+    * WI（WebInspect）
         + 输出端：report 功能
 * IDOL
     * query类型的日记，例如 content/query.log, agentstore/query.log, qms/query.log 等
