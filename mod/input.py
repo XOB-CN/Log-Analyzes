@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 
-import sys, time
+import sys, time, chardet
 from mod import tools
 from mod.tools import Input
 
@@ -57,11 +57,15 @@ def set_args(dict,argv,default):
     except:
         return default
 
+# 获取文件编码
+def get_encoding(filename):
+    with open(filename, 'rb') as f:
+        return chardet.detect(f.read())['encoding']
 
 # 日记发送模块，将读取到的日记内容发送到另一个进程
 def log_send(filename, queue, error_queue):
     try:
-        with open(filename,'r',encoding='utf8') as file:
+        with open(filename,'r',encoding=get_encoding(filename)) as file:
             error_queue.put(True)
             for line in file:
                 queue.put(line)
@@ -72,8 +76,5 @@ def log_send(filename, queue, error_queue):
         tools.Messages.pop_error('找不到该文件')
 
     except:
-        with open(filename,'r',encoding='utf16') as file:
-            error_queue.put(True)
-            for line in file:
-                queue.put(line)
-        queue.put(False)
+        error_queue.put(False)
+        tools.Messages.pop_error('未知错误')
