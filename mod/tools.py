@@ -203,8 +203,8 @@ class TemplateReport(Output):
             # 问题原因
             f.writelines(TemplateReport.html_h('问题原因', 3))
             f.writelines(TemplateReport.html_div(dict['info'], 'log-line'))
-            # 关键信息
-            f.writelines(TemplateReport.html_h('关键信息', 3))
+            # 匹配规则
+            f.writelines(TemplateReport.html_h('匹配规则', 3))
             f.writelines(TemplateReport.html_div(dict['keyword'], 'keyword'))
             # 解决思路
             f.writelines(TemplateReport.html_h('解决思路', 3))

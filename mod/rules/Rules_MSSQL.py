@@ -35,6 +35,14 @@ RulesList = [
                    'https://support.microsoft.com/zh-cn/help/2491214/non-yielding-scheduler-error-and-sql-server-2008-or-sql-server-2008-r2</a>'
     },
     {
+        'name': 'EventID_.*',
+        'type': 'EventID',
+        'info': '其余 EventID 信息',
+        'keyword': "Error: \d{4,6},",
+        'solution': '<a href="https://docs.microsoft.com/en-us/sql/relational-databases/errors-events/errors-and-events-reference-database-engine?view=sqlallproducts-allversions">'
+                    '请参考 Microsoft SQL Server Errors and Events Reference</a>'
+    },
+    {
         'name': 'Warn',
         'type': 'Others',
         'info': '其余 Warn 信息',
