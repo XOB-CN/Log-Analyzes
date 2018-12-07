@@ -179,7 +179,7 @@ class TemplateReport(Output):
 
         if type == 'Information':
             # 信息搜集
-            f.writelines(TemplateReport.html_h(dict['info'], 3, 'title'))
+            f.writelines(TemplateReport.html_h(dict['name'], 3, 'title'))
             f.writelines(TemplateReport.html_div(dict['content'], 'log-line'))
             # 对应行数
             f.writelines(TemplateReport.html_h('对应行数', 3))
@@ -188,24 +188,30 @@ class TemplateReport(Output):
             if arg_dict['detail'] in ['True', 'ture', 'On', 'on']:
                 f.writelines(TemplateReport.html_h('详细信息', 3))
                 f.writelines(TemplateReport.html_div(dict['detail'], 'detail'))
+                f.writelines(TemplateReport.html_div('<br>', 'log-line'))
+            else:
+                f.writelines(TemplateReport.html_div('<br>', 'log-line'))
 
         elif type == 'Others':
             # 信息搜集
-            f.writelines(TemplateReport.html_h(dict['info'], 3, 'title'))
+            f.writelines(TemplateReport.html_h(dict['name'], 3, 'title'))
             # 对应行数
             f.writelines(TemplateReport.html_h('对应行数', 3))
             f.writelines(TemplateReport.html_div(dict['log_line'], 'log-line'))
             if arg_dict['detail'] in ['True', 'ture', 'On', 'on']:
                 f.writelines(TemplateReport.html_h('详细信息', 3))
                 f.writelines(TemplateReport.html_div(dict['detail'], 'detail'))
+                f.writelines(TemplateReport.html_div('<br>', 'log-line'))
+            else:
+                f.writelines(TemplateReport.html_div('<br>', 'log-line'))
 
         else:
             # 问题原因
             f.writelines(TemplateReport.html_h('问题原因', 3))
-            f.writelines(TemplateReport.html_div(dict['info'], 'log-line'))
+            f.writelines(TemplateReport.html_div(dict['name'], 'log-line'))
             # 匹配规则
             f.writelines(TemplateReport.html_h('匹配规则', 3))
-            f.writelines(TemplateReport.html_div(dict['keyword'], 'keyword'))
+            f.writelines(TemplateReport.html_div(dict['match'], 'keyword'))
             # 解决思路
             f.writelines(TemplateReport.html_h('解决思路', 3))
             f.writelines(TemplateReport.html_div(dict['solution'], 'log-line'))
@@ -216,6 +222,9 @@ class TemplateReport(Output):
             if arg_dict['detail'] in ['True', 'ture', 'On', 'on']:
                 f.writelines(TemplateReport.html_h('详细信息', 3))
                 f.writelines(TemplateReport.html_div(dict['detail'], 'detail'))
+                f.writelines(TemplateReport.html_div('<br>', 'log-line'))
+            else:
+                f.writelines(TemplateReport.html_div('<br>', 'log-line'))
 
 # 提示信息部分
 class Messages(object):

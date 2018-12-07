@@ -35,7 +35,7 @@ def MSSQL_Report(queue1, queue2):
                 break
 
             # 常规匹配：匹配关键字
-            elif LogAnalyze(rule.get('keyword'),line).log_regex():
+            elif LogAnalyze(rule.get('match'),line).log_regex():
                 # 特殊规则：EventID 的事件
                 if rule.get('type') == 'EventID':
                     # 开启 EventID_Detail 的标记，准备记录下一行内容

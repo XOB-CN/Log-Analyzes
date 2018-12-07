@@ -2,31 +2,27 @@
 
 RulesList = [
     {
-        'name':'WI Version',
+        'name':'WebInspect 版本',
         'type':'Information',
-        'info':'WebInspect 版本',
-        'keyword':"WebInspect Sensor for EXE version",
+        'match':"WebInspect Sensor for EXE version",
         'rule':"line.split(' ', 10)[-1]"
     },
     {
-        'name':'NET Framework Version',
+        'name':'NET Framework 版本',
         'type':'Information',
-        'info':'NET Framework 版本',
-        'keyword':"Running on .NET Framework version",
+        'match':"Running on .NET Framework version",
         'rule':"line.split(' ', 9)[-1]"
     },
     {
-        'name': 'Warn',
+        'name': '其余 Warn 信息',
         'type': 'Others',
-        'info': '其余 Warn 信息',
-        'keyword': "Warn",
+        'match': "Warn",
         'rule': "line"
     },
     {
-        'name': 'Error',
+        'name': '其余 Error 信息',
         'type': 'Others',
-        'info': '其余 Error 信息',
-        'keyword': "Error",
+        'match': "Error",
         'rule': "line"
     },
 ]
