@@ -2,10 +2,28 @@
 
 RulesList = [
     {
+        'name': '数据库版本信息',
+        'type': 'Information',
+        'match':"Server      Microsoft SQL Server",
+        'rule':"line.split(' ', 3)[-1]"
+    },
+    {
+        'name': '操作系统信息',
+        'type': 'Information',
+        'match': ".*Windows NT.*Build.*",
+        'rule': "line"
+    },
+    {
         'name':'Memory Pageout',
         'type':'Memory',
         'match':"A significant part of sql server process memory has been paged out",
         'solution':"添加内存或限制SQL内存使用量"
+    },
+    {
+        'name': 'EventID 17054 - SQL Server 服务相关',
+        'type': 'EventID',
+        'match': "Error: 17054",
+        'solution': '检查服务是否能正常启动，如果不能正常启动，可能需要在这个方向上继续调查'
     },
     {
         'name': 'EventID 18056 - The client was unable to reuse a session with SPID ***',

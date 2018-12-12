@@ -14,7 +14,7 @@ RulesList = [
         'rule': "line.split('=')[-1]"
     },
     {
-        'name': 'JDBC 版本',
+        'name': 'Microsoft SQL JDBC 版本',
         'type': 'Information',
         'match': "/bin/sqljdbc",
         'rule': "re.search('sqljdbc(.*?)jar', line).group()"
