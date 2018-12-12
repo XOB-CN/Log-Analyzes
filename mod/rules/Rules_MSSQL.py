@@ -2,6 +2,18 @@
 
 RulesList = [
     {
+        'name': '数据库版本信息',
+        'type': 'Information',
+        'match':"Server      Microsoft SQL Server",
+        'rule':"line.split(' ', 3)[-1]"
+    },
+    {
+        'name': '操作系统信息',
+        'type': 'Information',
+        'match': ".*Windows NT.*Build.*",
+        'rule': "line"
+    },
+    {
         'name':'Memory Pageout',
         'type':'Memory',
         'match':"A significant part of sql server process memory has been paged out",
