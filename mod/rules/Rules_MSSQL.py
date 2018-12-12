@@ -7,6 +7,12 @@ RulesList = [
         'match':"A significant part of sql server process memory has been paged out",
         'solution':"添加内存或限制SQL内存使用量"
     },
+	{
+        'name': 'EventID 17054 - SQL Server 服务相关',
+        'type': 'EventID',
+        'match': "Error: 17054",
+        'solution': '检查服务是否能正常启动，如果不能正常启动，可能需要在这个方向上继续调查'
+    },
     {
         'name': 'EventID 18056 - The client was unable to reuse a session with SPID ***',
         'type': 'EventID',
