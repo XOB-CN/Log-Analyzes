@@ -7,7 +7,7 @@ RulesList = [
         'match':"A significant part of sql server process memory has been paged out",
         'solution':"添加内存或限制SQL内存使用量"
     },
-	{
+    {
         'name': 'EventID 17054 - SQL Server 服务相关',
         'type': 'EventID',
         'match': "Error: 17054",
