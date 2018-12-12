@@ -106,6 +106,7 @@ def to_report(arg_dict, queue):
             if data_dict == False:
                 n = False
             else:
+                tools.Messages.pop_info('正在生成分析结果，请稍后')
                 for dict in data_dict:
                     for type in event_types:
                         # type[0] 为匹配的类型，type[1] 为显示的信息 ---> 对应的变量为：event_types

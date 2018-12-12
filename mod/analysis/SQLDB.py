@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
 import re
 from mod.tools import LogAnalyze
+from mod.tools import Messages
 from mod.rules.Rules_MSSQL import RulesList
 
 def MSSQL_Report(queue1, queue2):
@@ -20,6 +21,10 @@ def MSSQL_Report(queue1, queue2):
             n = False
         else:
             log_line += 1
+
+        # 显示目前已经分析的行数
+        if log_line%10000 == 0:
+            Messages.pop_info('正在分析：第 {} 行'.format(log_line))
 
         # 进行日记匹配
         for rule in rules_list:

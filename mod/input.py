@@ -59,8 +59,11 @@ def set_args(dict,argv,default):
 
 # 获取文件编码
 def get_encoding(filename):
+    _varchar = b''
     with open(filename, 'rb') as f:
-        return chardet.detect(f.read())['encoding']
+        for i in range(100):
+            _varchar = _varchar + f.readline()
+    return chardet.detect(_varchar)['encoding']
 
 # 日记发送模块，将读取到的日记内容发送到另一个进程
 def log_send(filename, queue, error_queue):

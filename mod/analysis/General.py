@@ -2,6 +2,7 @@
 
 import re
 from mod.tools import LogAnalyze
+from mod.tools import Messages
 
 def General_Report_LogAnalyze(queue1, queue2, RuleList):
     # 初始化数据
@@ -23,6 +24,10 @@ def General_Report_LogAnalyze(queue1, queue2, RuleList):
             n = False
         else:
             log_line += 1
+
+        # 显示目前已经分析的行数
+        if log_line % 10000 == 0:
+            Messages.pop_info('正在分析：第 {} 行'.format(log_line))
 
     # 循环匹配
         for rule in rules_list:
