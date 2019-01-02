@@ -1,4 +1,2 @@
-from mod.tools import Check
-
-aa = Check.get_encoding('a')
-print(aa)
+from multiprocessing import cpu_count
+print(cpu_count())

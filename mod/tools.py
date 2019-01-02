@@ -8,7 +8,7 @@ cfg = ConfigParser()
 cfg.read(os.path.abspath(os.path.join(os.path.realpath(__file__),'..\..','config.cfg')), encoding='utf-8')
 
 class Check(object):
-    """检查类，主要判断各个参数是否正确"""
+    """检查类，主要判断各个参数是否正确以及获取各种配置参数"""
 
     @staticmethod
     def get_input_args():
@@ -54,6 +54,21 @@ class Check(object):
             return chardet.detect(_varchar)['encoding']
         else:
             return 'utf-8'
+
+    @staticmethod
+    def get_multiprocess_counts():
+        """获取可以同时进行的进程数"""
+        return cfg.getint('base','multiprocess_counts')
+
+class Input(object):
+    """输入端，读取日记内容，并进行预处理"""
+
+    @staticmethod
+    def input_single_general(filename, encoding, queue):
+        """单一文件，不需要处理排序"""
+        with open(filename, encoding=encoding) as f:
+            for i in f:
+                queue.put(i)
 
 class Message(object):
     """信息类，显示各种提示信息"""
