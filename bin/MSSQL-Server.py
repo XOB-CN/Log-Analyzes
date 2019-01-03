@@ -1,9 +1,12 @@
 # -*- coding:utf-8 -*-
 
-import os, sys
+import os, sys, time
 sys.path.append(os.path.abspath(os.path.join(os.path.realpath(__file__),'..\..')))
 
-from mod.tools import Check, Input, Message
+from mod import input
+from mod.tools import Check, Message
+from mod.analysis import general
+from mod.rules import Rule_Microsoft_SQL_Server
 from multiprocessing import Queue, Process, Pool
 
 if __name__ == '__main__':
@@ -23,7 +26,7 @@ if __name__ == '__main__':
     # 启动多进程来处理日记
     Q1 = Queue()    # Q1 存放预处理的数据
     Q2 = Queue()    # Q2 存放已经处理完毕的数据
-    p1 = Process(target=Input.input_single_general, args=(filename, encoding, Q1), name='Input-Process')
-
-    for p in range(Check.get_multiprocess_counts()-1):
-        print(p)
+    p1 = Process(target=input.single_general, args=(filename, encoding, Q1), name='Input-Process')
+    p2 = Process(target=general.general_report, args=(Q1, Rule_Microsoft_SQL_Server.RulesList, Q2))
+    p1.start()
+    p2.start()

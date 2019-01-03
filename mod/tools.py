@@ -1,5 +1,6 @@
 # -*- coding:utf-8 -*-
 
+import re
 import os, sys
 import chardet
 
@@ -37,7 +38,6 @@ class Check(object):
             return [False, '缺少必须参数，请检查后重新输入']
 
         if have_f and have_f_data and have_out and have_out_data:
-            print(have_f and have_f_data and have_out and have_out_data)
             return [True, argv_dict]
         else:
             print('缺少必须参数，请检查后重新输入')
@@ -60,15 +60,28 @@ class Check(object):
         """获取可以同时进行的进程数"""
         return cfg.getint('base','multiprocess_counts')
 
-class Input(object):
-    """输入端，读取日记内容，并进行预处理"""
+class LogAnalze(object):
+    """分析类，判断日记属于什么规则，结果返回布尔值，匹配则返回 True，不匹配则返回 False"""
 
     @staticmethod
-    def input_single_general(filename, encoding, queue):
-        """单一文件，不需要处理排序"""
-        with open(filename, encoding=encoding) as f:
-            for i in f:
-                queue.put(i)
+    def match_any(rule, logline):
+        """利用正则表达式来进行全局匹配，如果符合则返回 True, 其中 re.I 代表大小写不敏感"""
+        return re.findall(rule, logline, re.I) != []
+
+    @staticmethod
+    def match_start(rule, logline):
+        """从日记开头开始匹配，如果符合则返回 True"""
+        return logline[0:len(rule)] == rule
+
+    @staticmethod
+    def match_end(rule, logline, isInclsEnter=True):
+        """从日记结尾开始匹配，如果符合则返回 True，默认匹配带换行符的"""
+        if isInclsEnter:
+            print(logline[-len(rule) - 1:-1])
+            return logline[-len(rule) - 1:-1] == rule
+        else:
+            print(logline[-len(rule):])
+            return logline[-len(rule):] == rule
 
 class Message(object):
     """信息类，显示各种提示信息"""
