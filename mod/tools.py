@@ -87,16 +87,61 @@ class Output(object):
     """输出类，将数据输出到指定位置"""
 
     @staticmethod
-    def write_to_html(data):
-        """将数据写入到 html 文件中"""
+    def write_to_html(datas, input_args):
+        """
+        将分析后的数据写入到 html 文件中
+        需要传入2个参数：一个是整理后的数据，另一个是输入的参数，用来判断是否生成详细信息
+        """
         base_path = os.getcwd()
-        print(Template_Report.html_template('日记分析结果','日记内容'))
+        file_path = os.path.join(base_path, (input_args['-f'] + '_report.html'))
+        event_type = set()  # 记录目前录入的分类，初始状态是空
+
+        # 生成日记分析的显示数据
+        log_content=''
+        for data in datas:
+            # 如果改规则匹配到了数据，则生成显示数据
+            if data.get('log_line') != None:
+                # 生成分类
+                if data.get('type') not in event_type:
+                    event_type.add(data.get('type'))
+                    log_content = log_content + Template_Report.html_h(data.get('type'), 2)
+
+                # 生成分类是 Information 或 Others 时的显示内容
+                if data.get('type') == 'Information' or data.get('type') == 'Others':
+                    log_content = log_content + '<br>' + Template_Report.html_h(data.get('name'), 3, 'title')
+                    log_content = log_content + Template_Report.html_div(data.get('content'), 'log-line')
+                    log_content = log_content + Template_Report.html_h('对应行数', 3)
+                    log_content = log_content + Template_Report.html_div(data.get('log_line'), 'log-line')
+                    if input_args.get('-detail') in ['True', 'ture', 'On', 'on']:
+                        log_content = log_content + Template_Report.html_h('详细信息', 3)
+                        log_content = log_content + Template_Report.html_div(data.get('detail'), 'log-line')
+
+                else:
+                    log_content = log_content + '<br>' + Template_Report.html_h('问题原因', 3, 'title')
+                    log_content = log_content + Template_Report.html_div(data.get('name'), 'log-line')
+                    log_content = log_content + Template_Report.html_h('匹配规则', 3)
+                    log_content = log_content + Template_Report.html_div(data.get('match'), 'keyword')
+                    log_content = log_content + Template_Report.html_h('解决思路', 3)
+                    log_content = log_content + Template_Report.html_div(data.get('solution'), 'log-line')
+                    log_content = log_content + Template_Report.html_h('对应行数', 3)
+                    log_content = log_content + Template_Report.html_div(data.get('log_line'), 'log-line')
+                    if input_args.get('-detail') in ['True', 'ture', 'On', 'on']:
+                        log_content = log_content + Template_Report.html_h('详细信息', 3)
+                        log_content = log_content + Template_Report.html_div(data.get('detail'), 'log-line')
+
+        # 完整的 html 内容
+        html_result = Template_Report.html_template('分析结果', log_content)
+
+        # 将 html 内容写入到文件中
+        with open(file_path, mode='w', encoding='utf8', newline='') as f:
+            f.write(html_result)
 
 class Template_Report(Output):
     """Report输出模板"""
 
     @staticmethod
     def html_template(title, content):
+        """str.format()的转义字符是两个大括号：{{}}"""
         html_content = """
         <!DOCTYPE html>
         <html lang="en">
@@ -104,12 +149,12 @@ class Template_Report(Output):
             <meta charset="UTF-8">
             <title>{title}</title>
             <style>
-                h2{font-weight:bold; text-align:center;}
-                h3{font-size:18px; font-weight:bold;}
-                .title{color:blue;}
-                .log-line{font-size:12px;}
-                .keyword{font-size:12px; color:red;}
-                .detail{font-size:12px;}
+                h2{{font-weight:bold; text-align:center;}}
+                h3{{font-size:18px; font-weight:bold;}}
+                .title{{color:blue;}}
+                .log-line{{font-size:12px;}}
+                .keyword{{font-size:12px; color:red;}}
+                .detail{{font-size:12px;}}
             </style>
         </head>
         <body>
@@ -117,6 +162,16 @@ class Template_Report(Output):
         </body>
         </html>"""
         return html_content.format(title=title, content=content)
+
+    @staticmethod
+    def html_h(content, number, html_class='noting'):
+        """html 的 h 标签"""
+        return "<h"+str(number) +' class='+ html_class + ">" + content + "</h"+str(number)+">" + "\n"
+
+    @staticmethod
+    def html_div(content, html_class):
+        """html 的 div 标签"""
+        return "<div class=" + html_class + ">"+ content +"</div>" + "\n"
 
 class Message(object):
     """信息类，显示各种提示信息"""

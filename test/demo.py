@@ -1,0 +1,1 @@
+print("""123{aaa}123{{}}""".format(aaa='AA'))

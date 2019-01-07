@@ -7,7 +7,7 @@ from configparser import ConfigParser
 cfg = ConfigParser()
 cfg.read(os.path.abspath(os.path.join(os.path.realpath(__file__),'..\..','config.cfg')), encoding='utf-8')
 
-def to_report(queue, rulelist):
+def to_report(queue, rulelist, input_args):
     # 初始化参数
     n = True
     false_number = cfg.getint('base','multiprocess_counts') - 1
@@ -47,6 +47,12 @@ def to_report(queue, rulelist):
         for content in temp_data_all[temp_data_idx.index(i + 1)]:
             # 如果 log_line 不等于 None, 则代表已经获取了数据
             if content.get('log_line') != None:
+                # 整理 type 为 Information 或 Others 中的特殊记录
+                if content.get('type') == 'Information' or content.get('type') == 'Others':
+                    if rulelist[idx].get('content') == None:
+                        rulelist[idx]['content'] = content.get('content')
+                    else:
+                        rulelist[idx]['content'] = rulelist[idx]['content'] + '<br>' + content.get('content')
                 # 整理 log_line 中的记录
                 if rulelist[idx].get('log_line') == None:
                     rulelist[idx]['log_line'] = content.get('log_line')
@@ -60,4 +66,4 @@ def to_report(queue, rulelist):
             idx += 1
 
     # 将数据写入到文件中
-    Output.write_to_html(finish_data)
+    Output.write_to_html(finish_data, input_args)

@@ -35,10 +35,10 @@ def general_report(queue1, rulelist, queue2):
                         tmp_log_line = rule.get('log_line')
                         if tmp_log_line == None:
                             rule['log_line'] = log_data[0]
-                            rule['detail'] = log_data[0] + ' ' + line
+                            rule['detail'] = log_data[0] + ' ' + line.strip()
                         else:
                             rule['log_line'] = tmp_log_line + ', ' + log_data[0]
-                            rule['detail'] = rule['detail'] + "<br>" + log_data[0] + ' ' + line.strip()
+                            rule['detail'] = rule['detail'].strip() + "<br>" + log_data[0] + ' ' + line.strip()
 
             # rulelist_copy 是列表数据，内部元素皆为字典
             rulelist_copy = copy.deepcopy(tmp_rule_list)
