@@ -83,6 +83,41 @@ class LogAnalze(object):
             print(logline[-len(rule):])
             return logline[-len(rule):] == rule
 
+class Output(object):
+    """输出类，将数据输出到指定位置"""
+
+    @staticmethod
+    def write_to_html(data):
+        """将数据写入到 html 文件中"""
+        base_path = os.getcwd()
+        print(Template_Report.html_template('日记分析结果','日记内容'))
+
+class Template_Report(Output):
+    """Report输出模板"""
+
+    @staticmethod
+    def html_template(title, content):
+        html_content = """
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <title>{title}</title>
+            <style>
+                h2{font-weight:bold; text-align:center;}
+                h3{font-size:18px; font-weight:bold;}
+                .title{color:blue;}
+                .log-line{font-size:12px;}
+                .keyword{font-size:12px; color:red;}
+                .detail{font-size:12px;}
+            </style>
+        </head>
+        <body>
+        {content}
+        </body>
+        </html>"""
+        return html_content.format(title=title, content=content)
+
 class Message(object):
     """信息类，显示各种提示信息"""
 

@@ -8,8 +8,10 @@ Desktop.ini
 .idea
 *__pycache__
 
-# Software:
+# Test Log:
 *.log
+ERRORLOG
+ERRORLOG.*
 
 # Documents:
 *.doc
