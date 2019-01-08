@@ -6,6 +6,8 @@ from configparser import ConfigParser
 cfg = ConfigParser()
 cfg.read(os.path.abspath(os.path.join(os.path.realpath(__file__),'..\..','config.cfg')), encoding='utf-8')
 
+from mod.tools import Message
+
 def single_general(filename, encoding, queue1):
     """
     单一文件，不需要处理任何排序或事件;
@@ -30,6 +32,9 @@ def single_general(filename, encoding, queue1):
                 queue1.put({'id':section_id, 'logs':log_content_copy})
                 log_content.clear()
                 section_line = 0
+
+                # 显示提示信息
+                Message.info_message('输入端：已读取第{n}段日记'.format(n=section_id))
 
     # 将最后一部分日记数据放入到队列中
     section_id += 1

@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 
 import os
-from mod.tools import Output
+from mod.tools import Output, Message
 
 from configparser import ConfigParser
 cfg = ConfigParser()
@@ -30,6 +30,7 @@ def to_report(queue, rulelist, input_args):
     temp_data_idx = []
     temp_data_all = []
 
+    Message.info_message('输出端：正在汇总数据，请稍后')
     for dict in temp_data:
         for k,v in dict.items():
             m += 1
@@ -66,4 +67,5 @@ def to_report(queue, rulelist, input_args):
             idx += 1
 
     # 将数据写入到文件中
+    Message.info_message('输出端：正在生成显示结果，请稍后')
     Output.write_to_html(finish_data, input_args)

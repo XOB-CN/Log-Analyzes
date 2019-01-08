@@ -106,8 +106,8 @@ class Output(object):
                     event_type.add(data.get('type'))
                     log_content = log_content + Template_Report.html_h(data.get('type'), 2)
 
-                # 生成分类是 Information 或 Others 时的显示内容
-                if data.get('type') == 'Information' or data.get('type') == 'Others':
+                # 特殊分类：Information 需要显示的内容
+                if data.get('type') == 'Information':
                     log_content = log_content + '<br>' + Template_Report.html_h(data.get('name'), 3, 'title')
                     log_content = log_content + Template_Report.html_div(data.get('content'), 'log-line')
                     log_content = log_content + Template_Report.html_h('对应行数', 3)
@@ -116,6 +116,16 @@ class Output(object):
                         log_content = log_content + Template_Report.html_h('详细信息', 3)
                         log_content = log_content + Template_Report.html_div(data.get('detail'), 'log-line')
 
+                # 特殊分类：Others 需要显示的内容
+                elif data.get('type') == 'Others':
+                    log_content = log_content + '<br>' + Template_Report.html_h(data.get('name'), 3, 'title')
+                    log_content = log_content + Template_Report.html_h('对应行数', 3)
+                    log_content = log_content + Template_Report.html_div(data.get('log_line'), 'log-line')
+                    if input_args.get('-detail') in ['True', 'ture', 'On', 'on']:
+                        log_content = log_content + Template_Report.html_h('详细信息', 3)
+                        log_content = log_content + Template_Report.html_div(data.get('detail'), 'log-line')
+
+                # 常规分类需要显示的内容
                 else:
                     log_content = log_content + '<br>' + Template_Report.html_h('问题原因', 3, 'title')
                     log_content = log_content + Template_Report.html_div(data.get('name'), 'log-line')
@@ -133,6 +143,7 @@ class Output(object):
         html_result = Template_Report.html_template('分析结果', log_content)
 
         # 将 html 内容写入到文件中
+        Message.info_message('输出端：正在将结果写入到文件中，请稍后')
         with open(file_path, mode='w', encoding='utf8', newline='') as f:
             f.write(html_result)
 
@@ -175,6 +186,10 @@ class Template_Report(Output):
 
 class Message(object):
     """信息类，显示各种提示信息"""
+
+    @staticmethod
+    def info_message(message):
+        print(message)
 
     @staticmethod
     def error_message(message):
