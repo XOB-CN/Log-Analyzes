@@ -12,6 +12,11 @@ def general_report(queue1, rulelist, queue2):
     n = True
     tmp_rule_list = copy.deepcopy(rulelist)
 
+    # 多行匹配参数
+    rule_list_idx = 0
+    muline_match_str = False
+    muline_match_end = False
+
     # 开始读取数据
     while n:
         queue_data = queue1.get()
@@ -25,8 +30,80 @@ def general_report(queue1, rulelist, queue2):
             for log_data in logs:
                 line = log_data[1]
                 for rule in tmp_rule_list:
+
+                    # 多行匹配流程
+                    if muline_match_str:
+                        # 第一次匹配到 endmatch 中的内容
+                        if LogAnalze.match_any(tmp_rule_list[rule_list_idx].get('endmatch'), line) and muline_match_end == False:
+                            muline_match_end = True
+                            # 由于已经匹配到 endmatch 中的内容，所以数据肯定不为空
+                            # 有一种可能情况，就是输入端分段的时候没有将多行匹配的内容完整的分成一段，这样会导致无法完成多行匹配
+                            # 此时执行 except 中的代码，终止多行匹配流程，强制进入单行匹配流程
+                            try:
+                                tmp_log_line = tmp_rule_list[rule_list_idx].get('log_line')
+                                tmp_rule_list[rule_list_idx]['log_line'] = tmp_log_line + ', ' + log_data[0]
+                                tmp_rule_list[rule_list_idx]['detail'] = tmp_rule_list[rule_list_idx]['detail'].strip() + "<br>" + log_data[0] + ' ' + line.strip()
+                                break
+                            except Exception as e:
+                                # tmp_rule_list[rule_list_idx]['log_line'] = '<font color="red">' + log_data[0] + '</font>'
+                                # tmp_rule_list[rule_list_idx]['detail'] = '<font color="red">' + log_data[0] + ' ' + log_data[1] + '</font>'
+                                muline_match_str = False
+                                muline_match_end = False
+                                break
+
+                        # 多次匹配到 endmatch 中的内容
+                        elif LogAnalze.match_any(tmp_rule_list[rule_list_idx].get('endmatch'), line) and muline_match_end == True:
+                            # 直接录入数据就好，不需要做特殊处理
+                            try:
+                                tmp_log_line = tmp_rule_list[rule_list_idx].get('log_line')
+                                tmp_rule_list[rule_list_idx]['log_line'] = tmp_log_line + ', ' + log_data[0]
+                                tmp_rule_list[rule_list_idx]['detail'] = tmp_rule_list[rule_list_idx]['detail'].strip() + "<br>" + log_data[0] + ' ' + line.strip()
+                                break
+                            except Exception as e:
+                                # tmp_rule_list[rule_list_idx]['log_line'] = '<font color="red">' + log_data[0] + '</font>'
+                                # tmp_rule_list[rule_list_idx]['detail'] = '<font color="red">' + log_data[0] + ' ' + log_data[1] + '</font>'
+                                muline_match_str = False
+                                muline_match_end = False
+                                break
+
+                        # 没有匹配到 endmatch, 但是多行匹配已经开启
+                        elif LogAnalze.match_any(tmp_rule_list[rule_list_idx].get('endmatch'), line) == False and muline_match_end == False:
+                            # 直接录入数据就好，不需要做特殊处理
+                            try:
+                                tmp_log_line = tmp_rule_list[rule_list_idx].get('log_line')
+                                tmp_rule_list[rule_list_idx]['log_line'] = tmp_log_line + ', ' + log_data[0]
+                                tmp_rule_list[rule_list_idx]['detail'] = tmp_rule_list[rule_list_idx]['detail'].strip() + "<br>" + log_data[0] + ' ' + line.strip()
+                                break
+                            except Exception as e:
+                                # tmp_rule_list[rule_list_idx]['log_line'] = '<font color="red">' + log_data[0] + '</font>'
+                                # tmp_rule_list[rule_list_idx]['detail'] = '<font color="red">' + log_data[0] + ' ' + log_data[1] + '</font>'
+                                muline_match_str = False
+                                muline_match_end = False
+                                break
+
+                        # 代表上一行已经是该事件的最后一行，本行将要进入单行匹配流程
+                        elif LogAnalze.match_any(tmp_rule_list[rule_list_idx].get('endmatch'), line) == False and muline_match_end == True:
+                            muline_match_str = False
+                            muline_match_end = False
+
+                    # 开启多行匹配
+                    elif LogAnalze.match_any(rule.get('match'), line) and rule.get('endmatch') != None:
+                        muline_match_str = True
+                        rule_list_idx = tmp_rule_list.index(rule)
+
+                        # 常规规则：记录内容
+                        tmp_log_line = rule.get('log_line')
+                        if tmp_log_line == None:
+                            rule['log_line'] = log_data[0]
+                            rule['detail'] = log_data[0] + ' ' + line.strip()
+                            break
+                        else:
+                            rule['log_line'] = tmp_log_line + ', ' + log_data[0]
+                            rule['detail'] = rule['detail'].strip() + "<br>" + log_data[0] + ' ' + line.strip()
+                            break
+
                     # 单行匹配流程
-                    if LogAnalze.match_any(rule.get('match'), line):
+                    elif LogAnalze.match_any(rule.get('match'), line):
                         # 特殊规则：搜集信息
                         if rule.get('type') == 'Information' or rule.get('type') == 'Others':
                             cmd = rule.get('rule')

@@ -47,7 +47,7 @@ def to_report(queue, rulelist, input_args):
         idx = 0
         for content in temp_data_all[temp_data_idx.index(i + 1)]:
             # 如果 log_line 不等于 None, 则代表已经获取了数据
-            if content.get('log_line') != None:
+            if content.get('detail') != None:
                 # 整理 type 为 Information 或 Others 中的特殊记录
                 if content.get('type') == 'Information' or content.get('type') == 'Others':
                     if rulelist[idx].get('content') == None:
