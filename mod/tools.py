@@ -60,6 +60,32 @@ class Check(object):
         """获取可以同时进行的进程数"""
         return cfg.getint('base','multiprocess_counts')
 
+    @staticmethod
+    def get_debug_level():
+        """获取debug模式的值"""
+        return cfg.get('base','debug_level')
+
+    @staticmethod
+    def check_input_rule(rule_start, rule_end, rule_any, line):
+        """
+        分段检查规则，必须返回为 Ture 时才能进行分段，如果匹配到这些规则，则会直接返回 False
+        :param rule_start: 匹配开头的列表
+        :param rule_end: 匹配结尾的列表
+        :param rule_any: 匹配任意的列表
+        :param line: 待匹配的日记内容
+        :return: 布尔值
+        """
+        for rule in rule_start:
+            if LogAnalze.match_start(rule, line):
+                return False
+        for rule in rule_end:
+            if LogAnalze.match_end(rule, line.strip(), isInclsEnter=False):
+                return False
+        for rule in rule_any:
+            if LogAnalze.match_any(rule, line):
+                return False
+        return True
+
 class LogAnalze(object):
     """分析类，判断日记属于什么规则，结果返回布尔值，匹配则返回 True，不匹配则返回 False"""
 
@@ -183,6 +209,11 @@ class Template_Report(Output):
     def html_div(content, html_class):
         """html 的 div 标签"""
         return "<div class=" + html_class + ">"+ content +"</div>" + "\n"
+
+    @staticmethod
+    def html_font(content, color='red'):
+        """html 的 font 标签"""
+        return '<font color="{color}">{content}</font>'.format(content=content, color=color)
 
 class Message(object):
     """信息类，显示各种提示信息"""

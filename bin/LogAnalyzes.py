@@ -5,8 +5,8 @@ sys.path.append(os.path.abspath(os.path.join(os.path.realpath(__file__),'..\..')
 
 from mod import input, output
 from mod.tools import Check, Message
-from mod.analysis import sql_server
-from mod.rules import AnalysisRules_Microsoft_SQL_Server
+from mod.analysis import general
+from mod.rules import AnalysisRules_General
 from multiprocessing import Queue, Process
 
 from configparser import ConfigParser
@@ -32,14 +32,14 @@ if __name__ == '__main__':
     Q2 = Queue()    # Q2 存放已经处理完毕的数据
 
     if input_args[1].get('-out') in ['report','Report']:
-        p1 = Process(target=input.single_sql_server, args=(filename, encoding, Q1), name='Input-Process')
-        p2 = Process(target=output.to_report, args=(Q2, AnalysisRules_Microsoft_SQL_Server.RulesList, input_args[1]), name='Out-Process')    # input_args 数据格式： [True，字典数据]
+        p1 = Process(target=input.single_general, args=(filename, encoding, Q1), name='Input-Process')
+        p2 = Process(target=output.to_report, args=(Q2, AnalysisRules_General.RulesList, input_args[1]), name='Out-Process')    # input_args 数据格式： [True，字典数据]
         p1.start()
         p2.start()
 
         # 启动日记分析的多进程模块
         for number in range(cfg.getint('base','multiprocess_counts')-1):
-            number = Process(target=sql_server.sql_server_report, args=(Q1, AnalysisRules_Microsoft_SQL_Server.RulesList, Q2)).start()
+            number = Process(target=general.general_report, args=(Q1, AnalysisRules_General.RulesList, Q2)).start()
 
     else:
         Message.error_message('没有这个输出方法')

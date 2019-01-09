@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 
 import re, copy
-from mod.tools import LogAnalze, Message
+from mod.tools import Check, LogAnalze, Template_Report, Message
 
 def general_report(queue1, rulelist, queue2):
     """
@@ -45,8 +45,10 @@ def general_report(queue1, rulelist, queue2):
                                 tmp_rule_list[rule_list_idx]['detail'] = tmp_rule_list[rule_list_idx]['detail'].strip() + "<br>" + log_data[0] + ' ' + line.strip()
                                 break
                             except Exception as e:
-                                # tmp_rule_list[rule_list_idx]['log_line'] = '<font color="red">' + log_data[0] + '</font>'
-                                # tmp_rule_list[rule_list_idx]['detail'] = '<font color="red">' + log_data[0] + ' ' + log_data[1] + '</font>'
+                                if Check.get_debug_level() in ['warn', 'debug']:
+                                    tmp_rule_list[rule_list_idx]['log_line'] = Template_Report.html_font(log_data[0])
+                                    tmp_rule_list[rule_list_idx]['detail'] = Template_Report.html_font('{n} 无法判断本行内容, 请自行检查, 请尝试调整配置文件中 segment_number 的值, 或者修改输入端的分段策略<br>'.format(n=log_data[0])) + \
+                                                                             Template_Report.html_font(log_data[0]) + ' ' + Template_Report.html_font(log_data[1])
                                 muline_match_str = False
                                 muline_match_end = False
                                 break
@@ -60,8 +62,10 @@ def general_report(queue1, rulelist, queue2):
                                 tmp_rule_list[rule_list_idx]['detail'] = tmp_rule_list[rule_list_idx]['detail'].strip() + "<br>" + log_data[0] + ' ' + line.strip()
                                 break
                             except Exception as e:
-                                # tmp_rule_list[rule_list_idx]['log_line'] = '<font color="red">' + log_data[0] + '</font>'
-                                # tmp_rule_list[rule_list_idx]['detail'] = '<font color="red">' + log_data[0] + ' ' + log_data[1] + '</font>'
+                                if Check.get_debug_level() in ['warn', 'debug']:
+                                    tmp_rule_list[rule_list_idx]['log_line'] = Template_Report.html_font(log_data[0])
+                                    tmp_rule_list[rule_list_idx]['detail'] = Template_Report.html_font('{n} 无法判断本行内容, 请自行检查, 请尝试调整配置文件中 segment_number 的值, 或者修改输入端的分段策略<br>'.format(n=log_data[0])) + \
+                                                                             Template_Report.html_font(log_data[0]) + ' ' + Template_Report.html_font(log_data[1])
                                 muline_match_str = False
                                 muline_match_end = False
                                 break
@@ -75,8 +79,10 @@ def general_report(queue1, rulelist, queue2):
                                 tmp_rule_list[rule_list_idx]['detail'] = tmp_rule_list[rule_list_idx]['detail'].strip() + "<br>" + log_data[0] + ' ' + line.strip()
                                 break
                             except Exception as e:
-                                # tmp_rule_list[rule_list_idx]['log_line'] = '<font color="red">' + log_data[0] + '</font>'
-                                # tmp_rule_list[rule_list_idx]['detail'] = '<font color="red">' + log_data[0] + ' ' + log_data[1] + '</font>'
+                                if Check.get_debug_level() in ['warn', 'debug']:
+                                    tmp_rule_list[rule_list_idx]['log_line'] = Template_Report.html_font(log_data[0])
+                                    tmp_rule_list[rule_list_idx]['detail'] = Template_Report.html_font('{n} 无法判断本行内容, 请自行检查, 请尝试调整配置文件中 segment_number 的值, 或者修改输入端的分段策略<br>'.format(n=log_data[0])) + \
+                                                                             Template_Report.html_font(log_data[0]) + ' ' + Template_Report.html_font(log_data[1])
                                 muline_match_str = False
                                 muline_match_end = False
                                 break
