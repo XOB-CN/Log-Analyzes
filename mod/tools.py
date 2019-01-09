@@ -1,8 +1,9 @@
 # -*- coding:utf-8 -*-
 
 import re
-import os, sys
+import os, sys, time
 import chardet
+import functools
 
 from configparser import ConfigParser
 cfg = ConfigParser()
@@ -226,3 +227,26 @@ class Message(object):
     def error_message(message):
         print(message)
         exit()
+
+class Debug(object):
+    """调试类，显示调试信息"""
+
+    @staticmethod
+    def get_time_cost(func_name):
+        """
+        装饰器，如果debug模式开启，则显示函数运行的时间
+        :param func_name: 函数名，仅仅作为显示，类行为字符串
+        """
+        def decorator(func):
+            @functools.wraps(func)  # 处理原始函数__name__等属性
+            def wrapper(*args, **kwargs):
+                if Check.get_debug_level() == 'debug':
+                    start_time = time.time()
+                    func(*args, **kwargs)
+                    end_time = time.time()
+                    cost_time = end_time - start_time
+                    print('{func_name}耗时 {cost_time} ms'.format(func_name=func_name, cost_time=cost_time))
+                else:
+                    return func(*args, **kwargs)
+            return wrapper
+        return decorator

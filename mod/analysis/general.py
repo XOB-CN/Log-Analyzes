@@ -2,7 +2,9 @@
 
 import re, copy
 from mod.tools import Check, LogAnalze, Template_Report, Message
+from mod.tools import Debug
 
+@Debug.get_time_cost('[Debug] 分析端:')
 def general_report(queue1, rulelist, queue2):
     """
     通用的日记分析模块；
