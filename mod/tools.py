@@ -22,6 +22,9 @@ class Check(object):
         check_list = ['-f','-t','-out','-detail']
         argv_dict = {}
 
+        if len(sys.argv) == 1:
+            return [False, Message.help_info()]
+
         if len(sys.argv) %2 == 0:
             return [False, '参数个数不正确，请检查后重新输入']
 
@@ -170,7 +173,7 @@ class Output(object):
         html_result = Template_Report.html_template('分析结果', log_content)
 
         # 将 html 内容写入到文件中
-        Message.info_message('输出端：正在将结果写入到文件中，请稍后')
+        Message.info_message('[Info] 输出端：正在将结果写入到文件中，请稍后')
         with open(file_path, mode='w', encoding='utf8', newline='') as f:
             f.write(html_result)
 
@@ -224,8 +227,29 @@ class Message(object):
         print(message)
 
     @staticmethod
+    def warn_message(message):
+        print(message)
+
+    @staticmethod
     def error_message(message):
         print(message)
+        exit()
+
+    @staticmethod
+    def help_info():
+        print("\n"
+              "To MySQL:\n"
+              "-f       必须：指定要读取的文件名\n"
+              "-t       必须：指定要保存的数据表的名字\n"
+              "-d       可选：需要创建的数据库名，默认为当前时间\n"
+              "-out     必须：指定要输出的类型，此处应该设置为 mysql \n\n"
+              "To CSV:\n"
+              "-f       必须：指定要读取的文件名\n"
+              "-out     必须：指定要输出的类型，此处应该设置为 csv\n\n"
+              "To Report:\n"
+              "-f       必须：指定要读取的文件名\n"
+              "-out     必须：指定要输出的类型，此处应该设置为 report\n"
+              "-detail  可选：可以输出更详细的内容，默认不启用，当该值为 on、On、True 时生效\n")
         exit()
 
 class Debug(object):

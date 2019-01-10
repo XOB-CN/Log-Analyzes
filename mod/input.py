@@ -40,7 +40,7 @@ def single_general(filename, encoding, queue1):
                 section_line = 0
 
                 # 显示提示信息
-                Message.info_message('输入端：已读取第{n}段日记'.format(n=section_id))
+                Message.info_message('[Info] 输入端：已读取第 {n} 段日记'.format(n=section_id))
 
     # 将最后一部分日记数据放入到队列中
     section_id += 1
@@ -80,7 +80,7 @@ def single_sql_server(filename, encoding, queue1):
                 section_line = 0
 
                 # 显示提示信息
-                Message.info_message('输入端：已读取第{n}段日记'.format(n=section_id))
+                Message.info_message('[Info] 输入端：已读取第 {n} 段日记'.format(n=section_id))
 
     # 将最后一部分日记数据放入到队列中
     section_id += 1

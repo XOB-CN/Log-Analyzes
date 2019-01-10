@@ -9,10 +9,6 @@ from mod.analysis import sql_server
 from mod.rules import AnalysisRules_Microsoft_SQL_Server
 from multiprocessing import Queue, Process
 
-from configparser import ConfigParser
-cfg = ConfigParser()
-cfg.read(os.path.abspath(os.path.join(os.path.realpath(__file__),'..\..','config.cfg')), encoding='utf-8')
-
 if __name__ == '__main__':
     # 获取输入的参数
     input_args = Check.get_input_args()
@@ -38,7 +34,7 @@ if __name__ == '__main__':
         p2.start()
 
         # 启动日记分析的多进程模块
-        for number in range(cfg.getint('base','multiprocess_counts')-1):
+        for number in range(Check.get_multiprocess_counts()-1):
             number = Process(target=sql_server.sql_server_report, args=(Q1, AnalysisRules_Microsoft_SQL_Server.RulesList, Q2)).start()
 
     else:

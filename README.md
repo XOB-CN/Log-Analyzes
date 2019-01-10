@@ -32,12 +32,15 @@ To Report:
 -detail  可选：可以输出更详细的内容, 默认不启用，当该值为 on、On、True 时生效
 ```
 
+## 配置参数
+请参考 config.cfg 文件, 每部分都有注释说明
+
 ## 支持情况
 * Microsoft
     * Microsoft SQL Server
         * 输出到 Report
         ```bash
-        MSSQLServer.py -f logfile -out report [-detail on]
+        MSSQL-Server.py -f logfile -out report [-detail on]
         ```
 * 其余日记文件
     * LogAnalyzes

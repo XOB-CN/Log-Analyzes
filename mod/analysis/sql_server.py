@@ -64,7 +64,7 @@ def sql_server_report(queue1, rulelist, queue2):
             tmp_rule_list = copy.deepcopy(rulelist)
 
             # {'id':section_id, 'logs':列表数据，内部是字典}
-            Message.info_message('分析端：已分析完第{n}段日记'.format(n=id))
+            Message.info_message('[Info] 分析端：已分析完第 {n} 段日记'.format(n=id))
             queue2.put({'id':id, 'logs':rulelist_copy})
 
     queue2.put(False)
