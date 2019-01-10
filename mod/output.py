@@ -1,12 +1,13 @@
 # -*- coding:utf-8 -*-
 
 import os
-from mod.tools import Output, Message
+from mod.tools import Output, Message, Debug
 
 from configparser import ConfigParser
 cfg = ConfigParser()
 cfg.read(os.path.abspath(os.path.join(os.path.realpath(__file__),'..\..','config.cfg')), encoding='utf-8')
 
+@Debug.get_time_cost('[Debug] 输出端：')
 def to_report(queue, rulelist, input_args):
     # 初始化参数
     n = True

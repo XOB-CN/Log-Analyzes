@@ -1,8 +1,9 @@
 # -*- coding:utf-8 -*-
 
 import copy
-from mod.tools import LogAnalze, Message
+from mod.tools import LogAnalze, Message, Debug
 
+@Debug.get_time_cost('[Debug] 分析端：')
 def sql_server_report(queue1, rulelist, queue2):
     """
     通用的日记分析模块；
