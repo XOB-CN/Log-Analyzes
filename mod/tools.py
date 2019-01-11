@@ -1,13 +1,15 @@
 # -*- coding:utf-8 -*-
 
 import re
-import os, sys, time
+import os, sys, time, zipfile
 import chardet
 import functools
 
 from configparser import ConfigParser
 cfg = ConfigParser()
 cfg.read(os.path.abspath(os.path.join(os.path.realpath(__file__),'..\..','config.cfg')), encoding='utf-8')
+
+base_path = os.path.abspath(os.path.join(os.path.realpath(__file__),'..\..'))
 
 class Check(object):
     """检查类，主要判断各个参数是否正确以及获取各种配置参数"""
@@ -65,9 +67,67 @@ class Check(object):
         return cfg.getint('base','multiprocess_counts')
 
     @staticmethod
+    def get_temp_path():
+        """获取临时路径"""
+        return cfg.get('base','temp_path')
+
+    @staticmethod
     def get_debug_level():
         """获取debug模式的值"""
         return cfg.get('base','debug_level')
+
+class ZipCheck(Check):
+    """检查类，主要针对的是压缩包文件（多文件）"""
+
+    @staticmethod
+    def get_abspath_list(unzip_path, file_path_list):
+        """
+        获取文件列表的绝对路径
+        :param unzip_path: 解压文件夹的路径
+        :param file_path_list: 压缩包内部的文件列表
+        :return: 包含待分析的文件列表路径
+        """
+        abspath = []
+        for path in file_path_list:
+            abspath.append(os.path.join(unzip_path, path))
+
+        return abspath
+
+    @staticmethod
+    def check_zipfile(zip_filename, rule_list):
+        """
+        检查压缩包中是否包含需要分析的日记信息
+        :param zip_filename: 压缩包文件名
+        :param rule_list: 需要匹配的规则
+        :return: 数据类型为 list, 内容为需要分析的文件路径列表
+        """
+        if zipfile.is_zipfile(zip_filename):
+            zip_file = zipfile.ZipFile(zip_filename)
+        else:
+            Message.error_message('指定的不是压缩文件，检查后重新输入')
+
+        file_path = []
+        for file in zip_file.filelist:
+            # 判断文件大小
+            if file.file_size != 0:
+                # 将对应的日记文件加入到列表中
+                for rule in rule_list:
+                    if LogAnalze.match_any(rule, file.filename):
+                        file_path.append(file.filename)
+
+        return file_path
+
+    @staticmethod
+    def unzip(zip_filename):
+        """
+        解压压缩包，并且返回压缩包的路径
+        :param zip_filename: 压缩包所在路径
+        :return: 字符串：解压所在的路径
+        """
+        zip_file = zipfile.ZipFile(zip_filename)
+        unzip_file_path = os.path.join(base_path, Check.get_temp_path())
+        zip_file.extractall(os.path.join(base_path, Check.get_temp_path()))
+        return unzip_file_path
 
     @staticmethod
     def check_input_rule(rule_start, rule_end, rule_any, line):

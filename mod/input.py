@@ -89,3 +89,16 @@ def single_sql_server(filename, encoding, queue1):
     # 放入 False, 作为进程终止的判断条件
     for i in range(cfg.getint('base','multiprocess_counts')-1):
         queue1.put(False)
+
+def zipfile_general(filelist, queue1):
+    """
+    压缩包文件，不需要处理日记排序
+    最终生成的数据格式： {'id':'切割的分段 id', 'log_class':'日记所属分类', 'filename':'文件名', 'log_content':[[ '日记行数', '日记的每行内容' ],]}
+    :param filelist:
+    :param queue1:
+    """
+    for file in filelist:
+        encoding = Check.get_encoding(file)
+        print('文件名：{file}'.format(file=file))
+        with open(file, mode='r', encoding=encoding) as f:
+            pass
