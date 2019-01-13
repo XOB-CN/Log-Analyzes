@@ -4,8 +4,10 @@ import os, sys
 sys.path.append(os.path.abspath(os.path.join(os.path.realpath(__file__),'..\..')))
 
 from mod.tools import ZipCheck, Message
-from mod.rules import ZipRules_ConnectedBackup_Agent as CBK_Agent
-from mod.input import zipfile_general
+from mod.rules import ZipRules_ConnectedBackup_Agent as CBK_Agent, AnalysisRules_ConnectedBackup_Agent as CBK_Agent_Rule
+from mod import input, output
+from mod.analysis import connected_backup
+from multiprocessing import Queue, Process
 
 if __name__ == '__main__':
     # 获取输入的参数
@@ -29,4 +31,18 @@ if __name__ == '__main__':
     file_abspath_list= ZipCheck.get_abspath_list(unzip_path, file_path_list)
 
     # 启动多进程，开始分析日记
-    zipfile_general(file_abspath_list, 'queue')
+    Q1 = Queue()    # Q1 存放预处理的数据
+    Q2 = Queue()    # Q2 存放已经处理完毕的数据
+
+    if input_args[1].get('-out') in ['report','Report']:
+        p1 = Process(target=input.zipfile_general, args=(file_abspath_list, Q1), name='Input-Process')
+        p2 = Process(target=output.mult_to_report, args=(Q2, CBK_Agent_Rule.RulesList, input_args[1]), name='Out-Process')    # input_args 数据格式： [True，字典数据]
+        p1.start()
+        p2.start()
+
+        # 启动日记分析的多进程模块
+        for number in range(ZipCheck.get_multiprocess_counts()-1):
+            number = Process(target=connected_backup.cbk_agent_report, args=(Q1, CBK_Agent_Rule.RulesList, Q2)).start()
+
+    else:
+        Message.error_message('没有这个输出方法')

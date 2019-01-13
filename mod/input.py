@@ -6,8 +6,8 @@ from configparser import ConfigParser
 cfg = ConfigParser()
 cfg.read(os.path.abspath(os.path.join(os.path.realpath(__file__),'..\..','config.cfg')), encoding='utf-8')
 
-from mod.tools import Check, Message
-from mod.rules import InputRules_General, InputRules_Microsoft_SQL_Server
+from mod.tools import Check, Message, ZipCheck
+from mod.rules import InputRules_General, InputRules_Microsoft_SQL_Server, InputRules_ConnectedBackup_Agent
 
 def single_general(filename, encoding, queue1):
     """
@@ -97,8 +97,49 @@ def zipfile_general(filelist, queue1):
     :param filelist:
     :param queue1:
     """
-    for file in filelist:
-        encoding = Check.get_encoding(file)
-        print('文件名：{file}'.format(file=file))
-        with open(file, mode='r', encoding=encoding) as f:
-            pass
+    section_id = 0  # 记录分段的个数序号，用于记录顺序
+    section_line = 0  # 记录每段内容的行数
+    src_log_line = 0  # 记录原始日记的行数
+    log_content = []  # 存放初步整理的数据
+
+    for filepath in filelist:
+        # 初始化参数
+        encoding = Check.get_encoding(filepath)
+        filename = os.path.split(filepath)[1]
+        log_class = filename.split('.')[0]
+
+        # 注意，本部分在通用模块中暂时不存在：
+        if log_class[0:len('Agent_')] == 'Agent_':
+            log_class = 'Information'
+
+
+        with open(filepath, mode='r', encoding=encoding) as f:
+            for line in f:
+                section_line += 1
+                src_log_line += 1
+                log_content.append(['['+str(src_log_line)+']', line])
+
+                if section_line >= cfg.getint('base','segment_number') and Check.check_input_rule\
+                        (rule_start=InputRules_General.rule_start,
+                         rule_end=InputRules_General.rule_end,
+                         rule_any=InputRules_General.rule_any,
+                         line=line):
+                    section_id += 1
+                    log_content_copy = copy.deepcopy(log_content)
+                    queue1.put({'id':section_id, 'log_class':log_class, 'filename':filename, 'log_content':log_content_copy})
+                    log_content.clear()
+                    section_line = 0
+
+                    # 显示提示信息
+                    Message.info_message('[Info] 输入端：已读取第 {n} 段日记'.format(n=section_id))
+
+        # 将最后一部分日记数据放入到队列中
+        section_id += 1
+        log_content_copy = copy.deepcopy(log_content)
+        queue1.put({'id': section_id, 'log_class': log_class, 'filename': filename, 'log_content': log_content_copy})
+        log_content.clear()
+        src_log_line = 0
+
+    # 放入 False, 作为进程终止的判断条件
+    for i in range(cfg.getint('base', 'multiprocess_counts') - 1):
+        queue1.put(False)

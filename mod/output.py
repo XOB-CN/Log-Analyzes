@@ -70,3 +70,23 @@ def to_report(queue, rulelist, input_args):
     # 将数据写入到文件中
     Message.info_message('[Info] 输出端：正在生成显示结果，请稍后')
     Output.write_to_html(finish_data, input_args)
+
+def mult_to_report(queue, rulelist, input_args):
+    # 初始化参数
+    n = True
+    false_number = cfg.getint('base', 'multiprocess_counts') - 1
+    false_number_count = 0
+    temp_data = []
+
+    # 循环从 queue 中获取数据
+    while n:
+        log_data = queue.get()
+        if log_data == False:
+            false_number_count += 1
+            if false_number_count == false_number:
+                n = False
+        else:
+            temp_data.append(log_data)
+
+    print(temp_data)
+

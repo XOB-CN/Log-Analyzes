@@ -1,14 +1,14 @@
-import zipfile
-from mod.tools import LogAnalze
 
-def unzip(filename):
-    file_list = []
-    zip_file = zipfile.ZipFile(filename)
-    for name in zip_file.filelist:
-        for rule in ['backup\.log','Database\.log']:
-            if LogAnalze.match_any(rule, name.filename):
-                file_list.append(name.filename)
+for i in range(10):
+    n = 0
+    m = 0
+    for y in range(3):
+        m += 1
 
-    print(file_list)
+        if m>2:
+            n+=1
+            m=0
 
-unzip('Agent_10100-30001_01-10-2019_15-54.zip')
+    n += 1
+
+print(n)
