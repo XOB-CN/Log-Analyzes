@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
 
-RulesList = [
+# 分析模块规则匹配库
+match_rules_list = [
     {
         'name': 'Agent 版本',
         'type': 'Information',

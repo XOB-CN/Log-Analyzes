@@ -29,13 +29,13 @@ if __name__ == '__main__':
 
     if input_args[1].get('-out') in ['report','Report']:
         p1 = Process(target=input.single_sql_server, args=(filename, encoding, Q1), name='Input-Process')
-        p2 = Process(target=output.to_report, args=(Q2, AnalysisRules_Microsoft_SQL_Server.RulesList, input_args[1]), name='Out-Process')    # input_args 数据格式： [True，字典数据]
+        p2 = Process(target=output.to_report, args=(Q2, AnalysisRules_Microsoft_SQL_Server.match_rule_list, input_args[1]), name='Out-Process')    # input_args 数据格式： [True，字典数据]
         p1.start()
         p2.start()
 
         # 启动日记分析的多进程模块
         for number in range(Check.get_multiprocess_counts()-1):
-            number = Process(target=sql_server.sql_server_report, args=(Q1, AnalysisRules_Microsoft_SQL_Server.RulesList, Q2)).start()
+            number = Process(target=sql_server.sql_server_report, args=(Q1, AnalysisRules_Microsoft_SQL_Server.match_rule_list, Q2)).start()
 
     else:
         Message.error_message('没有这个输出方法')

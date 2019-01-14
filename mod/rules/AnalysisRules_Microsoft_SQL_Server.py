@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 
-RulesList = [
+match_rule_list = [
     {
         'name': '数据库版本信息',
         'type': 'Information',

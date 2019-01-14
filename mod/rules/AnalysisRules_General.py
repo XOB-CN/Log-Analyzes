@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 
-RulesList = [
+match_rule_list = [
     {
         'name': '其余 Warn 信息',
         'type': 'Others',
