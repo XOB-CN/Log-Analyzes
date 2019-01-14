@@ -36,13 +36,14 @@ if __name__ == '__main__':
 
     if input_args[1].get('-out') in ['report','Report']:
         p1 = Process(target=input.zipfile_general, args=(file_abspath_list, Q1), name='Input-Process')
-        p2 = Process(target=output.mult_to_report, args=(Q2, CBK_Agent_Rule.RulesList, input_args[1]), name='Out-Process')    # input_args 数据格式： [True，字典数据]
+        p2 = Process(target=output.mult_to_report, args=(Q2, CBK_Agent_Rule.RulesList, input_args[1], unzip_path), name='Out-Process')    # input_args 数据格式： [True，字典数据]
         p1.start()
         p2.start()
 
         # 启动日记分析的多进程模块
         for number in range(ZipCheck.get_multiprocess_counts()-1):
-            number = Process(target=connected_backup.cbk_agent_report, args=(Q1, CBK_Agent_Rule.RulesList, Q2)).start()
+            number = Process(target=connected_backup.cbk_agent_report, args=(Q1, CBK_Agent_Rule.RulesList, Q2))
+            number.start()
 
     else:
         Message.error_message('没有这个输出方法')

@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 
 import copy
-from mod.tools import LogAnalze, Message, Debug
+from mod.tools import LogAnalze, Message, Template_Report, Debug
 
 @Debug.get_time_cost('[Debug] 分析端：')
 def cbk_agent_report(queue1, rulelist, queue2):
@@ -28,13 +28,17 @@ def cbk_agent_report(queue1, rulelist, queue2):
                 for rule in tmp_rule_list:
                     # 单行匹配流程
                     if LogAnalze.match_any(rule.get('match'), line):
+                        # 特殊规则：搜集信息
+                        if rule.get('type') == 'Information' or rule.get('type') == 'Others':
+                            cmd = rule.get('rule')
+                            rule['content'] = eval(cmd).strip()
+
                         if rule.get('log_line') == None:
                             rule['log_line'] = filename + ' ' + line_id
-                            rule['content'] = line
-                            rule['log_class'] = log_class
+                            rule['detail'] = Template_Report.html_font((filename + ' ' + line_id), color='Green') +' ' + line
                         else:
                             rule['log_line'] = rule.get('log_line') + ', ' + filename + ' ' + line_id
-                            rule['content'] = rule.get('content') + '<br>' + line
+                            rule['detail'] = rule.get('detail') + '<br>' + Template_Report.html_font((filename + ' ' + line_id), color='Green') +' ' + line
 
         # rulelist_copy 是列表数据，内部元素皆为字典
         rulelist_copy = copy.deepcopy(tmp_rule_list)
