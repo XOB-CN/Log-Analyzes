@@ -130,7 +130,7 @@ def mult_to_report(queue, rulelist, input_args, unzip_path):
                 if finish_data[idx].get('log_line') == None:
                     finish_data[idx]['log_line'] = content.get('log_line')
                 else:
-                    finish_data[idx]['log_line'] = finish_data[idx]['log_line'] + ', ' + content.get('log_line')
+                    finish_data[idx]['log_line'] = finish_data[idx]['log_line'] + '<br>' + content.get('log_line')
                 # 整理 detail 中的记录
                 if finish_data[idx].get('detail') == None:
                     finish_data[idx]['detail'] = content.get('detail')

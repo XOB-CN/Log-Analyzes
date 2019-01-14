@@ -10,6 +10,6 @@ ZipAgentList = [
     'ConnectionInfo\.xml',
 
     # txt 部分
-    #'SystemInfo\.txt',
+    'SystemInfo\.txt',
     'Agent_\d{5}-\d{5}_\d+-\d+-\d{4}_\d+-\d+',
 ]

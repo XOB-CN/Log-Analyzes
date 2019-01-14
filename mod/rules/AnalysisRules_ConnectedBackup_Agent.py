@@ -19,4 +19,16 @@ RulesList = [
         'match': "Database path does not exist :",
         'solution': '没有本地数据库，一般在软件首次安装的时候会遇到这个错误，一般不用理会'
     },
+    {
+        'name': '其余 Warn 信息',
+        'type': 'Others',
+        'match': "Warn",
+        'rule': "line"
+    },
+    {
+        'name': '其余 Error 信息',
+        'type': 'Others',
+        'match': "Error",
+        'rule': "line"
+    },
 ]
