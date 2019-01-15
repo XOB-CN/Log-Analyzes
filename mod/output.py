@@ -1,18 +1,13 @@
 # -*- coding:utf-8 -*-
 
-import os
 import shutil   # 用于删除非空文件夹
-from mod.tools import Output, Message, Debug
-
-from configparser import ConfigParser
-cfg = ConfigParser()
-cfg.read(os.path.abspath(os.path.join(os.path.realpath(__file__),'..\..','config.cfg')), encoding='utf-8')
+from mod.tools import Output, Message, Debug, Check
 
 @Debug.get_time_cost('[Debug] 输出端：')
 def to_report(queue, rulelist, input_args):
     # 初始化参数
     n = True
-    false_number = cfg.getint('base','multiprocess_counts') - 1
+    false_number = Check.get_multiprocess_counts() - 1
     false_number_count = 0
     temp_data = []
 
@@ -82,7 +77,7 @@ def mult_to_report(queue, rulelist, input_args, unzip_path):
     """
     # 初始化参数
     n = True
-    false_number = cfg.getint('base', 'multiprocess_counts') - 1
+    false_number = Check.get_multiprocess_counts() - 1
     false_number_count = 0
     temp_data = []
 
@@ -148,4 +143,4 @@ def mult_to_report(queue, rulelist, input_args, unzip_path):
 
     # 清空临时目录中的文件
     shutil.rmtree(unzip_path)
-    Message.info_message('[Info] 输出端：临时目录已删除')
+    Message.info_message('[Info] 输出端：临时目录已删除，分析完成')

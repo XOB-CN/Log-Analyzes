@@ -42,7 +42,13 @@ To Report:
         ```bash
         MSSQL-Server.py -f logfile -out report [-detail on]
         ```
-* 其余日记文件
+* Microfocus
+    * Connected Backup
+        * 输出到 Report
+        ```bash
+        CBK-ZipAgent.py -f zipfile -out report [-detail on]
+        ```
+* 通用模板
     * LogAnalyzes
         * 输出到 Report
         ```bash

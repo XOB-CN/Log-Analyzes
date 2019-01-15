@@ -1,11 +1,6 @@
 # -*- coding:utf-8 -*-
 
 import os, copy
-
-from configparser import ConfigParser
-cfg = ConfigParser()
-cfg.read(os.path.abspath(os.path.join(os.path.realpath(__file__),'..\..','config.cfg')), encoding='utf-8')
-
 from mod.tools import Check, Message
 from mod.rules import InputRules_General, InputRules_Microsoft_SQL_Server
 from mod.rules import InputRules_ConnectedBackup_Agent as Input_CBK_Agent
@@ -29,7 +24,7 @@ def single_general(filename, encoding, queue1):
 
             # 由于传递的是列表，所以此处需要使用深拷贝功能才行
             # 如果 check_input_rule 匹配到改行，则不能进行分割日记，因为此时是多行匹配的开始（即第一行）
-            if section_line >= cfg.getint('base', 'segment_number') and Check.check_input_rule \
+            if section_line >= Check.get_segment_number() and Check.check_input_rule \
                         (rule_start=InputRules_General.match_start,
                          rule_end=InputRules_General.match_end,
                          rule_any=InputRules_General.match_any,
@@ -48,7 +43,7 @@ def single_general(filename, encoding, queue1):
     queue1.put({'id': section_id, 'logs': log_content})
 
     # 放入 False, 作为进程终止的判断条件
-    for i in range(cfg.getint('base','multiprocess_counts')-1):
+    for i in range(Check.get_multiprocess_counts()-1):
         queue1.put(False)
 
 def single_sql_server(filename, encoding, queue1):
@@ -69,7 +64,7 @@ def single_sql_server(filename, encoding, queue1):
             log_content.append(['['+str(src_log_line)+']', line])
 
             # 如果 check_input_rule 匹配到改行，则不能进行分割日记，因为此时是多行匹配的开始（即第一行）
-            if section_line >= cfg.getint('base','segment_number') and Check.check_input_rule\
+            if section_line >= Check.get_segment_number() and Check.check_input_rule\
                         (rule_start=InputRules_Microsoft_SQL_Server.match_start,
                          rule_end=InputRules_Microsoft_SQL_Server.match_end,
                          rule_any=InputRules_Microsoft_SQL_Server.match_any,
@@ -88,7 +83,7 @@ def single_sql_server(filename, encoding, queue1):
     queue1.put({'id': section_id, 'logs': log_content})
 
     # 放入 False, 作为进程终止的判断条件
-    for i in range(cfg.getint('base','multiprocess_counts')-1):
+    for i in range(Check.get_multiprocess_counts()-1):
         queue1.put(False)
 
 def zipfile_general(filelist, queue1):
@@ -115,7 +110,7 @@ def zipfile_general(filelist, queue1):
                 src_log_line += 1
                 log_content.append(['['+str(src_log_line)+']', line])
 
-                if section_line >= cfg.getint('base','segment_number') and Check.check_input_rule\
+                if section_line >= Check.get_segment_number() and Check.check_input_rule\
                         (rule_start=InputRules_General.match_start,
                          rule_end=InputRules_General.match_end,
                          rule_any=InputRules_General.match_any,
@@ -137,7 +132,7 @@ def zipfile_general(filelist, queue1):
         src_log_line = 0
 
     # 放入 False, 作为进程终止的判断条件
-    for i in range(cfg.getint('base', 'multiprocess_counts') - 1):
+    for i in range(Check.get_multiprocess_counts() - 1):
         queue1.put(False)
 
 def zipfile_cbk_agent(filelist, queue1):
@@ -169,7 +164,7 @@ def zipfile_cbk_agent(filelist, queue1):
                 src_log_line += 1
                 log_content.append(['['+str(src_log_line)+']', line])
 
-                if section_line >= cfg.getint('base','segment_number') and Check.check_input_rule\
+                if section_line >= Check.get_segment_number() and Check.check_input_rule\
                         (rule_start=Input_CBK_Agent.match_start,
                          rule_end=Input_CBK_Agent.match_end,
                          rule_any=Input_CBK_Agent.match_any,
@@ -191,5 +186,5 @@ def zipfile_cbk_agent(filelist, queue1):
         src_log_line = 0
 
     # 放入 False, 作为进程终止的判断条件
-    for i in range(cfg.getint('base', 'multiprocess_counts') - 1):
+    for i in range(Check.get_multiprocess_counts() - 1):
         queue1.put(False)

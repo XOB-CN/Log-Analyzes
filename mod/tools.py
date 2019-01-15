@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 
-import re
-import os, sys, time, zipfile
+import os, sys, time, re
+import zipfile
 import chardet
 import functools
 
@@ -10,6 +10,30 @@ cfg = ConfigParser()
 cfg.read(os.path.abspath(os.path.join(os.path.realpath(__file__),'..\..','config.cfg')), encoding='utf-8')
 
 base_path = os.path.abspath(os.path.join(os.path.realpath(__file__),'..\..'))
+
+class Debug(object):
+    """调试类，显示调试信息"""
+
+    @staticmethod
+    def get_time_cost(func_name):
+        """
+        装饰器，如果debug模式开启，则显示函数运行的时间
+        :param func_name: 函数名，仅仅作为显示，类行为字符串
+        """
+        def decorator(func):
+            @functools.wraps(func)  # 处理原始函数__name__等属性
+            def wrapper(*args, **kwargs):
+                if Check.get_debug_level() == 'debug':
+                    start_time = time.time()
+                    value =  func(*args, **kwargs)
+                    end_time = time.time()
+                    cost_time = end_time - start_time
+                    print('{func_name}耗时 {cost_time} ms'.format(func_name=func_name, cost_time=cost_time))
+                    return value
+                else:
+                    return func(*args, **kwargs)
+            return wrapper
+        return decorator
 
 class Check(object):
     """检查类，主要判断各个参数是否正确以及获取各种配置参数"""
@@ -77,6 +101,11 @@ class Check(object):
         return cfg.get('base','debug_level')
 
     @staticmethod
+    def get_segment_number():
+        """获取日记分段的行数"""
+        return cfg.getint('base', 'segment_number')
+
+    @staticmethod
     def check_input_rule(rule_start, rule_end, rule_any, line):
         """
         分段检查规则，必须返回为 Ture 时才能进行分段，如果匹配到这些规则，则会直接返回 False
@@ -139,6 +168,7 @@ class ZipCheck(Check):
         return file_path
 
     @staticmethod
+    @Debug.get_time_cost('[Debug] 解压完成：')
     def unzip(zip_filename):
         """
         解压压缩包，并且返回压缩包的路径
@@ -311,26 +341,3 @@ class Message(object):
               "-out     必须：指定要输出的类型，此处应该设置为 report\n"
               "-detail  可选：可以输出更详细的内容，默认不启用，当该值为 on、On、True 时生效\n")
         exit()
-
-class Debug(object):
-    """调试类，显示调试信息"""
-
-    @staticmethod
-    def get_time_cost(func_name):
-        """
-        装饰器，如果debug模式开启，则显示函数运行的时间
-        :param func_name: 函数名，仅仅作为显示，类行为字符串
-        """
-        def decorator(func):
-            @functools.wraps(func)  # 处理原始函数__name__等属性
-            def wrapper(*args, **kwargs):
-                if Check.get_debug_level() == 'debug':
-                    start_time = time.time()
-                    func(*args, **kwargs)
-                    end_time = time.time()
-                    cost_time = end_time - start_time
-                    print('{func_name}耗时 {cost_time} ms'.format(func_name=func_name, cost_time=cost_time))
-                else:
-                    return func(*args, **kwargs)
-            return wrapper
-        return decorator
