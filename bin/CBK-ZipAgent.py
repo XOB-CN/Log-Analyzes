@@ -38,7 +38,7 @@ if __name__ == '__main__':
 
     if input_args[1].get('-out') in ['report','Report']:
         p1 = Process(target=input.zipfile_cbk_agent, args=(file_abspath_list, Q1), name='Input-Process')
-        p2 = Process(target=output.mult_to_report, args=(Q2, Analysis_CBK_Agent.match_rules_list, input_args[1], unzip_path), name='Out-Process')    # input_args 数据格式： [True，字典数据]
+        p2 = Process(target=output.to_report, args=(Q2, Analysis_CBK_Agent.match_rules_list, input_args[1], unzip_path), name='Out-Process')    # input_args 数据格式： [True，字典数据]
         p1.start()
         p2.start()
 

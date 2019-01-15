@@ -10,6 +10,7 @@ def cbk_agent_report(queue1, rulelist, queue2, blk_rulelist):
     :param queue1: input 端放入的数据
     :param rulelist: 匹配列表
     :param queue2: 需要将处理完成的数据放入到消息队列中
+    :param blk_rulelist: 黑名单列表, 匹配到的内容直接不匹配
     """
     n = True
     tmp_rule_list = copy.deepcopy(rulelist)
@@ -25,7 +26,6 @@ def cbk_agent_report(queue1, rulelist, queue2, blk_rulelist):
             n = False
         else:
             id = queue_data.get('id')                       # 分段ID
-            log_class = queue_data.get('log_class')         # 日记的分类
             filename = queue_data.get('filename')           # 日记的文件名
             log_content = queue_data.get('log_content')     # 日记的内容，包括行数和内容
 
@@ -33,6 +33,10 @@ def cbk_agent_report(queue1, rulelist, queue2, blk_rulelist):
                 # 初始化变量
                 log_index = filename + ' ' + line_id
                 black_rule = True
+
+                # 替换特殊字符 (用于能正确显示 html 内容)
+                if '<' in line or '>' in line:
+                    line = line.replace('<','&lt;').replace('>','&gt;')
 
                 # 黑名单规则
                 for blk_rule in blk_rulelist:

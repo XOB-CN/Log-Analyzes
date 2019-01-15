@@ -230,7 +230,7 @@ class Output(object):
                 if data.get('type') == 'Information':
                     log_content = log_content + '<br>' + Template_Report.html_h(data.get('name'), 3, 'title')
                     log_content = log_content + Template_Report.html_div(data.get('content'), 'log-line')
-                    log_content = log_content + Template_Report.html_h('对应行数', 3)
+                    log_content = log_content + Template_Report.html_h('所在位置', 3)
                     log_content = log_content + Template_Report.html_div(data.get('log_line'), 'log-line')
                     if input_args.get('-detail') in ['True', 'ture', 'On', 'on']:
                         log_content = log_content + Template_Report.html_h('详细信息', 3)
@@ -239,7 +239,7 @@ class Output(object):
                 # 特殊分类：Others 需要显示的内容
                 elif data.get('type') == 'Others':
                     log_content = log_content + '<br>' + Template_Report.html_h(data.get('name'), 3, 'title')
-                    log_content = log_content + Template_Report.html_h('对应行数', 3)
+                    log_content = log_content + Template_Report.html_h('所在位置', 3)
                     log_content = log_content + Template_Report.html_div(data.get('log_line'), 'log-line')
                     if input_args.get('-detail') in ['True', 'ture', 'On', 'on']:
                         log_content = log_content + Template_Report.html_h('详细信息', 3)
@@ -253,7 +253,7 @@ class Output(object):
                     log_content = log_content + Template_Report.html_div(data.get('match'), 'keyword')
                     log_content = log_content + Template_Report.html_h('解决思路', 3)
                     log_content = log_content + Template_Report.html_div(data.get('solution'), 'log-line')
-                    log_content = log_content + Template_Report.html_h('对应行数', 3)
+                    log_content = log_content + Template_Report.html_h('所在位置', 3)
                     log_content = log_content + Template_Report.html_div(data.get('log_line'), 'log-line')
                     if input_args.get('-detail') in ['True', 'ture', 'On', 'on']:
                         log_content = log_content + Template_Report.html_h('详细信息', 3)

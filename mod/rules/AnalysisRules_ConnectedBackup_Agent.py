@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
 
 # 分析模块规则匹配库
+# 注意：如果想要匹配 < 或 >, 则匹配的规则需要替换为 &lt; 或 &gt;
 match_rules_list = [
     {
         'name': 'Agent 版本',
@@ -17,8 +18,8 @@ match_rules_list = [
     {
         'name': 'Agent 连接信息',
         'type': 'Information',
-        'match': "<Host>.*</Host>",
-        'rule': "line.split('[')[2][:-11]"
+        'match': "&lt;Host&gt;&lt;!\[.*\]&gt;&lt;/Host&gt;",
+        'rule': "line.split('[')[-1].split(']')[0]"
     },
     {
         'name': '无法加载配置文件',
@@ -31,7 +32,7 @@ match_rules_list = [
         'type': 'Network',
         'match': "Bouncing due to NetworkException at Line",
         'endmatch':'Error Code',
-        'solution': '通常不会是网络问题，请优先考虑 AgentService 是否启动正常，之后考虑使用 dsping / dsping80 来检查到 DataCenter 是否能正常通信，如果不正常，请检查证书相关，或者连接相关的配置信息'
+        'solution': '通常不会是网络问题，请优先考虑 AgentService 是否启动正常，之后考虑使用 dsping 或 dsping80 来检查到 DataCenter 是否能正常通信，如果不正常，请检查证书相关，或者连接相关的配置信息'
     },
     {
         'name': '没有本地数据库',
