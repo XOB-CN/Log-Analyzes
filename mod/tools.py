@@ -106,22 +106,22 @@ class Check(object):
         return cfg.getint('base', 'segment_number')
 
     @staticmethod
-    def check_input_rule(rule_start, rule_end, rule_any, line):
+    def check_input_rule(match_start, match_end, match_any, line):
         """
         分段检查规则，必须返回为 Ture 时才能进行分段，如果匹配到这些规则，则会直接返回 False
-        :param rule_start: 匹配开头的列表
-        :param rule_end: 匹配结尾的列表
-        :param rule_any: 匹配任意的列表
+        :param match_start: 匹配开头的列表
+        :param match_end: 匹配结尾的列表
+        :param match_any: 匹配任意的列表
         :param line: 待匹配的日记内容
         :return: 布尔值
         """
-        for rule in rule_start:
+        for rule in match_start:
             if LogAnalze.match_start(rule, line):
                 return False
-        for rule in rule_end:
+        for rule in match_end:
             if LogAnalze.match_end(rule, line.strip(), isInclsEnter=False):
                 return False
-        for rule in rule_any:
+        for rule in match_any:
             if LogAnalze.match_any(rule, line):
                 return False
         return True

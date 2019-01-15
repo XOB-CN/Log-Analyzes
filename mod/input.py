@@ -25,9 +25,9 @@ def single_general(filename, encoding, queue1):
             # 由于传递的是列表，所以此处需要使用深拷贝功能才行
             # 如果 check_input_rule 匹配到改行，则不能进行分割日记，因为此时是多行匹配的开始（即第一行）
             if section_line >= Check.get_segment_number() and Check.check_input_rule \
-                        (rule_start=InputRules_General.match_start,
-                         rule_end=InputRules_General.match_end,
-                         rule_any=InputRules_General.match_any,
+                        (match_start=InputRules_General.match_start,
+                         match_end=InputRules_General.match_end,
+                         match_any=InputRules_General.match_any,
                          line=line):
                 section_id += 1
                 log_content_copy = copy.deepcopy(log_content)
@@ -65,9 +65,9 @@ def single_sql_server(filename, encoding, queue1):
 
             # 如果 check_input_rule 匹配到改行，则不能进行分割日记，因为此时是多行匹配的开始（即第一行）
             if section_line >= Check.get_segment_number() and Check.check_input_rule\
-                        (rule_start=InputRules_Microsoft_SQL_Server.match_start,
-                         rule_end=InputRules_Microsoft_SQL_Server.match_end,
-                         rule_any=InputRules_Microsoft_SQL_Server.match_any,
+                        (match_start=InputRules_Microsoft_SQL_Server.match_start,
+                         match_end=InputRules_Microsoft_SQL_Server.match_end,
+                         match_any=InputRules_Microsoft_SQL_Server.match_any,
                          line=line):
                 section_id += 1
                 log_content_copy = copy.deepcopy(log_content)
@@ -111,9 +111,9 @@ def zipfile_general(filelist, queue1):
                 log_content.append(['['+str(src_log_line)+']', line])
 
                 if section_line >= Check.get_segment_number() and Check.check_input_rule\
-                        (rule_start=InputRules_General.match_start,
-                         rule_end=InputRules_General.match_end,
-                         rule_any=InputRules_General.match_any,
+                        (match_start=InputRules_General.match_start,
+                         match_end=InputRules_General.match_end,
+                         match_any=InputRules_General.match_any,
                          line=line):
                     section_id += 1
                     log_content_copy = copy.deepcopy(log_content)
@@ -165,9 +165,9 @@ def zipfile_cbk_agent(filelist, queue1):
                 log_content.append(['['+str(src_log_line)+']', line])
 
                 if section_line >= Check.get_segment_number() and Check.check_input_rule\
-                        (rule_start=Input_CBK_Agent.match_start,
-                         rule_end=Input_CBK_Agent.match_end,
-                         rule_any=Input_CBK_Agent.match_any,
+                        (match_start=Input_CBK_Agent.match_start,
+                         match_end=Input_CBK_Agent.match_end,
+                         match_any=Input_CBK_Agent.match_any,
                          line=line):
                     section_id += 1
                     log_content_copy = copy.deepcopy(log_content)
