@@ -51,12 +51,12 @@ def cbk_agent_report(queue1, rulelist, queue2, blk_rulelist):
                                 # 此时执行 except 中的代码，终止多行匹配流程，强制进入单行匹配流程
                                 try:
                                     tmp_log_line = tmp_rule_list[rule_list_idx].get('log_line')
-                                    tmp_rule_list[rule_list_idx]['log_line'] = tmp_log_line + '<br>' + log_index
+                                    tmp_rule_list[rule_list_idx]['log_line'] = tmp_log_line + ', ' + line_id
                                     tmp_rule_list[rule_list_idx]['detail'] = tmp_rule_list[rule_list_idx]['detail'].strip() + "<br>" + log_index + ' ' + line.strip()
                                     break
                                 except Exception as e:
                                     if Check.get_debug_level() in ['warn', 'debug']:
-                                        tmp_rule_list[rule_list_idx]['log_line'] = Template_Report.html_font(log_index)
+                                        tmp_rule_list[rule_list_idx]['log_line'] = Template_Report.html_font(line_id)
                                         tmp_rule_list[rule_list_idx]['detail'] = Template_Report.html_font('{n} 无法判断本行内容, 请自行检查, 请尝试调整配置文件中 segment_number 的值, 或者修改输入端的分段策略<br>'.format(n=log_index)) + \
                                                                                  Template_Report.html_font(log_index) + ' ' + Template_Report.html_font(line.strip())
                                     muline_match_str = False
@@ -67,12 +67,12 @@ def cbk_agent_report(queue1, rulelist, queue2, blk_rulelist):
                             elif LogAnalze.match_any(tmp_rule_list[rule_list_idx].get('endmatch'), line) and muline_match_end == True:
                                 try:
                                     tmp_log_line = tmp_rule_list[rule_list_idx].get('log_line')
-                                    tmp_rule_list[rule_list_idx]['log_line'] = tmp_log_line + '<br>' + log_index
+                                    tmp_rule_list[rule_list_idx]['log_line'] = tmp_log_line + ', ' + line_id
                                     tmp_rule_list[rule_list_idx]['detail'] = tmp_rule_list[rule_list_idx]['detail'].strip() + "<br>" + log_index + ' ' + line.strip()
                                     break
                                 except Exception as e:
                                     if Check.get_debug_level() in ['warn', 'debug']:
-                                        tmp_rule_list[rule_list_idx]['log_line'] = Template_Report.html_font(log_index)
+                                        tmp_rule_list[rule_list_idx]['log_line'] = Template_Report.html_font(line_id)
                                         tmp_rule_list[rule_list_idx]['detail'] = Template_Report.html_font('{n} 无法判断本行内容, 请自行检查, 请尝试调整配置文件中 segment_number 的值, 或者修改输入端的分段策略<br>'.format(n=log_index)) + \
                                                                                  Template_Report.html_font(log_index) + ' ' + Template_Report.html_font(line.strip())
                                     muline_match_str = False
@@ -83,12 +83,12 @@ def cbk_agent_report(queue1, rulelist, queue2, blk_rulelist):
                             elif LogAnalze.match_any(tmp_rule_list[rule_list_idx].get('endmatch'), line) == False and muline_match_end == False:
                                 try:
                                     tmp_log_line = tmp_rule_list[rule_list_idx].get('log_line')
-                                    tmp_rule_list[rule_list_idx]['log_line'] = tmp_log_line + '<br>' + log_index
+                                    tmp_rule_list[rule_list_idx]['log_line'] = tmp_log_line + ', ' + line_id
                                     tmp_rule_list[rule_list_idx]['detail'] = tmp_rule_list[rule_list_idx]['detail'].strip() + "<br>" + log_index + ' ' + line.strip()
                                     break
                                 except Exception as e:
                                     if Check.get_debug_level() in ['warn', 'debug']:
-                                        tmp_rule_list[rule_list_idx]['log_line'] = Template_Report.html_font(log_index)
+                                        tmp_rule_list[rule_list_idx]['log_line'] = Template_Report.html_font(line_id)
                                         tmp_rule_list[rule_list_idx]['detail'] = Template_Report.html_font('{n} 无法判断本行内容, 请自行检查, 请尝试调整配置文件中 segment_number 的值, 或者修改输入端的分段策略<br>'.format(n=log_index)) + \
                                                                                  Template_Report.html_font(log_index) + ' ' + Template_Report.html_font(line.strip())
                                     muline_match_str = False
@@ -108,13 +108,13 @@ def cbk_agent_report(queue1, rulelist, queue2, blk_rulelist):
                             # 常规规则：记录内容
                             tmp_log_line = rule.get('log_line')
                             if tmp_log_line == None:
-                                rule['log_line'] = log_index
+                                rule['log_line'] = Template_Report.html_font(filename, color='Green') + '<br>' + line_id
                                 rule['detail'] = Template_Report.html_font(log_index, color='Green') + ' ' + line.strip()
-                                break
+
                             else:
-                                rule['log_line'] = tmp_log_line + '<br>' + log_index
+                                rule['log_line'] = tmp_log_line + ', ' + line_id
                                 rule['detail'] = rule['detail'].strip() + "<br>" + Template_Report.html_font(log_index, color='Green') + ' ' + line.strip()
-                                break
+                            break
 
                         # 单行匹配流程
                         elif LogAnalze.match_any(rule.get('match'), line):
@@ -124,12 +124,11 @@ def cbk_agent_report(queue1, rulelist, queue2, blk_rulelist):
                                 rule['content'] = eval(cmd).strip()
 
                             if rule.get('log_line') == None:
-                                rule['log_line'] = log_index
-                                rule['detail'] = Template_Report.html_font(log_index, color='Green') +' ' + line
-
+                                rule['log_line'] = Template_Report.html_font(filename, color='Green') + '<br>' + line_id
+                                rule['detail'] = Template_Report.html_font(log_index, color='Green') + ' ' + line
                             else:
-                                rule['log_line'] = rule.get('log_line') + '<br>' + filename + ' ' + line_id
-                                rule['detail'] = rule.get('detail') + '<br>' + Template_Report.html_font(log_index, color='Green') +' ' + line
+                                rule['log_line'] = rule.get('log_line') + ', ' + line_id
+                                rule['detail'] = rule.get('detail') + '<br>' + Template_Report.html_font(log_index, color='Green') + ' ' + line
                             # break 的作用是如果匹配到了相应的规则，则不再进行匹配，防止重复匹配的问题
                             break
 
