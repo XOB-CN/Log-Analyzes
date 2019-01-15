@@ -125,6 +125,9 @@ def general_report(queue1, rulelist, queue2):
                             rule['log_line'] = tmp_log_line + ', ' + log_data[0]
                             rule['detail'] = rule['detail'].strip() + "<br>" + log_data[0] + ' ' + line.strip()
 
+                        # break 的作用是如果匹配到了相应的规则，则不再进行匹配，防止重复匹配的问题
+                        break
+
             # rulelist_copy 是列表数据，内部元素皆为字典
             rulelist_copy = copy.deepcopy(tmp_rule_list)
             tmp_rule_list = copy.deepcopy(rulelist)

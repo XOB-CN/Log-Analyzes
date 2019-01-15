@@ -44,7 +44,7 @@ if __name__ == '__main__':
 
         # 启动日记分析的多进程模块
         for number in range(ZipCheck.get_multiprocess_counts()-1):
-            number = Process(target=connected_backup.cbk_agent_report, args=(Q1, Analysis_CBK_Agent.match_rules_list, Q2))
+            number = Process(target=connected_backup.cbk_agent_report, args=(Q1, Analysis_CBK_Agent.match_rules_list, Q2, Input_CBK_Agent.black_rule_list))
             number.start()
 
     else:

@@ -26,3 +26,15 @@ ZipAgent_list = [
     'SystemInfo\.txt',
     'Agent_\d{5}-\d{5}_\d+-\d+-\d{4}_\d+-\d+',
 ]
+
+# 如果匹配到，直接跳过后续匹配内容
+black_rule_list = [
+    # Backup.log
+    '\[WARN \]\[Agent.Backup.Processors.MbLimitsBackupFileProcessor\]\[.*\] -',
+
+    # Database.log
+    'Attempt .* failed; retrying in \d.\d+ second',
+
+    # Service.log
+    'EMO not licensed. Skipping',
+]
