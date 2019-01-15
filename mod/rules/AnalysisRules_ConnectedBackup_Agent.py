@@ -15,10 +15,23 @@ match_rules_list = [
         'rule': "line"
     },
     {
+        'name': 'Agent 连接信息',
+        'type': 'Information',
+        'match': "<Host>.*</Host>",
+        'rule': "line.split('[')[2][:-11]"
+    },
+    {
         'name': '无法加载配置文件',
         'type': 'Service',
         'match': "failed to load external entity",
         'solution': '考虑程序本身问题，建议尝试重新安装 Agent'
+    },
+    {
+        'name': '无法连接到 DataCenter',
+        'type': 'Network',
+        'match': "Bouncing due to NetworkException at Line",
+        'endmatch':'Error Code',
+        'solution': '通常不会是网络问题，请优先考虑 AgentService 是否启动正常，之后考虑使用 dsping / dsping80 来检查到 DataCenter 是否能正常通信，如果不正常，请检查证书相关，或者连接相关的配置信息'
     },
     {
         'name': '没有本地数据库',
