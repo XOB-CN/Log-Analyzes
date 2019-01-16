@@ -22,6 +22,20 @@ match_rules_list = [
         'rule': "line.split('[')[-1].split(']')[0]"
     },
     {
+        'name': 'AgentGUI 出现未处理的异常',
+        'type': 'AgentGUI',
+        'match': "ERROR 1 Connected.Agent.UI.Source.ApplicationContext - Unhandled exception",
+        'endmatch':'(Object source, Delegate callback, Object args, Int32 numArgs, Delegate catchHandler)',
+        'solution': '通常不是最终原因，建议先查看 Service.log 中的情况'
+    },
+    {
+        'name': 'AgentGUI 无法连接 AgentService',
+        'type': 'AgentGUI',
+        'match': "WebException: The agent service is down or connection refused.",
+        'endmatch': 'Connected\.Agent\.UI\.Source\.SOAP\.AgentServiceConnection\..*(Object sender, DoWorkEventArgs args)',
+        'solution': '请检查 Service.log 中的内容'
+    },
+    {
         'name': '无法加载配置文件',
         'type': 'Service',
         'match': "failed to load external entity",
