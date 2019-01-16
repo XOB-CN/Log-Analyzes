@@ -14,9 +14,5 @@ Desktop.ini
 ERRORLOG
 ERRORLOG.*
 
-# Documents:
-*.doc
-*.docx
-
 # Report Files
 *_report.html

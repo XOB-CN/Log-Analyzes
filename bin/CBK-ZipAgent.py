@@ -27,6 +27,9 @@ if __name__ == '__main__':
 
     # 获取需要分析的文件列表
     file_path_list = ZipCheck.check_zipfile(filename, Input_CBK_Agent.ZipAgent_list)
+    if file_path_list == []:
+        Message.error_message('没有需要分析的文件，请注意只接受标准的 ZipAgent 压缩包')
+
     # 解压压缩包, 获取解压路径
     unzip_path = ZipCheck.unzip(filename)
     # 获取需要分析文件列表的绝对路径
@@ -38,7 +41,7 @@ if __name__ == '__main__':
 
     if input_args[1].get('-out') in ['report','Report']:
         p1 = Process(target=input.zipfile_cbk_agent, args=(file_abspath_list, Q1), name='Input-Process')
-        p2 = Process(target=output.to_report, args=(Q2, Analysis_CBK_Agent.match_rules_list, input_args[1], unzip_path), name='Out-Process')    # input_args 数据格式： [True，字典数据]
+        p2 = Process(target=output.zipfile_to_report, args=(Q2, Analysis_CBK_Agent.match_rules_list, input_args[1], unzip_path), name='Out-Process')    # input_args 数据格式： [True，字典数据]
         p1.start()
         p2.start()
 

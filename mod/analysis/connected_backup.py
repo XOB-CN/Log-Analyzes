@@ -130,11 +130,12 @@ def cbk_agent_report(queue1, rulelist, queue2, blk_rulelist):
                             if rule.get('log_line') == None:
                                 rule['log_line'] = Template_Report.html_font(filename, color='Green') + '<br>' + line_id
                                 rule['detail'] = Template_Report.html_font(log_index, color='Green') + ' ' + line
+                                break
                             else:
                                 rule['log_line'] = rule.get('log_line') + ', ' + line_id
                                 rule['detail'] = rule.get('detail') + '<br>' + Template_Report.html_font(log_index, color='Green') + ' ' + line
-                            # break 的作用是如果匹配到了相应的规则，则不再进行匹配，防止重复匹配的问题
-                            break
+                                # break 的作用是如果匹配到了相应的规则，则不再进行匹配，防止重复匹配的问题
+                                break
 
         # rulelist_copy 是列表数据，内部元素皆为字典
         rulelist_copy = copy.deepcopy(tmp_rule_list)

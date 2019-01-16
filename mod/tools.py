@@ -328,14 +328,6 @@ class Message(object):
     @staticmethod
     def help_info():
         print("\n"
-              "To MySQL:\n"
-              "-f       必须：指定要读取的文件名\n"
-              "-t       必须：指定要保存的数据表的名字\n"
-              "-d       可选：需要创建的数据库名，默认为当前时间\n"
-              "-out     必须：指定要输出的类型，此处应该设置为 mysql \n\n"
-              "To CSV:\n"
-              "-f       必须：指定要读取的文件名\n"
-              "-out     必须：指定要输出的类型，此处应该设置为 csv\n\n"
               "To Report:\n"
               "-f       必须：指定要读取的文件名\n"
               "-out     必须：指定要输出的类型，此处应该设置为 report\n"

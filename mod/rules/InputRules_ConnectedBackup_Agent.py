@@ -24,7 +24,7 @@ ZipAgent_list = [
 
     # txt 部分
     'SystemInfo\.txt',
-    'Agent_\d{5}-\d{5}_\d+-\d+-\d{4}_\d+-\d+',
+    'Agent_\d{5}-\d{5}_\d+-\d+-\d{4}_\d+-\d+.txt',
 ]
 
 # 如果匹配到，直接跳过后续匹配内容

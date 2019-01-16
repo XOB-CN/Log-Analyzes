@@ -157,7 +157,6 @@ def zipfile_cbk_agent(filelist, queue1):
         if log_class[0:len('Agent_')] == 'Agent_':
             log_class = 'Information'
 
-
         with open(filepath, mode='r', encoding=encoding) as f:
             for line in f:
                 section_line += 1
