@@ -11,7 +11,7 @@
 
 ## 安装方法
 1. 安装 Python 3
-2. 安装 第三方库 chardet, pymysql
+2. 安装 第三方库 chardet, pymysql, sqlalchemy, sqlalchemy-utils
 3. 如果想要在任意目录下执行该脚本，请将 bin 目录添加到系统的环境变量中
 ```
 Windows
