@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 
 import os, sys, time, re
-import zipfile
+import zipfile, tarfile
 import chardet
 import functools
 
@@ -126,7 +126,7 @@ class Check(object):
                 return False
         return True
 
-class ZipCheck(Check):
+class ArchiveCheck(Check):
     """检查类，主要针对的是压缩包文件（多文件）"""
 
     @staticmethod
@@ -144,41 +144,93 @@ class ZipCheck(Check):
         return abspath
 
     @staticmethod
-    def check_zipfile(zip_filename, rule_list):
+    @Debug.get_time_cost('[Debug] 读取完成：')
+    def check_archive(archive_filename, rule_list):
         """
         检查压缩包中是否包含需要分析的日记信息
-        :param zip_filename: 压缩包文件名
+        :param archive_filename: 压缩包文件名
         :param rule_list: 需要匹配的规则
-        :return: 数据类型为 list, 内容为需要分析的文件路径列表
+        :return: 数据类型为 list, 内容是文件列表
         """
-        if zipfile.is_zipfile(zip_filename):
-            zip_file = zipfile.ZipFile(zip_filename)
+        # 初始化参数
+        archive_type = None
+        file_path = []
+
+        Message.info_message('[Info] 输入端：正在识别压缩包')
+
+        # 如果是 Zip 文件, archive_type 为 zip
+        if zipfile.is_zipfile(archive_filename):
+            zip_file = zipfile.ZipFile(archive_filename)
+            archive_type = 'zip'
+
+        # 如果是 tar.gz 文件, archive_type 为 tar
+        elif tarfile.is_tarfile(archive_filename):
+            tar_file = tarfile.open(archive_filename, "r:gz")
+            archive_type = 'tar'
+
+        # 否则显示提示信息
         else:
             Message.error_message('指定的不是压缩文件，检查后重新输入')
 
-        file_path = []
-        for file in zip_file.filelist:
-            # 判断文件大小
-            if file.file_size != 0:
+        # 生成文件列表
+        Message.info_message('[Info] 输入端：正在读取压缩包')
+        if archive_type == 'zip':
+            for file in zip_file.filelist:
+                # 判断文件大小
+                if file.file_size != 0:
+                    # 将对应的日记文件加入到列表中
+                    for rule in rule_list:
+                        if LogAnalze.match_any(rule, file.filename):
+                            file_path.append(file.filename)
+        else:
+            for file in tar_file.getnames():
                 # 将对应的日记文件加入到列表中
                 for rule in rule_list:
-                    if LogAnalze.match_any(rule, file.filename):
-                        file_path.append(file.filename)
+                    if LogAnalze.match_any(rule, file):
+                        file_path.append(file)
+            tar_file.close()
 
         return file_path
 
     @staticmethod
     @Debug.get_time_cost('[Debug] 解压完成：')
-    def unzip(zip_filename):
+    def unarchive(archive_file):
         """
         解压压缩包，并且返回压缩包的路径
-        :param zip_filename: 压缩包所在路径
+        :param archive_file: 压缩包所在路径
         :return: 字符串：解压所在的路径
         """
-        zip_file = zipfile.ZipFile(zip_filename)
-        unzip_file_path = os.path.join(base_path, Check.get_temp_path())
-        zip_file.extractall(os.path.join(base_path, Check.get_temp_path()))
-        return unzip_file_path
+        archive_type = None
+
+        # 如果是压缩包是 zip
+        if zipfile.is_zipfile(archive_file):
+            zip_file = zipfile.ZipFile(archive_file)
+            archive_type = 'zip'
+        # 如果是压缩包是 tar.gz
+        elif tarfile.is_tarfile(archive_file):
+            tar_file = tarfile.open(archive_file, "r:gz")
+            archive_type = 'tar'
+
+        Message.info_message('[Info] 输入端：正在解压压缩包')
+        # 解压压缩包, 并返回解压后文件所在的路径
+        if archive_type == 'zip':
+            zip_file = zipfile.ZipFile(archive_file)
+            unarchive_path = os.path.join(base_path, Check.get_temp_path())
+            zip_file.extractall(os.path.join(base_path, Check.get_temp_path()))
+
+        else:
+            tar_file = tarfile.open(archive_file, "r:gz")
+            unarchive_path = os.path.join(base_path, Check.get_temp_path())
+            try:
+                tar_file.extractall(os.path.join(base_path, Check.get_temp_path()))
+            except PermissionError as e:
+                if Check.get_debug_level() in ['warn','debug']:
+                    Message.warn_message('[Warn] 输入端：无法处理该文件:{e}'.format(e=e))
+            tar_file.close()
+
+        Message.info_message('[Info] 输入端：解压完成')
+
+        return unarchive_path
 
 class LogAnalze(object):
     """分析类，判断日记属于什么规则，结果返回布尔值，匹配则返回 True，不匹配则返回 False"""

@@ -86,7 +86,7 @@ def single_sql_server(filename, encoding, queue1):
     for i in range(Check.get_multiprocess_counts()-1):
         queue1.put(False)
 
-def zipfile_general(filelist, queue1):
+def archive_general(filelist, queue1):
     """
     压缩包文件，不需要处理日记排序
     最终生成的数据格式： {'id':'切割的分段 id', 'log_class':'日记所属分类', 'filename':'文件名', 'log_content':[[ '日记行数', '日记的每行内容' ],]}
@@ -105,24 +105,28 @@ def zipfile_general(filelist, queue1):
         log_class = filename.split('.')[0]
 
         with open(filepath, mode='r', encoding=encoding) as f:
-            for line in f:
-                section_line += 1
-                src_log_line += 1
-                log_content.append(['['+str(src_log_line)+']', line])
+            try:
+                for line in f:
+                    section_line += 1
+                    src_log_line += 1
+                    log_content.append(['['+str(src_log_line)+']', line])
 
-                if section_line >= Check.get_segment_number() and Check.check_input_rule\
-                        (match_start=InputRules_General.match_start,
-                         match_end=InputRules_General.match_end,
-                         match_any=InputRules_General.match_any,
-                         line=line):
-                    section_id += 1
-                    log_content_copy = copy.deepcopy(log_content)
-                    queue1.put({'id':section_id, 'log_class':log_class, 'filename':filename, 'log_content':log_content_copy})
-                    log_content.clear()
-                    section_line = 0
+                    if section_line >= Check.get_segment_number() and Check.check_input_rule\
+                            (match_start=InputRules_General.match_start,
+                             match_end=InputRules_General.match_end,
+                             match_any=InputRules_General.match_any,
+                             line=line):
+                        section_id += 1
+                        log_content_copy = copy.deepcopy(log_content)
+                        queue1.put({'id':section_id, 'log_class':log_class, 'filename':filename, 'log_content':log_content_copy})
+                        log_content.clear()
+                        section_line = 0
 
-                    # 显示提示信息
-                    Message.info_message('[Info] 输入端：已读取第 {n} 段日记'.format(n=section_id))
+                        # 显示提示信息
+                        Message.info_message('[Info] 输入端：已读取第 {n} 段日记'.format(n=section_id))
+            except:
+                if Check.get_debug_level() != 'info':
+                    Message.warn_message('[Warn] 输入端：无法读取该文件 {filepath}'.format(filepath=filepath))
 
         # 将最后一部分日记数据放入到队列中
         section_id += 1
@@ -158,24 +162,28 @@ def zipfile_cbk_agent(filelist, queue1):
             log_class = 'Information'
 
         with open(filepath, mode='r', encoding=encoding) as f:
-            for line in f:
-                section_line += 1
-                src_log_line += 1
-                log_content.append(['['+str(src_log_line)+']', line])
+            try:
+                for line in f:
+                    section_line += 1
+                    src_log_line += 1
+                    log_content.append(['['+str(src_log_line)+']', line])
 
-                if section_line >= Check.get_segment_number() and Check.check_input_rule\
-                        (match_start=Input_CBK_Agent.match_start,
-                         match_end=Input_CBK_Agent.match_end,
-                         match_any=Input_CBK_Agent.match_any,
-                         line=line):
-                    section_id += 1
-                    log_content_copy = copy.deepcopy(log_content)
-                    queue1.put({'id':section_id, 'log_class':log_class, 'filename':filename, 'log_content':log_content_copy})
-                    log_content.clear()
-                    section_line = 0
+                    if section_line >= Check.get_segment_number() and Check.check_input_rule\
+                            (match_start=Input_CBK_Agent.match_start,
+                             match_end=Input_CBK_Agent.match_end,
+                             match_any=Input_CBK_Agent.match_any,
+                             line=line):
+                        section_id += 1
+                        log_content_copy = copy.deepcopy(log_content)
+                        queue1.put({'id':section_id, 'log_class':log_class, 'filename':filename, 'log_content':log_content_copy})
+                        log_content.clear()
+                        section_line = 0
 
-                    # 显示提示信息
-                    Message.info_message('[Info] 输入端：已读取第 {n} 段日记'.format(n=section_id))
+                        # 显示提示信息
+                        Message.info_message('[Info] 输入端：已读取第 {n} 段日记'.format(n=section_id))
+            except:
+                if Check.get_debug_level() != 'info':
+                    Message.warn_message('[Warn] 输入端：无法读取该文件 {filepath}'.format(filepath=filepath))
 
         # 将最后一部分日记数据放入到队列中
         section_id += 1

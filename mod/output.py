@@ -73,13 +73,13 @@ def to_report(queue, rulelist, input_args):
     Message.info_message('[Info] 输出端：正在生成显示结果，请稍后')
     Output.write_to_html(finish_data, input_args)
 
-def zipfile_to_report(queue, rulelist, input_args, unzip_path=None):
+def archive_to_report(queue, rulelist, input_args, unarchive_path=None):
     """
     report 功能
     :param queue: 消息队列
     :param rulelist: 匹配的规则列表
     :param input_args: 输入的参数，主要判断输出模式是否是 report
-    :param unzip_path: 压缩包解压路径
+    :param unarchive_path: 压缩包解压路径
     """
     # 初始化参数
     n = True
@@ -144,6 +144,11 @@ def zipfile_to_report(queue, rulelist, input_args, unzip_path=None):
     Output.write_to_html(finish_data, input_args)
 
     # 删除临时目录
-    if unzip_path != None:
-        shutil.rmtree(unzip_path)
-        Message.info_message('[Info] 输出端：临时目录已删除，分析完成')
+    if unarchive_path != None:
+        try:
+            shutil.rmtree(unarchive_path)
+            Message.info_message('[Info] 输出端：临时目录已删除，分析完成')
+        except PermissionError as e:
+            Message.warn_message('[Info] 输出端：无法删除临时目录，请手动删除')
+            if Check.get_debug_level() in ['warn','debug']:
+                Message.warn_message('[Warn] 输出端：无法处理：{e}'.format(e=e))
