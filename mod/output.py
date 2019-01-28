@@ -145,5 +145,8 @@ def zipfile_to_report(queue, rulelist, input_args, unzip_path=None):
 
     # 删除临时目录
     if unzip_path != None:
-        shutil.rmtree(unzip_path)
-        Message.info_message('[Info] 输出端：临时目录已删除，分析完成')
+        try:
+            shutil.rmtree(unzip_path)
+            Message.info_message('[Info] 输出端：临时目录已删除，分析完成')
+        except:
+            Message.warn_message('[Warn] 输出端：无法删除临时目录，请手动删除')

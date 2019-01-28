@@ -32,6 +32,7 @@ if __name__ == '__main__':
 
     # 解压压缩包, 获取解压路径
     unzip_path = ZipCheck.unzip(filename)
+
     # 获取需要分析文件列表的绝对路径
     file_abspath_list= ZipCheck.get_abspath_list(unzip_path, file_path_list)
 
