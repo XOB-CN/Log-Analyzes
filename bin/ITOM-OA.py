@@ -40,7 +40,7 @@ if __name__ == '__main__':
     Q2 = Queue()    # Q2 存放已经处理完毕的数据
 
     if input_args[1].get('-out') in ['report','Report']:
-        p1 = Process(target=input.zipfile_cbk_agent, args=(file_abspath_list, Q1), name='Input-Process')
+        p1 = Process(target=input.zipfile_general, args=(file_abspath_list, Q1), name='Input-Process')
         p2 = Process(target=output.zipfile_to_report, args=(Q2, Analysis_ITOM_OA.match_rules_list, input_args[1], unzip_path), name='Out-Process')    # input_args 数据格式： [True，字典数据]
         p1.start()
         p2.start()

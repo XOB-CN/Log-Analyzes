@@ -13,9 +13,9 @@ match_any=[]
 # 需要分析的文件列表
 Zip_File_list = [
     # log 部分
-    '\.txt',
-    '\.log',
-    '\.trace',
+    'System\.txt',
+    # '\.log',
+    # '\.trace',
 ]
 
 # 如果匹配到，直接跳过后续匹配内容

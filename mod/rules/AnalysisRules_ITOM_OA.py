@@ -6,13 +6,13 @@ match_rules_list = [
     {
         'name': '其余 Warn 信息',
         'type': 'Others',
-        'match': "Warn",
+        'match': "Wrn",
         'rule': "line"
     },
     {
         'name': '其余 Error 信息',
         'type': 'Others',
-        'match': "Error",
+        'match': "Err",
         'rule': "line"
     },
 ]
