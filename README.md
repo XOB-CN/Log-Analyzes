@@ -48,6 +48,12 @@ To Report:
         ```bash
         CBK-ZipAgent.py -f zipfile -out report [-detail on]
         ```
+    * ITOM OA
+        * 输出到 Report
+        ```bash
+        ITOM-OA.py -f zipfile -out report [-detail on]
+        ```
+    
 * 通用模板
     * LogAnalyzes
         * 输出到 Report
