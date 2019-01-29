@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 
-import shutil   # 用于删除非空文件夹
+import os, shutil   # 用于删除非空文件夹
 from mod.tools import Output, Message, Debug, Check
 
 @Debug.get_time_cost('[Debug] 输出端：')
@@ -149,6 +149,12 @@ def archive_to_report(queue, rulelist, input_args, unarchive_path=None):
             shutil.rmtree(unarchive_path)
             Message.info_message('[Info] 输出端：临时目录已删除，分析完成')
         except PermissionError as e:
-            Message.warn_message('[Info] 输出端：无法删除临时目录，请手动删除')
-            if Check.get_debug_level() in ['warn','debug']:
-                Message.warn_message('[Warn] 输出端：无法处理：{e}'.format(e=e))
+            if os.name == 'nt':
+                # rd/s/q 是 windows 平台强制删除命令
+                cmd = 'rd/s/q ' + unarchive_path
+                os.system(cmd)
+                Message.info_message('[Info] 输出端：临时目录已删除，分析完成')
+            else:
+                Message.warn_message('[Info] 输出端：无法删除临时目录，请手动删除')
+                if Check.get_debug_level() in ['warn','debug']:
+                    Message.warn_message('[Warn] 输出端：无法处理：{e}'.format(e=e))
