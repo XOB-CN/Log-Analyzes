@@ -125,7 +125,11 @@ def cbk_agent_report(queue1, rulelist, queue2, blk_rulelist):
                             # 特殊规则：搜集信息
                             if rule.get('type') == 'Information' or rule.get('type') == 'Others':
                                 cmd = rule.get('rule')
-                                rule['content'] = eval(cmd).strip()
+                                try:
+                                    rule['content'] = eval(cmd).strip()
+                                except:
+                                    rule['content'] = line.strip()
+                                    Message.warn_message('[Warn] 分析端：无法获取指定的值，请检查规则设定')
 
                             if rule.get('log_line') == None:
                                 rule['log_line'] = Template_Report.html_font(filename, color='Green') + '<br>' + line_id

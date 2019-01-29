@@ -125,8 +125,7 @@ def archive_general(filelist, queue1):
                         # 显示提示信息
                         Message.info_message('[Info] 输入端：已读取第 {n} 段日记'.format(n=section_id))
             except:
-                if Check.get_debug_level() != 'info':
-                    Message.warn_message('[Warn] 输入端：无法读取该文件 {filepath}'.format(filepath=filepath))
+                Message.warn_message('[Warn] 输入端：无法读取该文件 {filepath}'.format(filepath=filepath))
 
         # 将最后一部分日记数据放入到队列中
         section_id += 1
@@ -182,8 +181,7 @@ def zipfile_cbk_agent(filelist, queue1):
                         # 显示提示信息
                         Message.info_message('[Info] 输入端：已读取第 {n} 段日记'.format(n=section_id))
             except:
-                if Check.get_debug_level() != 'info':
-                    Message.warn_message('[Warn] 输入端：无法读取该文件 {filepath}'.format(filepath=filepath))
+                Message.warn_message('[Warn] 输入端：无法读取该文件 {filepath}'.format(filepath=filepath))
 
         # 将最后一部分日记数据放入到队列中
         section_id += 1

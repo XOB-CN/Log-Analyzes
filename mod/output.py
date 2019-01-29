@@ -155,6 +155,5 @@ def archive_to_report(queue, rulelist, input_args, unarchive_path=None):
                 os.system(cmd)
                 Message.info_message('[Info] 输出端：临时目录已删除，分析完成')
             else:
-                Message.warn_message('[Info] 输出端：无法删除临时目录，请手动删除')
-                if Check.get_debug_level() in ['warn','debug']:
-                    Message.warn_message('[Warn] 输出端：无法处理：{e}'.format(e=e))
+                Message.info_message('[Info] 输出端：无法删除临时目录，请手动删除')
+                Message.warn_message('[Warn] 输出端：无法处理：{e}'.format(e=e))

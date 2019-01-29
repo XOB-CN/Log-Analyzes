@@ -47,7 +47,11 @@ def sql_server_report(queue1, rulelist, queue2):
                         # 特殊规则：搜集信息
                         elif rule.get('type') == 'Information' or rule.get('type') == 'Others':
                             cmd = rule.get('rule')
-                            rule['content'] = eval(cmd).strip()
+                            try:
+                                rule['content'] = eval(cmd).strip()
+                            except:
+                                rule['content'] = line.strip()
+                                Message.warn_message('[Warn] 分析端：无法获取指定的值，请检查规则设定')
 
                         # 常规规则：记录内容
                         tmp_log_line = rule.get('log_line')

@@ -370,7 +370,8 @@ class Message(object):
 
     @staticmethod
     def warn_message(message):
-        print(message)
+        if Check.get_debug_level() != 'info':
+            print(message)
 
     @staticmethod
     def error_message(message):
