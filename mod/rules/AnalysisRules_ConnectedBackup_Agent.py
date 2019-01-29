@@ -42,6 +42,24 @@ match_rules_list = [
         'solution': '考虑程序本身问题，建议尝试重新安装 Agent'
     },
     {
+        'name': '邮件优化（EMO）问题#1',
+        'type': 'EMO',
+        'match': "The MAPI process failed to",
+        'solution': 'EMO 问题，建议开启 ZipAgent 的 Debug 功能搜集详细信息，然后再根据日记内容做详细的调查'
+    },
+    {
+        'name': '邮件优化（EMO）问题#2',
+        'type': 'EMO',
+        'match': "Network Exception in CCFASession::ExchangeMsgs, Net Error:10054",
+        'solution': 'EMO 问题，建议先执行邮件修复，在 Outlook 的安装目录，程序名: scanpst.exe，如果不行在收集 ZipAgent Debug 日记'
+    },
+    {
+        'name': '邮件优化（EMO）问题#3',
+        'type': 'EMO',
+        'match': "Failed to launch CompoundFileAnalyzer",
+        'solution': 'EMO 问题，CompoundFile 指的是 Outlook 和 Lotus Notes 这类的数据文件，通常都会是 EMO 问题，建议先尝试修复 pst 文件（scanpst.exe）, 如果不行在收集 ZipAgent Debug 日记'
+    },
+    {
         'name': '无法连接到 DataCenter',
         'type': 'Network',
         'match': "Bouncing due to NetworkException at Line",
