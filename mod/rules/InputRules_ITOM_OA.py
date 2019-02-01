@@ -14,7 +14,8 @@ match_any=[]
 Zip_File_list = [
     # 搜集信息
     'agent\.log',
-    # 报错部分
+
+    # OA 的所有动作描述，包含错误信息
     'System\.txt',
 ]
 
