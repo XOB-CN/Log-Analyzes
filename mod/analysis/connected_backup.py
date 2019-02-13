@@ -161,7 +161,7 @@ def cbk_agent_summary_csv(queue1, queue2):
     Connected Backup 的 ZipAgent 日记分析模块, 本模块仅分析汇总信息
     :param queue1:
     :param queue2:
-    :return:
+    :return: 没有返回值
     """
 
     # 初始化参数
@@ -239,4 +239,26 @@ def cbk_agent_summary_csv(queue1, queue2):
                     event_type = log_content.split(':')[0]
                     event_status = log_content.split(':')[1]
 
+            # 生成结果数据
+            if event_type == 'Information':
+                finsh_data = {
+                              'id' : id,
+                              'event_type': event_type,
+                              'agent_version' : agent_version,
+                              'agent_account' : agent_account,
+                              }
+            else:
+                finsh_data = {
+                              'id' : id,
+                              'event_type' : event_type,
+                              'event_status' : event_status,
+                              'event_time' : event_time,
+                              'event_warn' : event_warn,
+                              'event_error' : event_error,
+                              'event_diag' : event_diag,
+                              'backup_file' : backup_files,
+                              }
 
+            queue2.put(finsh_data)
+
+    queue2.put(False)
