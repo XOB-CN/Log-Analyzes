@@ -22,6 +22,12 @@ match_rules_list = [
         'rule': "line.split('[')[-1].split(']')[0]"
     },
     {
+        'name': '备份容量超出限制',
+        'type': 'Agent',
+        'match': "The Backup Set is approaching its size limit of \d+ GB.",
+        'solution': '通过 SupportCenter 调整备份容量限制，或者调整本地的备份规则，减小需要备份的文件'
+    },
+    {
         'name': 'AgentGUI 出现未处理的异常',
         'type': 'AgentGUI',
         'match': "ERROR 1 Connected.Agent.UI.Source.ApplicationContext - Unhandled exception",
@@ -50,6 +56,12 @@ match_rules_list = [
                     '2. 如果修复无效，则需要修改 LogSettings.xml 文件来搜集 EMO 的 Debug 级别日记，在根据日记的内容做进一步的调查'
     },
     {
+        'name': '找不到 MailStructure.db',
+        'type': 'EMO',
+        'match': "Could not find MailStructure.db.*CMailFileAnalysis::IsMailFileStructChanged.*",
+        'solution': '如果是首次遇到，一般可以直接忽略，如果频繁遇到，则需要调查原因，一般意味着备份不完整'
+    },
+    {
         'name': '无法连接到 DataCenter',
         'type': 'Network',
         'match': "Bouncing due to NetworkException at Line",
@@ -72,13 +84,7 @@ match_rules_list = [
     {
         'name': '本地 SQLite 数据有问题',
         'type': 'DataBase',
-        'match': "Sqlite Error: SQL logic error or missing database",
-        'solution': '通常都代表着数据库被损坏，请尝试删除本地 sqlite 数据库'
-    },
-    {
-        'name': '本地 SQLite 变成只读',
-        'type': 'DataBase',
-        'match': "Sqlite Error: attempt to write a readonly database",
+        'match': "Sqlite Error: SQL logic error or missing database|Sqlite Error: attempt to write a readonly database",
         'solution': '通常都代表着数据库被损坏，请尝试删除本地 sqlite 数据库'
     },
     {
