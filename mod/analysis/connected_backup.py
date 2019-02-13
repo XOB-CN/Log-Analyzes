@@ -155,6 +155,7 @@ def cbk_agent_report(queue1, rulelist, queue2, blk_rulelist):
 
     queue2.put(False)
 
+@Debug.get_time_cost('[Debug] 分析端：')
 def cbk_agent_summary_csv(queue1, queue2):
     """
     Connected Backup 的 ZipAgent 日记分析模块, 本模块仅分析汇总信息
@@ -180,36 +181,40 @@ def cbk_agent_summary_csv(queue1, queue2):
             event_status = ''
             agent_version = ''
             agent_account = ''
-
+            event_level = ''
             event_error = ''
             event_warn = ''
             event_diag = ''
+            backup_files = ''
 
             for log_content_list in log_content:
-                event_level = ''
                 log_line = log_content_list[0]
                 log_content = log_content_list[1]
 
-                # Error 信息
-                if LogAnalze.match_start('Errors\n', log_content):
-                    event_level = 'Error'
-                    break
-
                 # 结束标记
-                elif LogAnalze.match_start('-------------', log_content):
+                if LogAnalze.match_start('-------------', log_content):
                     event_level = ''
-                    break
 
+                # Files 信息
+                elif LogAnalze.match_start('Files\n', log_content):
+                    event_level = 'Files'
+
+                # Error 信息
+                elif LogAnalze.match_start('Errors\n', log_content):
+                    event_level = 'Error'
+
+                # Warnings 信息
                 elif LogAnalze.match_start('Warnings\n', log_content):
                     event_level = 'Warning'
-                    break
 
+                # Diagnostics 信息
                 elif LogAnalze.match_start('Diagnostics\n', log_content):
                     event_level = 'Diagnostic'
-                    break
 
-                elif event_level != '' and log_content != '':
-                    if event_level == 'Error':
+                elif event_level != '':
+                    if event_level == 'Files':
+                        backup_files = backup_files + log_content.strip() + '\n'
+                    elif event_level == 'Error':
                         event_error = event_error + log_content.strip() + '\n'
                     elif event_level == 'Warning':
                         event_warn = event_warn + log_content.strip() + '\n'
@@ -233,13 +238,5 @@ def cbk_agent_summary_csv(queue1, queue2):
                 elif LogAnalze.match_any('Backup outcome:|Internal diagnostic outcome:', log_content):
                     event_type = log_content.split(':')[0]
                     event_status = log_content.split(':')[1]
-
-            print(agent_version)
-            print(agent_account)
-            print(event_time)
-            print(event_type)
-            print(event_error)
-            print(event_warn)
-            print(event_diag)
 
 
