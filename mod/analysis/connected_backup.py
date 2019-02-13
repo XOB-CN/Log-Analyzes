@@ -154,3 +154,92 @@ def cbk_agent_report(queue1, rulelist, queue2, blk_rulelist):
             Message.info_message('[Info] 分析端：已经没有待分析的数据了')
 
     queue2.put(False)
+
+def cbk_agent_summary_csv(queue1, queue2):
+    """
+    Connected Backup 的 ZipAgent 日记分析模块, 本模块仅分析汇总信息
+    :param queue1:
+    :param queue2:
+    :return:
+    """
+
+    # 初始化参数
+    n = True
+
+    while n:
+        data = queue1.get()
+        if data == False:
+            n = False
+        else:
+            id = data.get('id')
+            log_content = data.get('log_content')
+
+            # 开始整理数据
+            event_type = 'Information'
+            event_time = ''
+            event_status = ''
+            agent_version = ''
+            agent_account = ''
+
+            event_error = ''
+            event_warn = ''
+            event_diag = ''
+
+            for log_content_list in log_content:
+                event_level = ''
+                log_line = log_content_list[0]
+                log_content = log_content_list[1]
+
+                # Error 信息
+                if LogAnalze.match_start('Errors\n', log_content):
+                    event_level = 'Error'
+                    break
+
+                # 结束标记
+                elif LogAnalze.match_start('-------------', log_content):
+                    event_level = ''
+                    break
+
+                elif LogAnalze.match_start('Warnings\n', log_content):
+                    event_level = 'Warning'
+                    break
+
+                elif LogAnalze.match_start('Diagnostics\n', log_content):
+                    event_level = 'Diagnostic'
+                    break
+
+                elif event_level != '' and log_content != '':
+                    if event_level == 'Error':
+                        event_error = event_error + log_content.strip() + '\n'
+                    elif event_level == 'Warning':
+                        event_warn = event_warn + log_content.strip() + '\n'
+                    elif event_level == 'Diagnostic':
+                        event_diag = event_diag + log_content.strip() + '\n'
+
+                # Agent 版本
+                elif LogAnalze.match_start('Connected Backup/PC Agent Version:', log_content):
+                    agent_version = log_content.split(':')[-1].strip()
+
+                # 账号 ID
+                elif LogAnalze.match_start('Account Number:', log_content):
+                    agent_account = log_content.split(':')[-1].strip()
+
+                # 事件时间
+                elif LogAnalze.match_any('\d{4}\/\d+\/\d+ \d+:\d+ - \d{4}\/\d+\/\d+ \d+:\d+', log_content):
+                    event_time_list = log_content.split(' ', 6)
+                    event_time = event_time_list[1] +' '+ event_time_list[2] +' '+ event_time_list[3] +' '+ event_time_list[4] +' '+ event_time_list[5]
+
+                # 事件类型
+                elif LogAnalze.match_any('Backup outcome:|Internal diagnostic outcome:', log_content):
+                    event_type = log_content.split(':')[0]
+                    event_status = log_content.split(':')[1]
+
+            print(agent_version)
+            print(agent_account)
+            print(event_time)
+            print(event_type)
+            print(event_error)
+            print(event_warn)
+            print(event_diag)
+
+

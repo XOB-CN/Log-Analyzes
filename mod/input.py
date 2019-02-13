@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 
 import os, copy
-from mod.tools import Check, Message
+from mod.tools import Check, Message, LogAnalze
 from mod.rules import InputRules_General, InputRules_Microsoft_SQL_Server
 from mod.rules import InputRules_ConnectedBackup_Agent as Input_CBK_Agent
 
@@ -187,6 +187,50 @@ def zipfile_cbk_agent(filelist, queue1):
         section_id += 1
         log_content_copy = copy.deepcopy(log_content)
         queue1.put({'id': section_id, 'log_class': log_class, 'filename': filename, 'log_content': log_content_copy})
+        log_content.clear()
+        src_log_line = 0
+
+    # 放入 False, 作为进程终止的判断条件
+    for i in range(Check.get_multiprocess_counts() - 1):
+        queue1.put(False)
+
+def zipfile_cbk_agent_summary(filelist, queue1):
+    """
+    压缩包文件，不需要处理日记排序，仅针对输出模式是 csv 模式时采用
+    最终生成的数据格式： {'id':'切割的分段 id', 'filename':'文件名', 'log_content':[[ '日记行数', '日记的每行内容' ],]}
+    :param filelist:
+    :param queue1:
+    """
+    section_id = 0  # 记录分段的个数序号，用于记录顺序
+    src_log_line = 0  # 记录原始日记的行数
+    log_content = []  # 存放初步整理的数据
+
+    for filepath in filelist:
+        # 初始化参数
+        encoding = Check.get_encoding(filepath)
+        filename = os.path.split(filepath)[1]
+
+        with open(filepath, mode='r', encoding=encoding) as f:
+            try:
+                for line in f:
+                    src_log_line += 1
+                    log_content.append(['['+str(src_log_line)+']', line])
+
+                    if LogAnalze.match_any('----------', line):
+                        section_id += 1
+                        log_content_copy = copy.deepcopy(log_content)
+                        queue1.put({'id':section_id, 'filename':filename, 'log_content':log_content_copy})
+                        log_content.clear()
+
+                        # 显示提示信息
+                        Message.info_message('[Info] 输入端：已读取第 {n} 段日记'.format(n=section_id))
+            except:
+                Message.warn_message('[Warn] 输入端：无法读取该文件 {filepath}'.format(filepath=filepath))
+
+        # 将最后一部分日记数据放入到队列中
+        section_id += 1
+        log_content_copy = copy.deepcopy(log_content)
+        queue1.put({'id': section_id, 'filename': filename, 'log_content': log_content_copy})
         log_content.clear()
         src_log_line = 0
 
