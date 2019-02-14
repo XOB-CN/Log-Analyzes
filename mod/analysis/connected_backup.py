@@ -221,18 +221,27 @@ def cbk_agent_summary_csv(queue1, queue2):
                     elif event_level == 'Diagnostic':
                         event_diag = event_diag + log_content.strip() + '\n'
 
-                # Agent 版本
+                # Agent 版本 PC 类型
                 elif LogAnalze.match_start('Connected Backup/PC Agent Version:', log_content):
+                    agent_version = log_content.split(':')[-1].strip()
+
+                # Agent 版本 Mac 类型
+                elif LogAnalze.match_any('Backup for Mac Agent Version:', log_content):
                     agent_version = log_content.split(':')[-1].strip()
 
                 # 账号 ID
                 elif LogAnalze.match_start('Account Number:', log_content):
                     agent_account = log_content.split(':')[-1].strip()
 
-                # 事件时间
+                # 事件时间 不带 AM/PM
                 elif LogAnalze.match_any('\d{4}\/\d+\/\d+ \d+:\d+ - \d{4}\/\d+\/\d+ \d+:\d+', log_content):
                     event_time_list = log_content.split(' ', 6)
                     event_time = event_time_list[1] +' '+ event_time_list[2] +' '+ event_time_list[3] +' '+ event_time_list[4] +' '+ event_time_list[5]
+
+                # 事件时间 带 AM/PM
+                elif LogAnalze.match_any('\d+/\d+/\d+ \d+[.:]\d+ [AP]?M?.*- \d+/\d+/\d+ \d+[.:]\d+ [AP]?M?', log_content):
+                    event_time_list = log_content.split(' ')
+                    event_time = event_time_list[1] +' '+ event_time_list[2] +' '+ event_time_list[3] +' '+ event_time_list[4] +' '+ event_time_list[5] + ' ' + event_time_list[6]
 
                 # 事件类型
                 elif LogAnalze.match_any('Backup outcome:|Internal diagnostic outcome:', log_content):
@@ -251,12 +260,12 @@ def cbk_agent_summary_csv(queue1, queue2):
                 finsh_data = {
                               'id' : id,
                               'event_type' : event_type,
-                              'event_status' : event_status,
-                              'event_time' : event_time,
-                              'event_warn' : event_warn,
-                              'event_error' : event_error,
-                              'event_diag' : event_diag,
-                              'backup_file' : backup_files,
+                              'event_status' : event_status.strip(),
+                              'event_time' : event_time.strip(),
+                              'event_warn' : event_warn.strip(),
+                              'event_error' : event_error.strip(),
+                              'event_diag' : event_diag.strip(),
+                              'backup_file' : backup_files.strip(),
                               }
 
             queue2.put(finsh_data)

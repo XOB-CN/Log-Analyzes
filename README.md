@@ -30,6 +30,10 @@ To Report:
 -f       必须：指定要读取的文件名
 -out     必须：指定要输出的类型, 此处应该设置为 report
 -detail  可选：可以输出更详细的内容, 默认不启用，当该值为 on、On、True 时生效
+
+To CSV:
+-f       必须：指定要读取的文件名
+-out     必须：指定要输出的类型, 此处应该设置为 csv
 ```
 
 ## 配置参数
@@ -47,6 +51,10 @@ To Report:
         * 输出到 Report
         ```bash
         CBK-ZipAgent.py -f zipfile -out report [-detail on]
+        ```
+        * 输出到 CSV
+        ```bash
+        CBK-ZipAgent.py -f zipfile -out csv
         ```
     * ITOM OA
         * 输出到 Report

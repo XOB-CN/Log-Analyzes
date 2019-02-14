@@ -60,7 +60,9 @@ if __name__ == '__main__':
 
     elif input_args[1].get('-out') in ['csv','CSV']:
         p1 = Process(target=input.zipfile_cbk_agent_summary, args=(file_abspath_list, Q1), name='Input-Process')
+        p2 = Process(target=output.cbk_agent_summary_to_csv, args=(Q2, unarchive_path,), name='Out-Process')
         p1.start()
+        p2.start()
 
         # 启动日记分析的多进程模块
         for number in range(ArchiveCheck.get_multiprocess_counts() - 1):

@@ -1,5 +1,6 @@
 # -*- coding:utf-8 -*-
 
+import csv
 import os, shutil   # 用于删除非空文件夹
 from mod.tools import Output, Message, Debug, Check
 
@@ -142,6 +143,73 @@ def archive_to_report(queue, rulelist, input_args, unarchive_path=None):
     # 将数据写入到文件中
     Message.info_message('[Info] 输出端：正在生成显示结果，请稍后')
     Output.write_to_html(finish_data, input_args)
+
+    # 删除临时目录
+    if unarchive_path != None:
+        try:
+            shutil.rmtree(unarchive_path)
+            Message.info_message('[Info] 输出端：临时目录已删除，分析完成')
+        except PermissionError as e:
+            if os.name == 'nt':
+                # rd/s/q 是 windows 平台强制删除命令
+                cmd = 'rd/s/q ' + unarchive_path
+                os.system(cmd)
+                Message.info_message('[Info] 输出端：临时目录已删除，分析完成')
+            else:
+                Message.info_message('[Info] 输出端：无法删除临时目录，请手动删除')
+                Message.warn_message('[Warn] 输出端：无法处理：{e}'.format(e=e))
+
+@Debug.get_time_cost('[Debug] 输出端：')
+def cbk_agent_summary_to_csv(queue, unarchive_path=None):
+    """
+    将结果输出到 csv 文件中
+    :param queue:
+    :return:
+    """
+    n = True
+    false_number = Check.get_multiprocess_counts() - 1
+    false_number_count = 0
+
+    temp_list = []
+
+    headers = ['event_type', 'event_status', 'event_time', 'event_warn', 'event_error', 'event_diag']
+    csv_datas = []
+
+
+    # 循环从 queue 中获取数据
+    while n:
+        datas = queue.get()
+        if datas == False:
+            false_number_count += 1
+            if false_number_count == false_number:
+                n = False
+        else:
+            # 获取的数据为 datas, 生成汇总信息, 用做生成文件名
+            if datas.get('event_type') == 'Information' and datas.get('agent_version') != '' and datas.get('agent_account') != '':
+                temp_list.append(datas.get('agent_account'))
+                temp_list.append(datas.get('agent_version'))
+
+            # 生成 csv 数据
+            else:
+                csv_data = {'event_type':datas.get('event_type'),
+                            'event_status':datas.get('event_status'),
+                            'event_time':datas.get('event_time'),
+                            'event_warn':datas.get('event_warn'),
+                            'event_error':datas.get('event_error'),
+                            'event_diag':datas.get('event_diag')}
+                csv_datas.append(csv_data)
+
+    # 指定文件写入的目录以及文件名
+    base_path = os.getcwd()
+    file_path = os.path.join(base_path, (temp_list[0] + ' - ' + temp_list[1] + '.csv'))
+
+    # 写入到 csv
+    Message.info_message('[Info] 输出端：正在生成 CSV 文件，请稍后')
+    with open(file_path, 'w') as f:
+        f_csv = csv.DictWriter(f, headers)
+        f_csv.writeheader()
+        f_csv.writerows(csv_datas)
+    Message.info_message('[Info] 输出端：CSV 文件已生成')
 
     # 删除临时目录
     if unarchive_path != None:
