@@ -88,7 +88,16 @@ class Check(object):
     @staticmethod
     def get_multiprocess_counts():
         """获取可以同时进行的进程数"""
-        return cfg.getint('base','multiprocess_counts')
+        if cfg.get('base', 'multiprocess_counts') in ['Auto','auto']:
+            # 获取 Windows 的 CPU 核数
+            try:
+                return int(os.environ['NUMBER_OF_PROCESSORS'])
+            except:
+                Message.warn_message('无法获取 cpu 核数, 应用默认配置')
+                return 4
+
+        else:
+            return cfg.getint('base','multiprocess_counts')
 
     @staticmethod
     def get_temp_path():
