@@ -271,3 +271,120 @@ def cbk_agent_summary_csv(queue1, queue2):
             queue2.put(finsh_data)
 
     queue2.put(False)
+
+@Debug.get_time_cost('[Debug] 分析端：')
+def cbk_agent_summary_mysql(queue1, queue2):
+    """
+    Connected Backup 的 ZipAgent 日记分析模块, 本模块仅分析汇总信息
+    :param queue1:
+    :param queue2:
+    :return: 没有返回值
+    """
+
+    # 初始化参数
+    n = True
+
+    while n:
+        data = queue1.get()
+        if data == False:
+            n = False
+        else:
+            id = data.get('id')
+            log_content = data.get('log_content')
+
+            # 开始整理数据
+            event_type = 'Information'
+            event_time = ''
+            event_status = ''
+            agent_version = ''
+            agent_account = ''
+            event_level = ''
+            event_error = ''
+            event_warn = ''
+            event_diag = ''
+            backup_files = ''
+
+            for log_content_list in log_content:
+                log_line = log_content_list[0]
+                log_content = log_content_list[1]
+
+                # 结束标记
+                if LogAnalze.match_start('-------------', log_content):
+                    event_level = ''
+
+                # Files 信息
+                elif LogAnalze.match_start('Files\n', log_content):
+                    event_level = 'Files'
+
+                # Error 信息
+                elif LogAnalze.match_start('Errors\n', log_content):
+                    event_level = 'Error'
+
+                # Warnings 信息
+                elif LogAnalze.match_start('Warnings\n', log_content):
+                    event_level = 'Warning'
+
+                # Diagnostics 信息
+                elif LogAnalze.match_start('Diagnostics\n', log_content):
+                    event_level = 'Diagnostic'
+
+                elif event_level != '':
+                    if event_level == 'Files':
+                        backup_files = backup_files + log_content.strip() + '\n'
+                    elif event_level == 'Error':
+                        event_error = event_error + log_content.strip() + '\n'
+                    elif event_level == 'Warning':
+                        event_warn = event_warn + log_content.strip() + '\n'
+                    elif event_level == 'Diagnostic':
+                        event_diag = event_diag + log_content.strip() + '\n'
+
+                # Agent 版本 PC 类型
+                elif LogAnalze.match_start('Connected Backup/PC Agent Version:', log_content):
+                    agent_version = log_content.split(':')[-1].strip()
+
+                # Agent 版本 Mac 类型
+                elif LogAnalze.match_any('Backup for Mac Agent Version:', log_content):
+                    agent_version = log_content.split(':')[-1].strip()
+
+                # 账号 ID
+                elif LogAnalze.match_start('Account Number:', log_content):
+                    agent_account = log_content.split(':')[-1].strip()
+
+                # 事件时间 不带 AM/PM
+                elif LogAnalze.match_any('\d{4}\/\d+\/\d+ \d+:\d+ - \d{4}\/\d+\/\d+ \d+:\d+', log_content):
+                    event_time_list = log_content.split(' ', 6)
+                    event_time = event_time_list[1] +' '+ event_time_list[2] +' '+ event_time_list[3] +' '+ event_time_list[4] +' '+ event_time_list[5]
+
+                # 事件时间 带 AM/PM
+                elif LogAnalze.match_any('\d+/\d+/\d+ \d+[.:]\d+ [AP]?M?.*- \d+/\d+/\d+ \d+[.:]\d+ [AP]?M?', log_content):
+                    event_time_list = log_content.split(' ')
+                    event_time = event_time_list[1] +' '+ event_time_list[2] +' '+ event_time_list[3] +' '+ event_time_list[4] +' '+ event_time_list[5] + ' ' + event_time_list[6]
+
+                # 事件类型
+                elif LogAnalze.match_any('Backup outcome:|Internal diagnostic outcome:', log_content):
+                    event_type = log_content.split(':')[0]
+                    event_status = log_content.split(':')[1]
+
+            # 生成结果数据
+            if event_type == 'Information':
+                finsh_data = {
+                              'id' : id,
+                              'event_type': event_type,
+                              'agent_version' : agent_version,
+                              'agent_account' : agent_account,
+                              }
+            else:
+                finsh_data = {
+                              'id' : id,
+                              'event_type' : event_type,
+                              'event_status' : event_status.strip(),
+                              'event_time' : event_time.strip(),
+                              'event_warn' : event_warn.strip(),
+                              'event_error' : event_error.strip(),
+                              'event_diag' : event_diag.strip(),
+                              'backup_file' : backup_files.strip(),
+                              }
+
+            queue2.put(finsh_data)
+
+    queue2.put(False)
