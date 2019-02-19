@@ -68,5 +68,16 @@ if __name__ == '__main__':
         for number in range(ArchiveCheck.get_multiprocess_counts() - 1):
             number = Process(target=connected_backup.cbk_agent_summary_csv, args=(Q1, Q2))
             number.start()
+
+    elif input_args[1].get('-out') in ['mysql','MySQL']:
+        p1 = Process(target=input.zipfile_cbk_agent_summary, args=(file_abspath_list, Q1), name='Input-Process')
+        p2 = Process(target=output.cbk_agent_summary_to_mysql, args=(Q2, unarchive_path,), name='Out-Process')
+        p1.start()
+        p2.start()
+
+        # 启动日记分析的多进程模块
+        for number in range(ArchiveCheck.get_multiprocess_counts() - 1):
+            number = Process(target=connected_backup.cbk_agent_summary_mysql, args=(Q1, Q2))
+            number.start()
     else:
         Message.error_message('没有这个输出方法')

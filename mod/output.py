@@ -2,7 +2,9 @@
 
 import csv
 import os, shutil   # 用于删除非空文件夹
-from mod.tools import Output, Message, Debug, Check
+from mod.tools import Output, Message, Debug, Check, To_MySQL
+from mod.ormdb import orm_connected_backup as orm_cbk
+from sqlalchemy.orm import sessionmaker
 
 @Debug.get_time_cost('[Debug] 输出端：')
 def to_report(queue, rulelist, input_args):
@@ -74,6 +76,7 @@ def to_report(queue, rulelist, input_args):
     Message.info_message('[Info] 输出端：正在生成显示结果，请稍后')
     Output.write_to_html(finish_data, input_args)
 
+@Debug.get_time_cost('[Debug] 输出端：')
 def archive_to_report(queue, rulelist, input_args, unarchive_path=None):
     """
     report 功能
@@ -222,6 +225,68 @@ def cbk_agent_summary_to_csv(queue, unarchive_path=None):
                 cmd = 'rd/s/q ' + unarchive_path
                 os.system(cmd)
                 Message.info_message('[Info] 输出端：临时目录已删除，分析完成')
+            else:
+                Message.info_message('[Info] 输出端：无法删除临时目录，请手动删除')
+                Message.warn_message('[Warn] 输出端：无法处理：{e}'.format(e=e))
+
+@Debug.get_time_cost('[Debug] 输出端：')
+def cbk_agent_summary_to_mysql(queue, unarchive_path=None):
+    """
+    将结果输出到 mysql
+    :param queue:
+    :return:
+    """
+    n = True
+    m = 0
+    false_number = Check.get_multiprocess_counts() - 1
+    false_number_count = 0
+
+    # 创建数据库以及表, 并获取插入数据的 session 实例
+    db = To_MySQL('cbk')
+    url = db.db_create()
+    db_name = str(url).split('/')[-1].split('?')[0]
+    engine = db.tb_create(url)
+    Session = sessionmaker(bind=engine)
+    session = Session()
+
+    # 循环从 queue 中获取数据
+    while n:
+        datas = queue.get()
+        if datas == False:
+            false_number_count += 1
+            if false_number_count == false_number:
+                n = False
+        else:
+            # 获取的数据为 datas, 生成汇总信息, 用做生成文件名
+            if datas.get('event_type') != 'Information':
+                sql_data = orm_cbk.ZipAgent_Summary(event_type=datas.get('event_type'),
+                                                    event_status=datas.get('event_status'),
+                                                    event_time=datas.get('event_time'),
+                                                    event_warn=datas.get('event_warn'),
+                                                    event_error=datas.get('event_error'),
+                                                    event_diag=datas.get('event_diag'))
+                m += 1
+                session.add(sql_data)
+
+                if m >=Check.get_db_commit():
+                    session.commit()
+                    m = 0
+    session.commit()
+    session.close()
+
+    # 删除临时目录
+    if unarchive_path != None:
+        try:
+            shutil.rmtree(unarchive_path)
+            Message.info_message('[Info] 输出端：临时目录已删除，分析完成')
+            Message.info_message('[Info] 数据库：{url}'.format(url=db_name))
+        except PermissionError as e:
+            if os.name == 'nt':
+                # rd/s/q 是 windows 平台强制删除命令
+                cmd = 'rd/s/q ' + unarchive_path
+                os.system(cmd)
+                Message.info_message('[Info] 输出端：临时目录已删除，分析完成')
+                Message.info_message('[Info] 数据库：{url}'.format(url=db_name))
             else:
                 Message.info_message('[Info] 输出端：无法删除临时目录，请手动删除')
                 Message.warn_message('[Warn] 输出端：无法处理：{e}'.format(e=e))

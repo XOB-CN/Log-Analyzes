@@ -1,6 +1,10 @@
+2019-02-19 v2.3.0
+# 添加：ConnectedBackup 软件的 ZipAgent.zip 压缩包支持输出到 mysql，可以使用 sql 语句来进一步筛选信息
+# 添加：添加了自动检测 CPU 逻辑核数的功能，默认配置下，分析时将使用所有的 CPU 性能
+
 2019-02-14 v2.2.0
 # 添加：优化了部分规则
-# 添加：ConnectedBackup 软件的 ZipAgent.zip 压缩包 支持输出到 csv 文件，用来查看汇总信息
+# 添加：ConnectedBackup 软件的 ZipAgent.zip 压缩包支持输出到 csv 文件，用来查看汇总信息
 
 2019-02-11 v2.1.2
 # 修改：优化了 ConnectedBackup 的匹配规则

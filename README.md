@@ -34,6 +34,10 @@ To Report:
 To CSV:
 -f       必须：指定要读取的文件名
 -out     必须：指定要输出的类型, 此处应该设置为 csv
+
+To MySQL:
+-f       必须：指定要读取的文件名
+-out     必须：指定要输出的类型, 此处应该设置为 mysql
 ```
 
 ## 配置参数
@@ -55,6 +59,10 @@ To CSV:
         * 输出到 CSV
         ```bash
         CBK-ZipAgent.py -f zipfile -out csv
+        ```
+        * 输出到 MySQL
+        ```bash
+        CBK-ZipAgent.py -f zipfile -out mysql
         ```
     * ITOM OA
         * 输出到 Report

@@ -5,6 +5,10 @@ import zipfile, tarfile
 import chardet
 import functools
 
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy_utils import database_exists, create_database
+
 from configparser import ConfigParser
 cfg = ConfigParser()
 cfg.read(os.path.abspath(os.path.join(os.path.realpath(__file__),'..\..','config.cfg')), encoding='utf-8')
@@ -88,7 +92,16 @@ class Check(object):
     @staticmethod
     def get_multiprocess_counts():
         """获取可以同时进行的进程数"""
-        return cfg.getint('base','multiprocess_counts')
+        if cfg.get('base', 'multiprocess_counts') in ['Auto', 'auto']:
+            # 获取 Windows 的 CPU 核数
+            try:
+                return int(os.environ['NUMBER_OF_PROCESSORS'])
+            except:
+                Message.warn_message('[Warn] 无法获取 cpu 核数, 应用默认配置')
+                return 4
+
+        else:
+            return cfg.getint('base', 'multiprocess_counts')
 
     @staticmethod
     def get_temp_path():
@@ -104,6 +117,31 @@ class Check(object):
     def get_segment_number():
         """获取日记分段的行数"""
         return cfg.getint('base', 'segment_number')
+
+    @staticmethod
+    def get_db_user():
+        """获取数据库部分 username 信息"""
+        return cfg.get('mysql','db_user')
+
+    @staticmethod
+    def get_db_pass():
+        """获取数据库部分 password 信息"""
+        return cfg.get('mysql','db_pass')
+
+    @staticmethod
+    def get_db_host():
+        """获取数据库部分 hostname 信息"""
+        return cfg.get('mysql','db_host')
+
+    @staticmethod
+    def get_db_port():
+        """获取数据库部分 port 信息"""
+        return cfg.get('mysql','db_port')
+
+    @staticmethod
+    def get_db_commit():
+        """获取录入多少条数据后进行 commit """
+        return cfg.getint('mysql','db_commit')
 
     @staticmethod
     def check_input_rule(match_start, match_end, match_any, line):
@@ -361,6 +399,42 @@ class Template_Report(Output):
         """html 的 font 标签"""
         return '<font color="{color}">{content}</font>'.format(content=content, color=color)
 
+class To_MySQL(Output):
+    """创建, 维护 MySQL 数据库"""
+
+    # 类变量, 用于定义 ORM 的基类
+    Base = declarative_base()
+
+    def __init__(self, db_title):
+        # 读取数据库相关信息
+        self.db_name = db_title + '_' + time.strftime("%Y%m%d%H%M%S", time.localtime())
+        self.db_user = Check.get_db_user()
+        self.db_pass = Check.get_db_pass()
+        self.db_host = Check.get_db_host()
+        self.db_port = Check.get_db_port()
+
+    def db_create(self):
+        """创建数据库, 并返回连接数据库的 url"""
+        engine = create_engine("mysql+pymysql://{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}?charset=utf8".format(
+            db_user=self.db_user,
+            db_pass=self.db_pass,
+            db_host=self.db_host,
+            db_port=self.db_port,
+            db_name=self.db_name))
+        if not database_exists(engine.url):
+            create_database(engine.url)
+        return engine.url
+
+    def tb_create(self, url):
+        # 初始化数据库连接
+        self.engine = create_engine(url, encoding='utf-8')
+        # 导入需要定义的列表
+        from mod.ormdb import orm_connected_backup
+        # 创建表结构
+        self.Base.metadata.create_all(self.engine)
+
+        return self.engine
+
 class Message(object):
     """信息类，显示各种提示信息"""
 
@@ -388,5 +462,10 @@ class Message(object):
 
               "To CSV:\n"
               "-f       必须：指定要读取的文件名\n"
-              "-out     必须：指定要输出的类型，此处应该设置为 csv\n")
+              "-out     必须：指定要输出的类型，此处应该设置为 csv\n\n"
+
+              "To MySQL:\n"
+              "-f       必须：指定要读取的文件名\n"
+              "-out     必须：指定要输出的类型，此处应该设置为 mysql\n"
+              )
         exit()
