@@ -225,38 +225,3 @@ def cbk_agent_summary_to_csv(queue, unarchive_path=None):
             else:
                 Message.info_message('[Info] 输出端：无法删除临时目录，请手动删除')
                 Message.warn_message('[Warn] 输出端：无法处理：{e}'.format(e=e))
-
-@Debug.get_time_cost('[Debug] 输出端：')
-def cbk_agent_summary_to_mysql(queue):
-    """
-    将结果输出到 mysql 中
-    :param queue:
-    :return:
-    """
-    n = True
-    false_number = Check.get_multiprocess_counts() - 1
-    false_number_count = 0
-    mysql_datas = []
-
-
-    # 循环从 queue 中获取数据
-    while n:
-        datas = queue.get()
-        if datas == False:
-            false_number_count += 1
-            if false_number_count == false_number:
-                n = False
-        else:
-            # 获取的数据为 datas, 生成汇总信息, 用做生成文件名
-            if datas.get('event_type') == 'Information' and datas.get('agent_version') != '' and datas.get('agent_account') != '':
-                pass
-
-            # MySQL 数据
-            else:
-                mysql_data = {'event_type':datas.get('event_type'),
-                            'event_status':datas.get('event_status'),
-                            'event_time':datas.get('event_time'),
-                            'event_warn':datas.get('event_warn'),
-                            'event_error':datas.get('event_error'),
-                            'event_diag':datas.get('event_diag')}
-                mysql_datas.append(mysql_data)

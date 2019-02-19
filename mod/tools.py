@@ -5,9 +5,6 @@ import zipfile, tarfile
 import chardet
 import functools
 
-from sqlalchemy import create_engine
-from sqlalchemy_utils import database_exists, create_database
-
 from configparser import ConfigParser
 cfg = ConfigParser()
 cfg.read(os.path.abspath(os.path.join(os.path.realpath(__file__),'..\..','config.cfg')), encoding='utf-8')
@@ -116,26 +113,6 @@ class Check(object):
     def get_segment_number():
         """获取日记分段的行数"""
         return cfg.getint('base', 'segment_number')
-
-    @staticmethod
-    def get_db_user():
-        """获取数据库部分 username 信息"""
-        return cfg.get('database','db_user')
-
-    @staticmethod
-    def get_db_pass():
-        """获取数据库部分 password 信息"""
-        return cfg.get('database','db_pass')
-
-    @staticmethod
-    def get_db_host():
-        """获取数据库部分 hostname 信息"""
-        return cfg.get('database','db_host')
-
-    @staticmethod
-    def get_db_port():
-        """获取数据库部分 port 信息"""
-        return cfg.get('database','db_port')
 
     @staticmethod
     def check_input_rule(match_start, match_end, match_any, line):
@@ -392,31 +369,6 @@ class Template_Report(Output):
     def html_font(content, color='red'):
         """html 的 font 标签"""
         return '<font color="{color}">{content}</font>'.format(content=content, color=color)
-
-class To_Mysql(Output):
-    """输出到 MySQL 数据库"""
-    def __init__(self, db_title):
-        """
-        获取创建数据库需要的信息
-        :param db_title: 生成数据库名字的前缀
-        """
-        self.db_user = Check.get_db_user()
-        self.db_pass = Check.get_db_pass()
-        self.db_host = Check.get_db_host()
-        self.db_port = Check.get_db_port()
-        self.db_name = db_title + '_' + time.strftime("%Y%m%d%H%M%S", time.localtime())
-
-    def db_create(self):
-        """ 创建 database """
-        engine = create_engine("mysql+pymysql://{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}?charset=utf8".format(db_user=self.db_user,
-                                                                                                                       db_pass=self.db_pass,
-                                                                                                                       db_host=self.db_host,
-                                                                                                                       db_port=self.db_port,
-                                                                                                                       db_name=self.db_name))
-        if not database_exists(engine.url):
-            create_database(engine.url)
-
-        return engine.url
 
 class Message(object):
     """信息类，显示各种提示信息"""
