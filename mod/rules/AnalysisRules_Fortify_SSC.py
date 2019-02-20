@@ -5,6 +5,30 @@
 
 match_rules_list = [
     {
+        'name': 'Fortify SSC 版本',
+        'type': 'Information',
+        'match': "Version:\d\d\.\d\d\.\d{4}",
+        'rule': "line.split(':')[-1]"
+    },
+    {
+        'name': 'Process_Seed_Bundle',
+        'type': 'Information',
+        'match': "Opening seed bundle:.*Process_Seed_Bundle.*\.zip",
+        'rule': "line.split(' - ')[-1]"
+    },
+    {
+        'name': 'Report_Seed_Bundle',
+        'type': 'Information',
+        'match': "Opening seed bundle:.*Report_Seed_Bundle.*\.zip",
+        'rule': "line.split(' - ')[-1]"
+    },
+    {
+        'name': 'PCI_Basic_Seed_Bundle',
+        'type': 'Information',
+        'match': "Opening seed bundle:.*PCI_Basic_Seed_Bundle.*\.zip",
+        'rule': "line.split(' - ')[-1]"
+    },
+    {
         'name': 'JDBC Driver 不兼容',
         'type': 'JDBC Driver',
         'match': "Found unsupported JDBC driver name",
