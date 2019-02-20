@@ -26,7 +26,7 @@ if __name__ == '__main__':
         Message.error_message(input_args[1])
 
     # 获取需要分析的文件列表
-    file_path_list = ArchiveCheck.check_archive(filename, Input_CBK_Agent.ZipAgent_list)
+    file_path_list = ArchiveCheck.check_archive(filename, Input_CBK_Agent.need_file_list)
     if file_path_list == None:
         Message.error_message('没有需要分析的文件，请注意只接受标准的 ZipAgent 压缩包')
 

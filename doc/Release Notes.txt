@@ -1,5 +1,6 @@
 2019-02-20 v2.4.0
-# 添加：支持 Fortify SSC 的日志解析
+# 添加：增加 Fortify SSC 的日志解析
+# 修改：优化整合部分代码
 
 2019-02-19 v2.3.0
 # 添加：ConnectedBackup 软件的 ZipAgent.zip 压缩包支持输出到 mysql，可以使用 sql 语句来进一步筛选信息

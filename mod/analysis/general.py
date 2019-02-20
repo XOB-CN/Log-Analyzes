@@ -146,7 +146,7 @@ def general_report(queue1, rulelist, queue2):
 @Debug.get_time_cost('[Debug] 分析端：')
 def archive_general_report(queue1, rulelist, queue2, blk_rulelist):
     """
-    通用的 压缩包 日记分析模块
+    针对压缩包的通用日记分析模块
     :param queue1: input 端放入的数据
     :param rulelist: 匹配列表
     :param queue2: 需要将处理完成的数据放入到消息队列中

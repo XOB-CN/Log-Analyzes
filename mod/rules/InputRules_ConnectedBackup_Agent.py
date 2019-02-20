@@ -11,7 +11,7 @@ match_end=[]
 match_any=[]
 
 # 需要分析的文件列表
-ZipAgent_list = [
+need_file_list = [
     # log 部分
     'Backup\.log',
     'ConnectedAgentUI\.log',

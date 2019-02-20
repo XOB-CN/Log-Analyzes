@@ -11,7 +11,7 @@ match_end=[]
 match_any=[]
 
 # 需要分析的文件列表
-Zip_File_list = [
+need_file_list = [
     # 搜集信息
     'agent\.log',
 

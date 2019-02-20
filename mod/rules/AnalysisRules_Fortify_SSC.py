@@ -5,10 +5,28 @@
 
 match_rules_list = [
     {
+        'name': 'OS 分类',
+        'type': 'Information',
+        'match': "os\.name",
+        'rule': "line.split('=')[-1]"
+    },
+    {
+        'name': 'OS 版本',
+        'type': 'Information',
+        'match': "os\.version",
+        'rule': "line.split('=')[-1]"
+    },
+    {
         'name': 'Fortify SSC 版本',
         'type': 'Information',
         'match': "Version:\d\d\.\d\d\.\d{4}",
         'rule': "line.split(':')[-1]"
+    },
+    {
+        'name': 'JRE 版本',
+        'type': 'Information',
+        'match': "java\.runtime\.version",
+        'rule': "line.split('=')[-1]"
     },
     {
         'name': 'Process_Seed_Bundle',

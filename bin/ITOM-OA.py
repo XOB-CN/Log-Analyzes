@@ -7,7 +7,7 @@ from mod import input, output
 from mod.tools import ArchiveCheck, Message
 from mod.rules import InputRules_ITOM_OA as Input_ITOM_OA
 from mod.rules import AnalysisRules_ITOM_OA as Analysis_ITOM_OA
-from mod.analysis import itom_oa
+from mod.analysis import general
 
 from multiprocessing import Queue, Process
 
@@ -26,7 +26,7 @@ if __name__ == '__main__':
         Message.error_message(input_args[1])
 
     # 获取需要分析的文件列表
-    file_path_list = ArchiveCheck.check_archive(filename, Input_ITOM_OA.Zip_File_list)
+    file_path_list = ArchiveCheck.check_archive(filename, Input_ITOM_OA.need_file_list)
     if file_path_list == []:
         Message.error_message('没有需要分析的文件，请注意只接受标准的 ZipAgent 压缩包')
     # 解压压缩包, 获取解压路径
@@ -46,7 +46,7 @@ if __name__ == '__main__':
 
         # 启动日记分析的多进程模块
         for number in range(ArchiveCheck.get_multiprocess_counts() - 1):
-            number = Process(target=itom_oa.itom_oa_report, args=(Q1, Analysis_ITOM_OA.match_rules_list, Q2, Input_ITOM_OA.black_rule_list))
+            number = Process(target=general.archive_general_report, args=(Q1, Analysis_ITOM_OA.match_rules_list, Q2, Input_ITOM_OA.black_rule_list))
             number.start()
 
     else:
