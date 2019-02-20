@@ -64,6 +64,11 @@ To MySQL:
         ```bash
         CBK-ZipAgent.py -f zipfile -out mysql
         ```
+    * Fortify SSC
+        * 输出到 Report
+        ```bash
+        Fortify-SSC.py -f archivefile -out report [-detail on]
+        ```
     * ITOM OA
         * 输出到 Report
         ```bash
