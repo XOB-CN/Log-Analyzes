@@ -28,6 +28,18 @@ match_rules_list = [
         'rule': 'line.split("=")[-1]',
     },
     {
+        'name': 'OS Name',
+        'type': 'Information',
+        'match': "osname=",
+        'rule': 'line.split("=")[-1]',
+    },
+    {
+        'name': 'OS Kernel',
+        'type': 'Information',
+        'match': "osversion=",
+        'rule': 'line.split("=")[-1]',
+    },
+    {
         'name': 'Certificate Server',
         'type': 'Information',
         'match': "CERTIFICATE_SERVER",
