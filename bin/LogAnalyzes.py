@@ -23,6 +23,9 @@ if __name__ == '__main__':
     else:
         Message.error_message(input_args[1])
 
+    if input_args[1].get('-out') not in ['report','Report']:
+        Message.error_message('没有这个输出方法')
+
     # 启动多进程来处理日记
     Q1 = Queue()    # Q1 存放预处理的数据
     Q2 = Queue()    # Q2 存放已经处理完毕的数据
@@ -36,6 +39,3 @@ if __name__ == '__main__':
         # 启动日记分析的多进程模块
         for number in range(Check.get_multiprocess_counts()-1):
             number = Process(target=general.general_report, args=(Q1, AnalysisRules_General.match_rule_list, Q2)).start()
-
-    else:
-        Message.error_message('没有这个输出方法')

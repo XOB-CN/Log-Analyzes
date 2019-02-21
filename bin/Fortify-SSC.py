@@ -25,6 +25,9 @@ if __name__ == '__main__':
     else:
         Message.error_message(input_args[1])
 
+    if input_args[1].get('-out') not in ['report','Report']:
+        Message.error_message('没有这个输出方法')
+
     # 获取需要分析的文件列表
     file_path_list = ArchiveCheck.check_archive(filename, Input_Fortify_SSC.need_file_list)
     if file_path_list == []:
@@ -48,6 +51,3 @@ if __name__ == '__main__':
         for number in range(ArchiveCheck.get_multiprocess_counts() - 1):
             number = Process(target=general.archive_general_report, args=(Q1, Analysis_Fortify_SSC.match_rules_list, Q2, Input_Fortify_SSC.black_rule_list))
             number.start()
-
-    else:
-        Message.error_message('没有这个输出方法')

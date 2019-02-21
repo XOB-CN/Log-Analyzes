@@ -25,13 +25,16 @@ if __name__ == '__main__':
     else:
         Message.error_message(input_args[1])
 
+    if input_args[1].get('-out') not in ['report','Report','csv','CSV','mysql','MySQL']:
+        Message.error_message('没有这个输出方法')
+
     # 获取需要分析的文件列表
     file_path_list = ArchiveCheck.check_archive(filename, Input_CBK_Agent.need_file_list)
     if file_path_list == None:
         Message.error_message('没有需要分析的文件，请注意只接受标准的 ZipAgent 压缩包')
 
     # 如果输出模式是 csv, 则再做一次过滤, 因为仅仅需要分析汇总信息, 别的都不需要
-    if input_args[1].get('-out') in ['csv','CSV']:
+    if input_args[1].get('-out') in ['csv','CSV','mysql','MySQL']:
         filter_list = []
         for f_name in file_path_list:
             if LogAnalze.match_any('Agent_\d{5}-\d{5}_\d+-\d+-\d{4}_\d+-\d+.txt', f_name):
@@ -79,5 +82,3 @@ if __name__ == '__main__':
         for number in range(ArchiveCheck.get_multiprocess_counts() - 1):
             number = Process(target=connected_backup.cbk_agent_summary_mysql, args=(Q1, Q2))
             number.start()
-    else:
-        Message.error_message('没有这个输出方法')
