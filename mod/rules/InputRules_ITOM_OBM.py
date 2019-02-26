@@ -13,7 +13,12 @@ match_any=[]
 # 需要分析的文件列表
 need_file_list = [
     # log 文件
-    '.*\.log',
+    #'.*\.log',
+
+    # jboss 相关日记
+    'jboss7.*\.log',
+    # gatway 日志
+    'opr-gateway-flowtrace\.log',
 ]
 
 # 如果匹配到，直接跳过后续匹配内容
