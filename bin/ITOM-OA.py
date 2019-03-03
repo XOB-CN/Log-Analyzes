@@ -31,7 +31,7 @@ if __name__ == '__main__':
     # 获取需要分析的文件列表
     file_path_list = ArchiveCheck.check_archive(filename, Input_ITOM_OA.need_file_list)
     if file_path_list == []:
-        Message.error_message('没有需要分析的文件，请注意只接受标准的 ZipAgent 压缩包')
+        Message.error_message('没有需要分析的文件，请注意只接受标准的压缩包')
     # 解压压缩包, 获取解压路径
     unarchive_path = ArchiveCheck.unarchive(filename)
     # 获取需要分析文件列表的绝对路径

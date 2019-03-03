@@ -17,6 +17,7 @@ need_file_list = [
 
     # OA 的所有动作描述，包含错误信息
     'System\.txt',
+    'system',
 ]
 
 # 如果匹配到，直接跳过后续匹配内容
