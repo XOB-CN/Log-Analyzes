@@ -50,7 +50,7 @@ match_rules_list = [
     {
         'name': '邮件优化（EMO）相关问题',
         'type': 'EMO',
-        'match': "The MAPI process failed to|Network Exception in CCFASession::ExchangeMsgs, Net Error:10054|Failed to launch CompoundFileAnalyzer",
+        'match': "The MAPI process failed to|Network Exception in CCFASession::ExchangeMsgs, Net Error:10054|Failed to launch CompoundFileAnalyzer|Failure calling Analyze on the IMailFileAnalysis Interface method",
         'solution': 'EMO 相关的问题，其中 CompoundFile 指的是 Outlook 和 Lotus Notes 这类的数据文件，通常建议按照如下思路来进行调查：<br>'
                     '1. 尝试进行邮件修复，在 Outlook 的安装目录，程序名: scanpst.exe<br>'
                     '2. 如果修复无效，则需要修改 LogSettings.xml 文件来搜集 EMO 的 Debug 级别日记，在根据日记的内容做进一步的调查'

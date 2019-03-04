@@ -18,6 +18,11 @@ need_file_list = [
     'Database\.log',
     'Service\.log',
     'Protocol\.log',
+    'EMOLog\.log',
+    'Heal\.log',
+    'Soap\.log',
+    'Notifier\.log',
+    'CFA\.log',
 
     # xml 部分
     'ConnectionInfo\.xml',
@@ -25,6 +30,7 @@ need_file_list = [
     # txt 部分
     'SystemInfo\.txt',
     'Agent_\d{5}-\d{5}_\d+-\d+-\d{4}_\d+-\d+.txt',
+    #'AgentLog.*\.txt'
 ]
 
 # 如果匹配到，直接跳过后续匹配内容
