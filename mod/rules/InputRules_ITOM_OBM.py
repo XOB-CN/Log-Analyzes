@@ -12,8 +12,8 @@ match_any=[]
 
 # 需要分析的文件列表
 need_file_list = [
-    # log 文件
-    #'.*\.log',
+    # 基本上每次都需要分析的文件，位于 %OvDataDir%\log\System.txt
+    'system\.txt'
 
     # jboss 相关日记
     'jboss7.*\.log',
@@ -26,6 +26,13 @@ need_file_list = [
     'opr-backend\.log',
     'opr-ciresolver\.log',
     'opr-flowtrace-backend\.log',
+
+    # MA(Monitoring Automation) 相关日记，位于 %TOPAZ_HOME%\log\jboss\
+    'opr-webapp\.log',          # 分配/部署相关
+    'opr-configserver\.log',    # MA 以及其它活动，包括 OMi web UIs, Content Pack import, Tool 的执行
+
+    # 所有以 .log 结尾的文件，用于大范围匹配
+    # '.*\.log',
 ]
 
 # 如果匹配到，直接跳过后续匹配内容
