@@ -17,8 +17,15 @@ need_file_list = [
 
     # jboss 相关日记
     'jboss7.*\.log',
+
     # gatway 日志
+    'opr-gateway',
     'opr-gateway-flowtrace\.log',
+
+    # DSP 日记
+    'opr-backend\.log',
+    'opr-ciresolver\.log',
+    'opr-flowtrace-backend\.log',
 ]
 
 # 如果匹配到，直接跳过后续匹配内容

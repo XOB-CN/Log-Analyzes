@@ -20,7 +20,7 @@ match_rules_list = [
     {
         'name': '其余 Warn 信息',
         'type': 'Others',
-        'match': "Wrn",
+        'match': "Wrn|Warn",
         'rule': "line",
     },
     {
