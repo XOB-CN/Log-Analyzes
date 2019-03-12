@@ -65,6 +65,24 @@ match_rules_list = [
         'solution': '请参考 KM1208518',
     },
     {
+        'name': 'OpC40-1905/OpC40-1906/OpC30-36 - 可能是连接性问题',
+        'type': 'OA Error ID',
+        'match': "OpC30-36|OpC40-1905|OpC40-1906",
+        'solution': '请参考 KM633951<br>'
+        '在 OMi 上的 Heartbeat polling 有时候会出现下列错误：<br>' 
+        '- Message Agent on node ... is buffering messages. (OpC40-1905)<br>' 
+        '- Message Agent on node ... is buffering messages for this Management Server. (OpC40-1906)<br>'
+        '在 System.txt 的对应节点上出现下列错误，则表明出现了消息缓冲已经发生<br>'
+        '- Forwarding message/action response to OVO message receiver failed due to server failure. (OpC30-36)<br>'
+        '如果在短时间内发生这个问题，则这个问题可以被忽略，如果持续发生，则需要做继续调查，调查步骤请参考 KM633951',
+    },
+    {
+        'name': '数据延期/翻滚',
+        'type': 'OA Core Error',
+        'match':'(oacore-0).*DATA ROLLOVER',
+        'solution':'未知，仅仅捕获现象，待后续在分析',
+    },
+    {
         'name': '其余 Warn 信息',
         'type': 'Others',
         'match': "Wrn",

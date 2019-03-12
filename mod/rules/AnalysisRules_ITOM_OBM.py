@@ -18,6 +18,12 @@ match_rules_list = [
         'solution': '请考虑数据库问题',
     },
     {
+        'name': '内存溢出',
+        'type': 'Memory',
+        'match': "OutOfMemory|Java heap space",
+        'solution': '请参考 Case: 5318358550/SD01828653',
+    },
+    {
         'name': '其余 Warn 信息',
         'type': 'Others',
         'match': "Wrn|Warn",
