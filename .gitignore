@@ -8,11 +8,9 @@ Desktop.ini
 .idea
 *__pycache__
 
-# Test Log:
+# Log File:
 *.log
 *.zip
-ERRORLOG
-ERRORLOG.*
 
 # Report Files
 *_report.html
