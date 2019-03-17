@@ -23,7 +23,26 @@ class Message(object):
             else:
                 self.dsplay_language = English
 
-    def info_general_help(self):
-        """显示通用的帮助信息"""
+    def general_help(self):
         print(self.dsplay_language.general_help)
+        exit(1)
+
+    def general_input_error(self):
+        print(self.dsplay_language.general_input_error)
+        exit(1)
+
+    def general_file_error(self):
+        print(self.dsplay_language.general_file_error)
+        exit(1)
+
+    def general_output_error(self):
+        print(self.dsplay_language.general_output_error)
+        exit(1)
+
+    def general_no_need_file(self):
+        print(self.dsplay_language.general_no_need_file)
+        exit(1)
+
+    def archive_type_error(self):
+        print(self.dsplay_language.archive_type_error)
         exit(1)
