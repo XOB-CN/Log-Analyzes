@@ -46,3 +46,17 @@ class Message(object):
     def archive_type_error(self):
         print(self.dsplay_language.archive_type_error)
         exit(1)
+
+    def archive_decompressing_info(self):
+        print(self.dsplay_language.archive_decompressing_info)
+
+    def archive_decompressing_error(self, err_content):
+        print(self.dsplay_language.archive_decompressing_error)
+        exit(1)
+
+    def archive_decompression_finish_info(self):
+        print(self.dsplay_language.archive_decompression_finish_info)
+
+    def input_warn(self, wrn_content):
+        if Check.get_debug_level() in ['warn','debug']:
+            print(self.dsplay_language.input_warn + wrn_content)

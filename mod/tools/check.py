@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
 
 import os, sys
+import zipfile, tarfile
 
 from configparser import ConfigParser
 cfg = ConfigParser()
@@ -10,7 +11,6 @@ from mod.tools.match import Match
 
 class Check(object):
     """检查类，主要判断各个参数是否正确以及获取各种配置参数"""
-
     @staticmethod
     def get_input_args():
         """
@@ -30,7 +30,10 @@ class Check(object):
         # 没有输入参数的情况
         if len(input_argv) == 1:
             msg.general_help()
-        # 输入的参数是奇数的情况，不包括一个，因为还要判断是否是 -h / -help
+        # 检查输入的参数是否是 -h 或 -help
+        elif '-h' in input_argv or '-help' in input_argv:
+            return 'cmd_help'
+        # 输入的参数是奇数的情况，不包含1
         elif len(input_argv) %2 == 0 and len(input_argv) > 2:
             msg.general_input_error()
 
@@ -57,18 +60,41 @@ class Check(object):
     def get_display_language():
         return cfg.get('system','display_language')
 
+    @staticmethod
+    def get_temp_path():
+        return cfg.get('system','temp_path')
+
+    @staticmethod
+    def get_debug_level():
+        return cfg.get('system','debug_level')
+
+    @staticmethod
+    def get_encoding(filename):
+        import chardet
+        """获取文件编码"""
+        if cfg.getboolean('system','auto_detect_encoding'):
+            _varchar = b''
+            with open(filename, 'rb') as f:
+                for i in range(cfg.getint('system','detect_encoding_line')):
+                    _varchar = _varchar + f.readline()
+            return chardet.detect(_varchar)['encoding']
+        else:
+            return 'utf-8'
+
+    @staticmethod
+    def get_def_encoding():
+        cfg.read('base', 'default_encoding')
+
 class ArchiveCheck(Check):
     """检查类，主要针对的是压缩包文件（多文件）"""
-
     @staticmethod
     def check_archive(archive_filename, rules_dict):
         """
         检查压缩包中是否包含需要分析的日志文件
         :param archive_filename: 压缩包文件名
         :param rule_list: 需要匹配的规则
-        :return: dict{logs:list, other:list}
+        :return: dict{logs:list, other:list} 或 输出提示信息，并直接退出
         """
-        import zipfile, tarfile
         from mod.tools.message import Message
         msg = Message()
 
@@ -109,4 +135,68 @@ class ArchiveCheck(Check):
                         logs.append(file)
             tar_file.close()
 
-        return {'logs':logs, 'other':other}
+        file_path_list = {'logs':logs, 'other':other}
+        if file_path_list == {'logs': [], 'other': []}:
+            msg.general_no_need_file()
+        else:
+            return file_path_list
+
+    @staticmethod
+    def unarchive(filepath, basepath):
+        """
+        解压压缩包，并返回压缩包的路径
+        :param filepath: 待解压的压缩包所在路径
+        :param basepath: 待解压的基础路径
+        :return: string:解压后的路径
+        """
+        archive_type = None
+        from mod.tools.message import Message
+        msg = Message()
+
+        # 如果是压缩包是 zip
+        if zipfile.is_zipfile(filepath):
+            zip_file = zipfile.ZipFile(filepath)
+            archive_type = 'zip'
+        # 如果是压缩包是 tar.gz
+        elif tarfile.is_tarfile(filepath):
+            tar_file = tarfile.open(filepath, "r:gz")
+            archive_type = 'tar'
+
+        msg.archive_decompressing_info()
+        # 解压压缩包, 并返回解压后文件所在的路径
+        if archive_type == 'zip':
+            zip_file = zipfile.ZipFile(filepath)
+            unarchive_path = os.path.join(basepath, Check.get_temp_path())
+            zip_file.extractall(os.path.join(basepath, Check.get_temp_path()))
+
+        else:
+            tar_file = tarfile.open(filepath, "r:gz")
+            unarchive_path = os.path.join(basepath, Check.get_temp_path())
+            try:
+                tar_file.extractall(os.path.join(basepath, Check.get_temp_path()))
+            except PermissionError as e:
+                if Check.get_debug_level() in ['warn','debug']:
+                    msg.archive_decompressing_error(e)
+            tar_file.close()
+
+        msg.archive_decompression_finish_info()
+        return unarchive_path
+
+    @staticmethod
+    def get_abspath_dict(unzip_path, file_path_dict):
+        """
+        获取文件列表的绝对路径
+        :param unzip_path: 解压文件夹的路径
+        :param file_path_dict: {logs:list, other:list}
+        :return: 包含待分析的文件列表路径
+        """
+        abspath_logs = []
+        abspath_other = []
+
+        for path in file_path_dict.get('logs'):
+            abspath_logs.append(os.path.join(unzip_path, path))
+
+        for path in file_path_dict.get('other'):
+            abspath_other.append(os.path.join(unzip_path, path))
+
+        return {'logs':abspath_logs, 'other':abspath_other}

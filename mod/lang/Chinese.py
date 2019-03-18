@@ -18,3 +18,14 @@ general_no_need_file ='''\
 archive_type_error ='''\
 不支持此格式，仅支持'.zip'和'.tar.gz'格式的压缩包'''
 
+archive_decompressing_info = '''\
+[info] 主进程：正在解压压缩包'''
+
+archive_decompressing_error = '''\
+[error] 主进程：无法处理该文件：'''
+
+archive_decompression_finish_info = '''\
+[info] 主进程：解压完成'''
+
+input_warn = '''\
+[warn] 输入端：无法处理该文件 '''
