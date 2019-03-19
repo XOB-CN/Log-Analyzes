@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
 
 import copy
+from mod.tools.match import Match
 
 def archive_general_report(Queue_Input, ruledict, Queue_Output, black_list):
     """
@@ -32,8 +33,27 @@ def archive_general_report(Queue_Input, ruledict, Queue_Output, black_list):
 
             for logs in log_data:
                 log_line = logs[0]
-                log_content = logs[1]
+                line = logs[1].strip()
+
+                # 替换特殊字符 (用于能正确显示 html 内容)
+                if '<' in line or '>' in line:
+                    line = line.replace('<', '&lt;').replace('>', '&gt;')
 
                 # 解析 ohter 类型日志, 通常是配置文件, 仅需要单行匹配即可
                 if type == 'other':
-                    print(log_content)
+                    for rule in tmp_rule_dict.get('other'):
+                        if Match.match_any(rule.get('match'), line):
+                            cmd = rule.get('rule')
+                            try:
+                                rule['result'] = eval(cmd).strip()
+                            except:
+                                rule['result'] = line
+
+                            tmp_log_line = rule.get('log_line')
+                            if tmp_log_line == None:
+                                rule['log_line'] = log_line
+                                rule['detail'] = log_line + ' ' + line
+                            else:
+                                rule['log_line'] = tmp_log_line + ', ' + log_line
+                                rule['detail'] = rule.get('detail') + "<br>" + log_line + ' ' + line
+

@@ -34,7 +34,10 @@ need_files = {
         'opr-configserver\.log',    # MA 以及其它活动，包括 OMi web UIs, Content Pack import, Tool 的执行
     ],
     # 其余类型
-    'other':[],
+    'other':[
+        # 测试规则
+        'system\.txt',
+    ],
 }
 
 # 内容黑名单，匹配到的内容直接忽略，不匹配
