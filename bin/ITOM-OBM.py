@@ -7,9 +7,11 @@ sys.path.append(basepath)
 from mod.tools.message import Message
 msg = Message()
 
-from rules.ITOM_OBM_InputRules import need_files
+from rules import ITOM_OBM_InputRules as OBM_In_Rules
+from rules import ITOM_OBM_AnalysisRules as OBM_Alysis_Rules
 from mod.tools.check import Check, ArchiveCheck
 from mod.input.general import archive_general
+from mod.analysis.general import archive_general_report
 
 from multiprocessing import Queue, Process
 
@@ -27,7 +29,7 @@ if __name__ == '__main__':
         msg.general_output_error()
 
     # 执行到此，参数没有问题，继续过滤压缩包中的内容
-    file_path_dict = ArchiveCheck.check_archive(filepath, need_files)
+    file_path_dict = ArchiveCheck.check_archive(filepath, OBM_In_Rules.need_files)
     # 解压压缩包，获取解压路径
     unarchive_path = ArchiveCheck.unarchive(filepath, basepath)
     # 获取需要分析文件列表的绝对路径
@@ -38,8 +40,17 @@ if __name__ == '__main__':
     Queue_Output = Queue()
     Queue_Control = Queue()
 
+    # 生成多进程需要的数据
+    InputRule = {}
+    InputRule['match_start'] = OBM_In_Rules.match_start
+    InputRule['match_any'] = OBM_In_Rules.match_any
+    InputRule['match_end'] = OBM_In_Rules.match_end
+    ruleldict = {}
+    ruleldict['logs'] = OBM_Alysis_Rules.log_rules_list
+    ruleldict['other'] = OBM_Alysis_Rules.other_rule_list
+
     if input_argv.get('-out') in ['report','Report']:
-        p1 = Process(target=archive_general, args=(file_abspath_dict, Queue_Input), name='InputProcess')
-        #p2 = Process()
+        p1 = Process(target=archive_general, args=(file_abspath_dict, Queue_Input, InputRule, input_argv))
+        p2 = Process(target=archive_general_report, args=(Queue_Input, ruleldict, Queue_Output, OBM_In_Rules.black_list))
         p1.start()
-        #p2.start()
+        p2.start()

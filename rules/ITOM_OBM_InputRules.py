@@ -36,3 +36,9 @@ need_files = {
     # 其余类型
     'other':[],
 }
+
+# 内容黑名单，匹配到的内容直接忽略，不匹配
+black_list = [
+    # eg:如果该行包括 content 则直接忽略
+    # 'content',
+]

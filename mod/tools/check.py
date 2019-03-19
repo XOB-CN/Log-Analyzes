@@ -21,7 +21,7 @@ class Check(object):
         """
         input_argv = sys.argv
         input_dict = {}
-        check_list = ['-f', '-out', '-detail', '-t', '-filter']
+        check_list = ['-f', '-out', '-detail', '-t', '-le', '-ge']
 
         # 实例化 message 类
         from mod.tools.message import Message
@@ -83,7 +83,44 @@ class Check(object):
 
     @staticmethod
     def get_def_encoding():
-        cfg.read('base', 'default_encoding')
+        return cfg.get('system', 'default_encoding')
+
+    @staticmethod
+    def get_segment_number():
+        return cfg.getint('system','segment_number')
+
+    @staticmethod
+    def check_input_rule(match_start, match_end, match_any, line):
+        """
+        分段检查规则，必须返回为 Ture 时才能进行分段，如果匹配到这些规则，则会直接返回 False
+        :param match_start: 匹配开头的列表
+        :param match_end: 匹配结尾的列表
+        :param match_any: 匹配任意的列表
+        :param line: 待匹配的日记内容
+        :return: 布尔值
+        """
+        for rule in match_start:
+            if Match.match_start(rule, line):
+                return False
+        for rule in match_end:
+            if Match.match_end(rule, line.strip(), isInclsEnter=False):
+                return False
+        for rule in match_any:
+            if Match.match_any(rule, line):
+                return False
+        return True
+
+    @staticmethod
+    def get_multiprocess_counts():
+        """获取可以同时进行的进程数"""
+        if cfg.get('system', 'multiprocess_counts') in ['Auto', 'auto']:
+            # 获取 Windows 的 CPU 核数
+            try:
+                return int(os.environ['NUMBER_OF_PROCESSORS'])
+            except:
+                return 4
+        else:
+            return cfg.getint('system', 'multiprocess_counts')
 
 class ArchiveCheck(Check):
     """检查类，主要针对的是压缩包文件（多文件）"""

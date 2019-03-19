@@ -1,24 +1,27 @@
 # -*- coding:utf-8 -*-
 
+import copy
 from mod.tools.check import Check
+from mod.tools.match import Match
 from mod.tools.message import Message
 msg = Message()
 
-def archive_general(file_abspath_dict, Queue_Input, match_rule=None):
+def archive_general(file_abspath_dict, Queue_Input, InputRule, input_argv):
     """
     通用的输入端读取日志，不需要处理日志的排序问题
     :param file_abspath_dict: 包含需要分析的文件列表，按照字典进行分类
     :param Queue_Input: 将预读取完成的数据放到 Queue_Input 中
-    :param match_rule: 可选的过滤规则，可以进一步过滤 file_abspath_dict.get('logs') 中的内容，例如使用时间来过滤
+    :param InputRule: 类型是字典数据
+    :param input_argv: 可选的过滤规则，可以进一步过滤 file_abspath_dict.get('logs') 中的内容，例如使用时间来过滤
     :return:
     """
 
+    # 初始化变量
     section_id = 0 # 记录分段的个数序号，用于记录顺序
     section_line = 0  # 记录每段内容的行数
     src_log_line = 0  # 记录原始日记的行数
     log_content = []  # 存放初步整理的数据
-
-    def_encoding = Check.get_def_encoding()
+    def_encoding = Check.get_def_encoding()  # 获取配置文件中的默认编码
 
     # 由于 other 类型的日志内容一般都是配置文件信息，所以将读取后的文件内容处理后发送到 Queue_Input 即可
     for filepath in file_abspath_dict.get('other'):
@@ -28,53 +31,90 @@ def archive_general(file_abspath_dict, Queue_Input, match_rule=None):
                 for line in f:
                     n += 1
                     log_content.append(['['+ str(n) +'] ', line])
-            # 将数据放入 Queue_Input 中
-            # 数据格式为 {'section_id':section_id, 'type':'other', 'filepath':filepath, 'log_content':log_content}
+            # 数据格式为 {'section_id':section_id, 'type':'other', 'filepath':filepath, 'log_content':log_content_copy}
             section_id += 1
-            Queue_Input.put({'section_id':section_id, 'type':'other', 'filepath':filepath, 'log_content':log_content})
+            log_content_copy = copy.deepcopy(log_content)
+            Queue_Input.put({'section_id':section_id, 'type':'other', 'filepath':filepath, 'log_content':log_content_copy})
+            log_content.clear()
         except:
             try:
-                encoding = Check.get_encoding(filepath)
-                with open(filepath, mode='r', encoding=encoding) as f:
+                with open(filepath, mode='r', encoding=def_encoding) as f:
                     n = 0
                     for line in f:
                         n += 1
                         log_content.append(['[' + str(n) + '] ', line])
                 section_id += 1
-                Queue_Input.put(
-                    {'section_id': section_id, 'type': 'other', 'filepath': filepath, 'log_content': log_content})
+                log_content_copy = copy.deepcopy(log_content)
+                Queue_Input.put({'section_id': section_id, 'type': 'other', 'filepath': filepath, 'log_content': log_content_copy})
+                log_content.clear()
             except:
                 msg.input_warn(filepath)
 
+    # logs 类型的日志内容可能有进一步过滤的需求
     for filepath in file_abspath_dict.get('logs'):
-        # try:
-        #     with open(filepath, mode='r', encoding=def_encoding) as f:
-        #         pass
-        # except:
-        #     try:
-        #         encoding = Check.get_encoding(filepath)
-        #         with open(filepath, mode='r', encoding=encoding) as f:
-        #             pass
-        #     except:
-        #         pass
         try:
             with open(filepath, mode='r', encoding=def_encoding) as f:
-                n = 0
+                tag_start = False
                 for line in f:
-                    n += 1
-                    log_content.append(['['+ str(n) +'] ', line])
+                    # 额外的匹配条件
+                    if input_argv.get('-le') == input_argv.get('-ge') == None:
+                        tag_start = True
+                    elif Match.match_any(input_argv.get('-ge'), line):
+                        tag_start = True
+                    elif Match.match_any(input_argv.get('-le'), line):
+                        tag_start = False
+
+                    if tag_start == True:
+                        section_line += 1
+                        src_log_line += 1
+                        log_content.append(['[' + str(src_log_line) + '] ', line])
+
+                        if section_line >= Check.get_segment_number() and Check.check_input_rule(match_start=InputRule.get('match_start'), match_end=InputRule.get('match_end'), match_any=InputRule.get('match_any'), line=line):
+                            section_id += 1
+                            log_content_copy = copy.deepcopy(log_content)
+                            Queue_Input.put({'section_id': section_id, 'type': 'logs', 'filepath': filepath, 'log_content': log_content_copy})
+                            log_content.clear()
+                            section_line = 0
+            # 将最后一部分日记数据放入到队列中
             section_id += 1
-            #Queue_Input.put({'section_id':section_id, 'type':'other', 'filepath':filepath, 'log_content':log_content})
+            log_content_copy = copy.deepcopy(log_content)
+            Queue_Input.put({'section_id': section_id, 'type': 'logs', 'filepath': filepath, 'log_content': log_content_copy})
+            log_content.clear()
+            src_log_line = 0
         except:
             try:
                 encoding = Check.get_encoding(filepath)
-                print(encoding)
                 with open(filepath, mode='r', encoding=encoding) as f:
-                    n = 0
+                    tag_start = False
                     for line in f:
-                        n += 1
-                        log_content.append(['[' + str(n) + '] ', line])
-                    section_id += 1
-                    #Queue_Input.put({'section_id': section_id, 'type': 'other', 'filepath': filepath, 'log_content': log_content})
-            except UnicodeDecodeError as e:
+                        # 额外的匹配条件
+                        if input_argv.get('-le') == input_argv.get('-ge') == None:
+                            tag_start = True
+                        elif Match.match_any(input_argv.get('-ge'), line):
+                            tag_start = True
+                        elif Match.match_any(input_argv.get('-le'), line):
+                            tag_start = False
+
+                        if tag_start == True:
+                            section_line += 1
+                            src_log_line += 1
+                            log_content.append(['[' + str(src_log_line) + '] ', line])
+
+                            if section_line >= Check.get_segment_number() and Check.check_input_rule(match_start=InputRule.get('match_start'), match_end=InputRule.get('match_end'), match_any=InputRule.get('match_any'), line=line):
+                                section_id += 1
+                                log_content_copy = copy.deepcopy(log_content)
+                                Queue_Input.put({'section_id': section_id, 'type': 'logs', 'filepath': filepath, 'log_content': log_content_copy})
+                                log_content.clear()
+                                section_line = 0
+                # 将最后一部分日记数据放入到队列中
+                section_id += 1
+                log_content_copy = copy.deepcopy(log_content)
+                Queue_Input.put({'section_id': section_id, 'type': 'logs', 'filepath': filepath, 'log_content': log_content_copy})
+                log_content.clear()
+                src_log_line = 0
+            except:
                 msg.input_warn(filepath)
+
+    # 放入 False, 作为进程终止的判断条件
+    for i in range(Check.get_multiprocess_counts() - 1):
+        Queue_Input.put(False)
