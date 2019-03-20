@@ -7,4 +7,6 @@ sys.path.append(basepath)
 from mod.tools.match import Match
 from mod.tools.check import Check
 
-print(Check.get_def_encoding())
+path = 'c:\\demo\\text.txt'
+
+print(os.path.split(path))
