@@ -39,9 +39,9 @@ log_rules_list = [
 
 other_rule_list = [
     {
-        'name': 'OA NodeName',
-        'type': 'Information',
-        'match': "OpC",
-        'rule': "line.split('cpp')",
+        # 'name': 'OA NodeName',
+        # 'type': 'Information',
+        # 'match': "OpC30-36",
+        # 'rule': "line.split('cpp')",
     },
 ]

@@ -56,9 +56,9 @@ def archive_general_report(Queue_Input, ruledict, Queue_Output, black_list):
                         if Match.match_any(rule.get('match'), line):
                             cmd = rule.get('rule')
                             try:
-                                rule['result'] = eval(cmd).strip()
+                                rule['content'] = eval(cmd).strip()
                             except:
-                                rule['result'] = line
+                                rule['content'] = line
 
                             tmp_log_line = rule.get('log_line')
                             if tmp_log_line == None:
@@ -142,7 +142,7 @@ def archive_general_report(Queue_Input, ruledict, Queue_Output, black_list):
                             # 常规规则：记录内容
                             tmp_log_line = rule.get('log_line')
                             if tmp_log_line == None:
-                                rule['log_line'] = Template_Report.html_font(filename, color='Green') + '<br>' + log_line
+                                rule['log_line'] = Template_Report.html_font(filepath, color='Green') + '<br>' + log_line
                                 rule['detail'] = Template_Report.html_font(log_index, color='Green') + ' ' + line
                             else:
                                 rule['log_line'] = tmp_log_line + ', ' + log_line
@@ -152,7 +152,7 @@ def archive_general_report(Queue_Input, ruledict, Queue_Output, black_list):
                         # 单行匹配流程
                         elif Match.match_any(rule.get('match'), line):
                             if rule.get('log_line') == None:
-                                rule['log_line'] = Template_Report.html_font(filename, color='Green') + '<br>' + log_line
+                                rule['log_line'] = Template_Report.html_font(filepath, color='Green') + '<br>' + log_line
                                 rule['detail'] = Template_Report.html_font(log_index, color='Green') + ' ' + line
                                 break
                             else:

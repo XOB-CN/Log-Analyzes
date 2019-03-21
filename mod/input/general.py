@@ -38,7 +38,8 @@ def archive_general(file_abspath_dict, Queue_Input, InputRule, input_argv):
             log_content.clear()
         except:
             try:
-                with open(filepath, mode='r', encoding=def_encoding) as f:
+                encoding = Check.get_encoding(filepath)
+                with open(filepath, mode='r', encoding=encoding) as f:
                     n = 0
                     for line in f:
                         n += 1

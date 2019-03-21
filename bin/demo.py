@@ -7,6 +7,8 @@ sys.path.append(basepath)
 from mod.tools.match import Match
 from mod.tools.check import Check
 
-path = 'c:\\demo\\text.txt'
+d = [1,2,3]
+b = [4,5,6]
 
-print(os.path.split(path))
+
+print(b+d)

@@ -11,6 +11,7 @@ from rules import ITOM_OBM_InputRules as OBM_In_Rules
 from rules import ITOM_OBM_AnalysisRules as OBM_Alysis_Rules
 from mod.tools.check import Check, ArchiveCheck
 from mod.input.general import archive_general
+from mod.output.report.general import archive_to_report
 from mod.analysis.general import archive_general_report
 
 from multiprocessing import Queue, Process
@@ -52,5 +53,7 @@ if __name__ == '__main__':
     if input_argv.get('-out') in ['report','Report']:
         p1 = Process(target=archive_general, args=(file_abspath_dict, Queue_Input, InputRule, input_argv))
         p2 = Process(target=archive_general_report, args=(Queue_Input, ruleldict, Queue_Output, OBM_In_Rules.black_list))
+        p3 = Process(target=archive_to_report, args=(Queue_Output, ruleldict, input_argv, unarchive_path))
         p1.start()
         p2.start()
+        p3.start()
