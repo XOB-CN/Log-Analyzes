@@ -20,11 +20,12 @@ if __name__ == '__main__':
     # 获取输入的参数
     input_argv= Check.get_input_args()
     if input_argv == 'cmd_help':
-        msg.general_help()
+        msg.general_help_command()
     # 检查文件是否存在
     filepath = input_argv.get('-f')
     if os.path.exists(filepath) == False:
         msg.general_file_error()
+
     # 检查输出方法
     if input_argv.get('-out') not in ['report','Report']:
         msg.general_output_error()
@@ -36,11 +37,6 @@ if __name__ == '__main__':
     # 获取需要分析文件列表的绝对路径
     file_abspath_dict = ArchiveCheck.get_abspath_dict(unarchive_path, file_path_dict)
 
-    # 启动子进程并进行日志分析
-    Queue_Input = Queue()
-    Queue_Output = Queue()
-    Queue_Control = Queue()
-
     # 生成多进程需要的数据
     InputRule = {}
     InputRule['match_start'] = OBM_In_Rules.match_start
@@ -50,10 +46,17 @@ if __name__ == '__main__':
     ruleldict['logs'] = OBM_Alysis_Rules.log_rules_list
     ruleldict['other'] = OBM_Alysis_Rules.other_rule_list
 
+    # 启动子进程并进行日志分析
+    Queue_Input = Queue()
+    Queue_Output = Queue()
+    Queue_Control = Queue()
+
     if input_argv.get('-out') in ['report','Report']:
-        p1 = Process(target=archive_general, args=(file_abspath_dict, Queue_Input, InputRule, input_argv))
-        p2 = Process(target=archive_general_report, args=(Queue_Input, ruleldict, Queue_Output, OBM_In_Rules.black_list))
-        p3 = Process(target=archive_to_report, args=(Queue_Output, ruleldict, input_argv, unarchive_path))
+        p1 = Process(target=archive_general, args=(file_abspath_dict, Queue_Input, InputRule, input_argv), name='Input Process')
+        p2 = Process(target=archive_to_report, args=(Queue_Output, ruleldict, input_argv, unarchive_path), name='Output Process')
         p1.start()
         p2.start()
-        p3.start()
+
+        for p in range(Check.get_multiprocess_counts()-1):
+            p = Process(target=archive_general_report, args=(Queue_Input, ruleldict, Queue_Output, OBM_In_Rules.black_list))
+            p.start()

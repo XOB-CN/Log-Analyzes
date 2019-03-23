@@ -1,13 +1,14 @@
 # -*- coding:utf-8 -*-
 
 import os, sys
-import zipfile, tarfile
+import zipfile, tarfile, chardet
 
 from configparser import ConfigParser
 cfg = ConfigParser()
 cfg.read(os.path.abspath(os.path.join(os.path.realpath(__file__),'..\..\..','config.cfg')), encoding='utf-8')
 
 from mod.tools.match import Match
+from mod.tools.debug import Debug
 
 class Check(object):
     """检查类，主要判断各个参数是否正确以及获取各种配置参数"""
@@ -58,7 +59,7 @@ class Check(object):
 
     @staticmethod
     def get_display_language():
-        return cfg.get('system','display_language')
+        return cfg.get('display','display_language')
 
     @staticmethod
     def get_temp_path():
@@ -70,12 +71,11 @@ class Check(object):
 
     @staticmethod
     def get_encoding(filename):
-        import chardet
         """获取文件编码"""
-        if cfg.getboolean('system','auto_detect_encoding'):
+        if cfg.getboolean('input','auto_detect_encoding'):
             _varchar = b''
             with open(filename, 'rb') as f:
-                for i in range(cfg.getint('system','detect_encoding_line')):
+                for i in range(cfg.getint('input','detect_encoding_line')):
                     _varchar = _varchar + f.readline()
             return chardet.detect(_varchar)['encoding']
         else:
@@ -83,11 +83,11 @@ class Check(object):
 
     @staticmethod
     def get_def_encoding():
-        return cfg.get('system', 'default_encoding')
+        return cfg.get('input', 'default_encoding')
 
     @staticmethod
     def get_segment_number():
-        return cfg.getint('system','segment_number')
+        return cfg.getint('input','segment_number')
 
     @staticmethod
     def check_input_rule(match_start, match_end, match_any, line):
@@ -122,9 +122,14 @@ class Check(object):
         else:
             return cfg.getint('system', 'multiprocess_counts')
 
+    @staticmethod
+    def get_display_segments():
+        return cfg.getint('display', 'display_segments')
+
 class ArchiveCheck(Check):
     """检查类，主要针对的是压缩包文件（多文件）"""
     @staticmethod
+    @Debug.get_time_cost('[debug] 主进程 - 检查压缩包：')
     def check_archive(archive_filename, rules_dict):
         """
         检查压缩包中是否包含需要分析的日志文件
@@ -179,6 +184,7 @@ class ArchiveCheck(Check):
             return file_path_list
 
     @staticmethod
+    @Debug.get_time_cost('[debug] 主进程 - 解压缩：')
     def unarchive(filepath, basepath):
         """
         解压压缩包，并返回压缩包的路径
@@ -220,6 +226,7 @@ class ArchiveCheck(Check):
         return unarchive_path
 
     @staticmethod
+    @Debug.get_time_cost('[debug] 主进程 - 获取解压后的绝对路径：')
     def get_abspath_dict(unzip_path, file_path_dict):
         """
         获取文件列表的绝对路径

@@ -27,13 +27,13 @@ log_rules_list = [
         'name': '其余 Warn 信息',
         'type': 'Others',
         'match': "Wrn|Warn",
-        'rule': "line",
+        'solution': '剩余的 Warn 信息',
     },
     {
         'name': '其余 Error 信息',
         'type': 'Others',
         'match': "Err|失敗",
-        'rule': "line",
+        'solution': '剩余的 Error 信息',
     },
 ]
 

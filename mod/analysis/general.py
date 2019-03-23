@@ -4,8 +4,12 @@ import os
 import copy
 from mod.tools.match import Match
 from mod.tools.check import Check
+from mod.tools.debug import Debug
 from mod.tools.template import Template_Report
+from mod.tools.message import Message
+msg = Message()
 
+@Debug.get_time_cost('[debug] 分析端 - 每次运行的总耗时：')
 def archive_general_report(Queue_Input, ruledict, Queue_Output, black_list):
     """
     针对压缩包的通用日记分析模块, 输出的数据格式为：{'id':id, 'logs':data_copy}
@@ -42,6 +46,7 @@ def archive_general_report(Queue_Input, ruledict, Queue_Output, black_list):
                 log_line = logs[0]
                 log_index = filename + ' ' + log_line
                 line = logs[1].strip()
+                black_rule = True
 
                 # 替换特殊字符 (用于能正确显示 html 内容)
                 if '<' in line or '>' in line:
@@ -57,8 +62,9 @@ def archive_general_report(Queue_Input, ruledict, Queue_Output, black_list):
                             cmd = rule.get('rule')
                             try:
                                 rule['content'] = eval(cmd).strip()
-                            except:
+                            except Exception as e:
                                 rule['content'] = line
+                                msg.analysis_content_warn(str(e))
 
                             tmp_log_line = rule.get('log_line')
                             if tmp_log_line == None:
@@ -73,93 +79,99 @@ def archive_general_report(Queue_Input, ruledict, Queue_Output, black_list):
                     tag_logs = True
                     tag_other = False
 
-                    for rule in tmp_rule_logs:
-                        # 多行匹配流程
-                        if muline_match_str:
-                            # 第一次匹配到 endmatch 中的内容
-                            if Match.match_any(tmp_rule_logs[rule_list_idx].get('endmatch'), line) and muline_match_end == False:
-                                muline_match_end = True
-                                # 由于已经匹配到 endmatch 中的内容，所以数据肯定不为空
-                                # 有一种可能情况，就是输入端分段的时候没有将多行匹配的内容完整的分成一段，这样会导致无法完成多行匹配
-                                # 此时执行 except 中的代码，终止多行匹配流程，强制进入单行匹配流程
-                                try:
-                                    tmp_log_line = tmp_rule_logs[rule_list_idx].get('log_line')
-                                    tmp_rule_logs[rule_list_idx]['log_line'] = tmp_log_line + ', ' + log_line
-                                    tmp_rule_logs[rule_list_idx]['detail'] = tmp_rule_logs[rule_list_idx]['detail'].strip()+ "<br>" + log_index + ' ' + line
-                                    break
-                                except Exception as e:
-                                    if Check.get_debug_level() in ['warn', 'debug']:
-                                        tmp_rule_logs[rule_list_idx]['log_line'] = Template_Report.html_font(log_line)
-                                        tmp_rule_logs[rule_list_idx]['detail'] = Template_Report.html_font('{n} 无法判断本行内容, 请自行检查, 请尝试调整配置文件中 segment_number 的值, 或者修改输入端的分段策略<br>'.
-                                                                                                           format(n=log_index) + Template_Report.html_font(log_index) + ' ' + Template_Report.html_font(line))
+                # 黑名单规则
+                for blk_rule in black_list:
+                    if Match.match_any(blk_rule, line):
+                        black_rule = False
+
+                    if black_rule:
+                        for rule in tmp_rule_logs:
+                            # 多行匹配流程
+                            if muline_match_str:
+                                # 第一次匹配到 endmatch 中的内容
+                                if Match.match_any(tmp_rule_logs[rule_list_idx].get('endmatch'), line) and muline_match_end == False:
+                                    muline_match_end = True
+                                    # 由于已经匹配到 endmatch 中的内容，所以数据肯定不为空
+                                    # 有一种可能情况，就是输入端分段的时候没有将多行匹配的内容完整的分成一段，这样会导致无法完成多行匹配
+                                    # 此时执行 except 中的代码，终止多行匹配流程，强制进入单行匹配流程
+                                    try:
+                                        tmp_log_line = tmp_rule_logs[rule_list_idx].get('log_line')
+                                        tmp_rule_logs[rule_list_idx]['log_line'] = tmp_log_line + ', ' + log_line
+                                        tmp_rule_logs[rule_list_idx]['detail'] = tmp_rule_logs[rule_list_idx]['detail'].strip()+ "<br>" + log_index + ' ' + line
+                                        break
+                                    except Exception as e:
+                                        if Check.get_debug_level() in ['warn', 'debug']:
+                                            tmp_rule_logs[rule_list_idx]['log_line'] = Template_Report.html_font(log_line)
+                                            tmp_rule_logs[rule_list_idx]['detail'] = Template_Report.html_font('{n} 无法判断本行内容, 请自行检查, 请尝试调整配置文件中 segment_number 的值, 或者修改输入端的分段策略<br>'.
+                                                                                                               format(n=log_index) + Template_Report.html_font(log_index) + ' ' + Template_Report.html_font(line))
+                                        muline_match_str = False
+                                        muline_match_end = False
+                                        break
+
+                                # 多次匹配到 endmatch 中的内容
+                                elif Match.match_any(tmp_rule_logs[rule_list_idx].get('endmatch'), line) and muline_match_end == True:
+                                    # 直接录入数据就好，不需要做特殊处理
+                                    try:
+                                        tmp_log_line = tmp_rule_logs[rule_list_idx].get('log_line')
+                                        tmp_rule_logs[rule_list_idx]['log_line'] = tmp_log_line + ', ' + log_line
+                                        tmp_rule_logs[rule_list_idx]['detail'] = tmp_rule_logs[rule_list_idx]['detail'].strip() + "<br>" + log_index + ' ' + line
+                                        break
+                                    except Exception as e:
+                                        if Check.get_debug_level() in ['warn', 'debug']:
+                                            tmp_rule_logs[rule_list_idx]['log_line'] = Template_Report.html_font(log_line)
+                                            tmp_rule_logs[rule_list_idx]['detail'] = Template_Report.html_font('{n} 无法判断本行内容, 请自行检查, 请尝试调整配置文件中 segment_number 的值, 或者修改输入端的分段策略<br>'.
+                                                                                                               format(n=log_index)) + Template_Report.html_font(log_index) + ' ' + Template_Report.html_font(line)
+                                        muline_match_str = False
+                                        muline_match_end = False
+                                        break
+
+                                # 没有匹配到 endmatch, 但是多行匹配已经开启
+                                elif Match.match_any(tmp_rule_logs[rule_list_idx].get('endmatch'), line) == False and muline_match_end == False:
+                                    try:
+                                        tmp_log_line = tmp_rule_logs[rule_list_idx].get('log_line')
+                                        tmp_rule_logs[rule_list_idx]['log_line'] = tmp_log_line + ', ' + log_line
+                                        tmp_rule_logs[rule_list_idx]['detail'] = tmp_rule_logs[rule_list_idx]['detail'].strip() + "<br>" + log_index + ' ' + line
+                                        break
+                                    except Exception as e:
+                                        if Check.get_debug_level() in ['warn', 'debug']:
+                                            tmp_rule_logs[rule_list_idx]['log_line'] = Template_Report.html_font(log_line)
+                                            tmp_rule_logs[rule_list_idx]['detail'] = Template_Report.html_font('{n} 无法判断本行内容, 请自行检查, 请尝试调整配置文件中 segment_number 的值, 或者修改输入端的分段策略<br>'.
+                                                                                                               format(n=log_index)) + Template_Report.html_font(log_index) + ' ' + Template_Report.html_font(line)
+                                        muline_match_str = False
+                                        muline_match_end = False
+                                        break
+
+                                # 代表上一行已经是该事件的最后一行，本行将要进入单行匹配流程
+                                elif Match.match_any(tmp_rule_logs[rule_list_idx].get('endmatch'), line) == False and muline_match_end == True:
                                     muline_match_str = False
                                     muline_match_end = False
-                                    break
 
-                            # 多次匹配到 endmatch 中的内容
-                            elif Match.match_any(tmp_rule_logs[rule_list_idx].get('endmatch'), line) and muline_match_end == True:
-                                # 直接录入数据就好，不需要做特殊处理
-                                try:
-                                    tmp_log_line = tmp_rule_logs[rule_list_idx].get('log_line')
-                                    tmp_rule_logs[rule_list_idx]['log_line'] = tmp_log_line + ', ' + log_line
-                                    tmp_rule_logs[rule_list_idx]['detail'] = tmp_rule_logs[rule_list_idx]['detail'].strip() + "<br>" + log_index + ' ' + line
-                                    break
-                                except Exception as e:
-                                    if Check.get_debug_level() in ['warn', 'debug']:
-                                        tmp_rule_logs[rule_list_idx]['log_line'] = Template_Report.html_font(log_line)
-                                        tmp_rule_logs[rule_list_idx]['detail'] = Template_Report.html_font('{n} 无法判断本行内容, 请自行检查, 请尝试调整配置文件中 segment_number 的值, 或者修改输入端的分段策略<br>'.
-                                                                                                           format(n=log_index)) + Template_Report.html_font(log_index) + ' ' + Template_Report.html_font(line)
-                                    muline_match_str = False
-                                    muline_match_end = False
-                                    break
+                            # 开启多行匹配
+                            elif Match.match_any(rule.get('match'), line) and rule.get('endmatch') != None:
+                                muline_match_str = True
+                                rule_list_idx = tmp_rule_logs.index(rule)
 
-                            # 没有匹配到 endmatch, 但是多行匹配已经开启
-                            elif Match.match_any(tmp_rule_logs[rule_list_idx].get('endmatch'), line) == False and muline_match_end == False:
-                                try:
-                                    tmp_log_line = tmp_rule_logs[rule_list_idx].get('log_line')
-                                    tmp_rule_logs[rule_list_idx]['log_line'] = tmp_log_line + ', ' + log_line
-                                    tmp_rule_logs[rule_list_idx]['detail'] = tmp_rule_logs[rule_list_idx]['detail'].strip() + "<br>" + log_index + ' ' + line
-                                    break
-                                except Exception as e:
-                                    if Check.get_debug_level() in ['warn', 'debug']:
-                                        tmp_rule_logs[rule_list_idx]['log_line'] = Template_Report.html_font(log_line)
-                                        tmp_rule_logs[rule_list_idx]['detail'] = Template_Report.html_font('{n} 无法判断本行内容, 请自行检查, 请尝试调整配置文件中 segment_number 的值, 或者修改输入端的分段策略<br>'.
-                                                                                                           format(n=log_index)) + Template_Report.html_font(log_index) + ' ' + Template_Report.html_font(line)
-                                    muline_match_str = False
-                                    muline_match_end = False
-                                    break
-
-                            # 代表上一行已经是该事件的最后一行，本行将要进入单行匹配流程
-                            elif Match.match_any(tmp_rule_logs[rule_list_idx].get('endmatch'), line) == False and muline_match_end == True:
-                                muline_match_str = False
-                                muline_match_end = False
-
-                        # 开启多行匹配
-                        elif Match.match_any(rule.get('match'), line) and rule.get('endmatch') != None:
-                            muline_match_str = True
-                            rule_list_idx = tmp_rule_logs.index(rule)
-
-                            # 常规规则：记录内容
-                            tmp_log_line = rule.get('log_line')
-                            if tmp_log_line == None:
-                                rule['log_line'] = Template_Report.html_font(filepath, color='Green') + '<br>' + log_line
-                                rule['detail'] = Template_Report.html_font(log_index, color='Green') + ' ' + line
-                            else:
-                                rule['log_line'] = tmp_log_line + ', ' + log_line
-                                rule['detail'] = rule['detail'].strip() + "<br>" + Template_Report.html_font(log_index, color='Green') + ' ' + line
-                            break
-
-                        # 单行匹配流程
-                        elif Match.match_any(rule.get('match'), line):
-                            if rule.get('log_line') == None:
-                                rule['log_line'] = Template_Report.html_font(filepath, color='Green') + '<br>' + log_line
-                                rule['detail'] = Template_Report.html_font(log_index, color='Green') + ' ' + line
+                                # 常规规则：记录内容
+                                tmp_log_line = rule.get('log_line')
+                                if tmp_log_line == None:
+                                    rule['log_line'] = Template_Report.html_font(filepath, color='Green') + '<br>' + log_line
+                                    rule['detail'] = Template_Report.html_font(log_index, color='Green') + ' ' + line
+                                else:
+                                    rule['log_line'] = tmp_log_line + ', ' + log_line
+                                    rule['detail'] = rule['detail'].strip() + "<br>" + Template_Report.html_font(log_index, color='Green') + ' ' + line
                                 break
-                            else:
-                                rule['log_line'] = rule.get('log_line') + ', ' + log_line
-                                rule['detail'] = rule.get('detail') + '<br>' + Template_Report.html_font(log_index, color='Green') + ' ' + line
-                                # break 的作用是如果匹配到了相应的规则，则不再进行匹配，防止重复匹配的问题
-                                break
+
+                            # 单行匹配流程
+                            elif Match.match_any(rule.get('match'), line):
+                                if rule.get('log_line') == None:
+                                    rule['log_line'] = Template_Report.html_font(filepath, color='Green') + '<br>' + log_line
+                                    rule['detail'] = Template_Report.html_font(log_index, color='Green') + ' ' + line
+                                    break
+                                else:
+                                    rule['log_line'] = rule.get('log_line') + ', ' + log_line
+                                    rule['detail'] = rule.get('detail') + '<br>' + Template_Report.html_font(log_index, color='Green') + ' ' + line
+                                    # break 的作用是如果匹配到了相应的规则，则不再进行匹配，防止重复匹配的问题
+                                    break
 
             if tag_logs:
                 data_copy = copy.deepcopy(tmp_rule_logs)
@@ -171,10 +183,9 @@ def archive_general_report(Queue_Input, ruledict, Queue_Output, black_list):
                 tag_other = False
 
             Queue_Output.put({'id':id, 'logs':data_copy})
+            msg.analysis_info(id)
 
         if n:
-            pass
-        else:
             pass
 
     Queue_Output.put(False)

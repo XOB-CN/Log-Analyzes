@@ -25,6 +25,14 @@ class Message(object):
 
     def general_help(self):
         print(self.dsplay_language.general_help)
+        exit(0)
+
+    def general_help_command(self):
+        print(self.dsplay_language.general_help_command)
+        exit(0)
+
+    def general_no_function(self):
+        print(self.dsplay_language.general_no_function)
         exit(1)
 
     def general_input_error(self):
@@ -57,6 +65,46 @@ class Message(object):
     def archive_decompression_finish_info(self):
         print(self.dsplay_language.archive_decompression_finish_info)
 
+    def input_info(self, section_id):
+        """根据 section_id 的数值来显示提示信息"""
+        if section_id % Check.get_display_segments() == 0:
+            print(self.dsplay_language.input_info.format(num=section_id))
+
     def input_warn(self, wrn_content):
         if Check.get_debug_level() in ['warn','debug']:
             print(self.dsplay_language.input_warn + wrn_content)
+
+    def analysis_info(self, section_id):
+        """根据 section_id 的数值来显示提示信息"""
+        if section_id % Check.get_display_segments() == 0:
+            print(self.dsplay_language.analysis_info.format(num=section_id))
+
+    def analysis_content_warn(self, content):
+        if Check.get_debug_level() in ['warn', 'debug']:
+            print(self.dsplay_language.analysis_content_warn + content)
+
+    def output_get_finish_info(self):
+        print(self.dsplay_language.output_get_finish_info)
+
+    def output_integrate_info(self):
+        print(self.dsplay_language.output_integrate_info)
+
+    def output_integrate_finish_info(self):
+        print(self.dsplay_language.output_integrate_finish_info)
+
+    def output_write_html_info(self):
+        print(self.dsplay_language.output_write_html_info)
+
+    def output_write_html_finish_info(self):
+        print(self.dsplay_language.output_write_html_finish_info)
+
+    def output_delete_info(self):
+        print(self.dsplay_language.output_delete_info)
+
+    def output_delete_finish_info(self):
+        print(self.dsplay_language.output_delete_finish_info)
+
+    def output_delete_warn(self, e):
+        print(self.dsplay_language.output_delete_warn)
+        print(str(e))
+        exit(1)

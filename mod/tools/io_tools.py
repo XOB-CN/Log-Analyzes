@@ -2,14 +2,17 @@
 
 import os, shutil
 from mod.tools.template import Template_Report
+from mod.tools.debug import Debug
 from mod.tools.message import Message
 msg = Message()
 
+@Debug.get_time_cost('[debug] 输出端 - 生成结果文件：')
 def write_to_html(datas, input_argv):
     """
     将分析后的数据写入到 html 文件中
     需要传入2个参数：一个是整理后的数据，另一个是输入的参数，用来判断是否生成详细信息
     """
+    msg.output_write_html_info()
     base_path = os.getcwd()
     file_path = os.path.join(base_path, (input_argv['-f'] + '_report.html'))
     event_type = set()  # 记录目前录入的分类，初始状态是空
@@ -61,22 +64,23 @@ def write_to_html(datas, input_argv):
     html_result = Template_Report.html_template('分析结果', log_content)
 
     # 将 html 内容写入到文件中
-    #Message.info_message('[Info] 输出端：正在将结果写入到文件中，请稍后')
     with open(file_path, mode='w', encoding='utf8', newline='') as f:
         f.write(html_result)
 
+    msg.output_write_html_finish_info()
+
+@Debug.get_time_cost('[debug] 输出端 - 删除临时目录：')
 def delete_directory(unarchive_path):
+    msg.output_delete_info()
     if unarchive_path != None:
         try:
             shutil.rmtree(unarchive_path)
-            # Message.info_message('[Info] 输出端：临时目录已删除，分析完成')
+            msg.output_delete_finish_info()
         except PermissionError as e:
             if os.name == 'nt':
                 # rd/s/q 是 windows 平台强制删除命令
                 cmd = 'rd/s/q ' + unarchive_path
                 os.system(cmd)
-                # Message.info_message('[Info] 输出端：临时目录已删除，分析完成')
+                msg.output_delete_finish_info()
             else:
-                pass
-                # Message.info_message('[Info] 输出端：无法删除临时目录，请手动删除')
-                # Message.warn_message('[Warn] 输出端：无法处理：{e}'.format(e=e))
+                msg.output_delete_warn(str(e))

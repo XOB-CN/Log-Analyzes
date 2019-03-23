@@ -2,10 +2,12 @@
 
 import copy
 from mod.tools.check import Check
+from mod.tools.debug import Debug
 from mod.tools.match import Match
 from mod.tools.message import Message
 msg = Message()
 
+@Debug.get_time_cost('[debug] 输入端 - 运行的总耗时：')
 def archive_general(file_abspath_dict, Queue_Input, InputRule, input_argv):
     """
     通用的输入端读取日志，不需要处理日志的排序问题
@@ -36,6 +38,10 @@ def archive_general(file_abspath_dict, Queue_Input, InputRule, input_argv):
             log_content_copy = copy.deepcopy(log_content)
             Queue_Input.put({'section_id':section_id, 'type':'other', 'filepath':filepath, 'log_content':log_content_copy})
             log_content.clear()
+
+            # 显示提示信息
+            msg.input_info(section_id)
+
         except:
             try:
                 encoding = Check.get_encoding(filepath)
@@ -48,6 +54,8 @@ def archive_general(file_abspath_dict, Queue_Input, InputRule, input_argv):
                 log_content_copy = copy.deepcopy(log_content)
                 Queue_Input.put({'section_id': section_id, 'type': 'other', 'filepath': filepath, 'log_content': log_content_copy})
                 log_content.clear()
+                msg.input_info(section_id)
+
             except:
                 msg.input_warn(filepath)
 
@@ -76,12 +84,16 @@ def archive_general(file_abspath_dict, Queue_Input, InputRule, input_argv):
                             Queue_Input.put({'section_id': section_id, 'type': 'logs', 'filepath': filepath, 'log_content': log_content_copy})
                             log_content.clear()
                             section_line = 0
+                            msg.input_info(section_id)
+
             # 将最后一部分日记数据放入到队列中
             section_id += 1
             log_content_copy = copy.deepcopy(log_content)
             Queue_Input.put({'section_id': section_id, 'type': 'logs', 'filepath': filepath, 'log_content': log_content_copy})
             log_content.clear()
             src_log_line = 0
+            msg.input_info(section_id)
+
         except:
             try:
                 encoding = Check.get_encoding(filepath)
@@ -107,12 +119,16 @@ def archive_general(file_abspath_dict, Queue_Input, InputRule, input_argv):
                                 Queue_Input.put({'section_id': section_id, 'type': 'logs', 'filepath': filepath, 'log_content': log_content_copy})
                                 log_content.clear()
                                 section_line = 0
+                                msg.input_info(section_id)
+
                 # 将最后一部分日记数据放入到队列中
                 section_id += 1
                 log_content_copy = copy.deepcopy(log_content)
                 Queue_Input.put({'section_id': section_id, 'type': 'logs', 'filepath': filepath, 'log_content': log_content_copy})
                 log_content.clear()
                 src_log_line = 0
+                msg.input_info(section_id)
+
             except:
                 msg.input_warn(filepath)
 
