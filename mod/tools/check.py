@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
 
 import os, sys
+import re, time
 import zipfile, tarfile, chardet
 
 from configparser import ConfigParser
@@ -43,6 +44,32 @@ class Check(object):
             if i in input_argv:
                 idx = input_argv.index(i)
                 input_dict[i] = input_argv[idx+1]
+
+        # 处理 '-le' 和 '-ge' 参数的问题
+        time_format_dict = {'%Y-%m-%d %H:%M:%S' : ['\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}', '%Y-%m-%d %H:%M:%S'],
+                            '%Y-%m-%d %H:%M' : ['\d{4}-\d{2}-\d{2} \d{2}:\d{2}', '%Y-%m-%d %H:%M'],
+                            '%Y-%m-%d %H' : ['\d{4}-\d{2}-\d{2} \d{2}', '%Y-%m-%d %H'],
+                            '%Y-%m-%d' : ['\d{4}-\d{2}-\d{2}', '%Y-%m-%d'],
+                            '%Y-%m' : ['\d{4}-\d{2}-\d{2}', '%Y-%m-%d'],
+                            '%Y' : ['\d{4}-\d{2}-\d{2}', '%Y-%m-%d'],}
+
+        if input_dict.get('-ge') != None:
+            for input_time_format, time_format in time_format_dict.items():
+                try:
+                    rule_time = time.strptime(input_dict.get('-ge'), input_time_format)
+                    rule_time = time.mktime(rule_time)
+                    input_dict['-ge'] = [rule_time, time_format[0], time_format[1]]
+                except:
+                    pass
+
+        if input_dict.get('-le') != None:
+            for input_time_format, time_format in time_format_dict.items():
+                try:
+                    rule_time = time.strptime(input_dict.get('-le'), input_time_format)
+                    rule_time = time.mktime(rule_time)
+                    input_dict['-le'] = [ rule_time, time_format[0], time_format[1]]
+                except:
+                    pass
 
         try:
             have_f = '-f' in sys.argv

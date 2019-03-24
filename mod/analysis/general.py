@@ -79,10 +79,10 @@ def archive_general_report(Queue_Input, ruledict, Queue_Output, black_list):
                     tag_logs = True
                     tag_other = False
 
-                # 黑名单规则
-                for blk_rule in black_list:
-                    if Match.match_any(blk_rule, line):
-                        black_rule = False
+                    # 黑名单规则
+                    for blk_rule in black_list:
+                        if Match.match_any(blk_rule, line):
+                            black_rule = False
 
                     if black_rule:
                         for rule in tmp_rule_logs:
@@ -182,6 +182,7 @@ def archive_general_report(Queue_Input, ruledict, Queue_Output, black_list):
                 tag_logs = False
                 tag_other = False
 
+            #print({'id':id, 'logs':data_copy})
             Queue_Output.put({'id':id, 'logs':data_copy})
             msg.analysis_info(id)
 

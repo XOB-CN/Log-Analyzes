@@ -66,12 +66,12 @@ def archive_general(file_abspath_dict, Queue_Input, InputRule, input_argv):
                 tag_start = False
                 for line in f:
                     # 额外的匹配条件
-                    if input_argv.get('-le') == input_argv.get('-ge') == None:
+                    if input_argv.get('-ge') == input_argv.get('-le') == None:
                         tag_start = True
-                    elif Match.match_any(input_argv.get('-ge'), line):
-                        tag_start = True
-                    elif Match.match_any(input_argv.get('-le'), line):
-                        tag_start = False
+                    elif input_argv.get('-ge') != None and tag_start == False:
+                        tag_start = Match.match_time_ge(input_argv.get('-ge'), line)
+                    if input_argv.get('-le') != None and tag_start ==True:
+                        tag_start = Match.match_time_le(input_argv.get('-le'), line)
 
                     if tag_start == True:
                         section_line += 1
@@ -101,12 +101,12 @@ def archive_general(file_abspath_dict, Queue_Input, InputRule, input_argv):
                     tag_start = False
                     for line in f:
                         # 额外的匹配条件
-                        if input_argv.get('-le') == input_argv.get('-ge') == None:
+                        if input_argv.get('-ge') == input_argv.get('-le') == None:
                             tag_start = True
-                        elif Match.match_any(input_argv.get('-ge'), line):
-                            tag_start = True
-                        elif Match.match_any(input_argv.get('-le'), line):
-                            tag_start = False
+                        elif input_argv.get('-ge') != None and tag_start == False:
+                            tag_start = Match.match_time_ge(input_argv.get('-ge'), line)
+                        if input_argv.get('-le') != None and tag_start ==True:
+                            tag_start = Match.match_time_le(input_argv.get('-le'), line)
 
                         if tag_start == True:
                             section_line += 1
