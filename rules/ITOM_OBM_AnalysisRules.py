@@ -39,9 +39,55 @@ log_rules_list = [
 
 other_rule_list = [
     {
-        # 'name': 'OA NodeName',
-        # 'type': 'Information',
-        # 'match': "OpC30-36",
-        # 'rule': "line.split('cpp')",
+        'name': 'OS Name',
+        'type': 'Information',
+        'match': "os:",
+        'rule': "line.split(':')[-1].strip()",
+    },
+    {
+        'name': 'OBM Version',
+        'type': 'Information',
+        'match': "Version: \d+\.\d+",
+        'rule': "line.split(':')[-1].strip()",
+    },
+    {
+        'name': 'Hostname',
+        'type': 'Information',
+        'match': "hostname:",
+        'rule': "line.split(':')[-1].strip()",
+    },
+    {
+        'name': 'Domain',
+        'type': 'Information',
+        'match': "domain:",
+        'rule': "line.split(':')[-1].strip()",
+    },
+    {
+        'name': 'Physical Memory',
+        'type': 'Information',
+        'match': "physical memory:",
+        'rule': "line.split(':')[-1].strip()",
+    },
+
+    {
+        'name': 'IP Address',
+        'type': 'Information',
+        'match': "ip address:",
+        'rule': "line.split(':')[-1].strip()",
+        'mult-value':True
+    },
+    {
+        'name': 'Mac Address',
+        'type': 'Information',
+        'match': "mac address:",
+        'rule': "line.split(':',1)[-1].strip()",
+        'mult-value':True
+    },
+    {
+        'name': 'Hotfix Info',
+        'type': 'Information',
+        'match': "Hotfix:",
+        'rule': "line.split(':',1)[-1].strip()",
+        'mult-value':True
     },
 ]

@@ -26,6 +26,8 @@ need_files = {
           # <OMi_HOME>\log\wde\opr-gateway-flowtrace.log
           # <OMi_HOME>\log\opr-scripting-host\opr-scripting-host.log
         # Data Processing Server
+          # <OMi_HOME>\log\opr-backend_boot.log
+          # <OMi_HOME>\log\opr-backend_shutdown.log
           # <OMi_HOME>\log\opr-backend\opr-backend.log
           # <OMi_HOME>\log\opr-backend\opr-flowtrace-backend.log
           # <OMi_HOME>\log\opr-backend\opr-ciresolver.log
@@ -35,10 +37,12 @@ need_files = {
         'opr-gateway-flowtrace\.log',   # 到达 Gateway 的事件和事件更改的 Flowtrace 日志条目
         'opr-scripting-host\.log',      # 自定义操作，外部事件处理（External event processing），外部指令文本查找（External instruction text lookup）
 
+        'opr-backend_boot\.log',        # 启动 OBM 后端进程的日志条目
+        'opr-backend_shutdown\.log',    # 是为 OBM 后端进程关闭消息
         'opr-backend\.log',             # OBM backend process，检查 OBM 是否处理新事件或已更改的事件
         'opr-flowtrace-backend\.log',   # 来自 OBM 网关进程的事件的 Flowtrace 日志条目
         'opr-ciresolver\.log',          # OBM backend process CI resolution
-        'opr-scripting-host.log',       # EPI processing
+        'opr-scripting-host\.log',      # EPI processing
         'scripts\.log',                 # EPI script errors
 
         # MA (Monitoring Automation) 相关
@@ -48,23 +52,39 @@ need_files = {
         'opr-webapp\.log',              # OBM Web UI 的日志文件，监控自动化（Monitoring Automation），内容包导入，工具执行
         'opr-configserver\.log',        # Monitoring Automation 以及其它活动，包括 OMi web UIs, Content Pack import, Tool 的执行
 
+        # 动态拓扑相关
+        # Gateway Server
+          # <OMi_HOME>\log\wde\opr-svcdiscserver.log
+          # <OvDataDir>\shared\server\log\OvSvcDiscServer.log
+        # DPS
+          # <OMi_HOME>\log\opr-topologysync\opr-topologysync.log
+        'opr-svcdiscserver\.log',       # 映射/过滤 OBM 动态拓扑的一部分（Mapping/filtering part of OBM dynamic topology），同步
+        'OvSvcDiscServer\.log',         # 接收部分 OBM 动态拓扑，同步
+        'opr-topologysync\.log',        # OBM 拓扑同步应用程序的日志条目
+
+
         # 用户/登陆
         # Gateway Server
           # <OMi_HOME>\log\jboss\login.log
           # <OMi_HOME>\log\jboss\UserActions.servlets.log
         'login\.log',                   # LDAP, LWSSO
-        'UserActions.servlets\.log',    # Log-in attempts（尝试登陆）
+        'UserActions\.servlets\.log',   # Log-in attempts（尝试登陆）
 
         # jboss (MercuryAS) 相关
         # Gateway Server
           # <OMi_HOME>\log\jboss7_boot.log
           # <OMi_HOME>\log\jboss\* -->  # Jboss (MercuryAS) Application Server log files
+          # <OMi_HOME>\log\jboss\opr-event-ws.log
+          # <OMi_HOME>\log\jboss\opr-ws-response.log
+        # DSP Server
+          # <OMi_HOME>\log\jboss\opr-ue.log
         'jboss7_boot\.log',             # Jboss (MercuryAS) start-up log file
+        'opr-event-ws\.log',            # Event Web Services
+        'opr-ws-response\.log',         # Event Web Services
         'content-manager\.log',         # 内容管理器功能（Content Manager functionality）
         'kes\.contentpack\.log',        # 内容管理器功能（Content Manager functionality）
         'downtime\.log',                # Downtime
         'opr-ue\.log',                  # User Engagement（用户参与）
-
 
         # Tomcat 部分
         # Gateway Server
@@ -74,11 +94,23 @@ need_files = {
         # Gateway Server
           # <OMi_HOME>\log\opr-clis.log
         'opr-clis.log',                 # opr-* Command-Line Interfaces
+
+        # Downtime
+        # DPS Server
+          # <OMi_HOME>\log\jboss\downtime.log
+          # <OMi_HOME>\log\ marble_worker_1\downtime.log
+        'downtime\.log',
+
+        # 性能仪表盘跟踪文件（Performance Dashboard trace file）
+        # Gateway Server
+          # <OvDataDir>\ shared\server\log\ovpmtrace.0.txt
+          # 调试：OBM GUI：Administration  > Setup and Maintenance > Infrastructure Settings （选择 Performance Dashboard 上下文并将跟踪级别设置为2）
+        'ovpmtrace',
     ],
     # 其余类型
     'other':[
-        # 测试规则
-        'system\.txt',
+        # 信息搜集
+        'opr-checker\.txt',
     ],
 }
 
