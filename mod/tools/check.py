@@ -187,19 +187,19 @@ class ArchiveCheck(Check):
                 # 判断文件大小
                 if file.file_size != 0:
                     # 将对应的日记文件加入到列表中
-                    for rule in rules_dict.get('other'):
+                    for rule in list(set(rules_dict.get('other'))):
                         if Match.match_any(rule, file.filename):
                             other.append(file.filename)
-                    for rule in rules_dict.get('logs'):
+                    for rule in list(set(rules_dict.get('logs'))):
                         if Match.match_any(rule, file.filename):
                             logs.append(file.filename)
         else:
             for file in tar_file.getnames():
                 # 将对应的日记文件加入到列表中
-                for rule in rules_dict.get('other'):
+                for rule in list(set(rules_dict.get('other'))):
                     if Match.match_any(rule, file):
                         other.append(file)
-                for rule in rules_dict.get('logs'):
+                for rule in list(set(rules_dict.get('logs'))):
                     if Match.match_any(rule, file):
                         logs.append(file)
             tar_file.close()
