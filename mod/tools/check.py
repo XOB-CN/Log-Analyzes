@@ -46,12 +46,12 @@ class Check(object):
                 input_dict[i] = input_argv[idx+1]
 
         # 处理 '-le' 和 '-ge' 参数的问题
-        time_format_dict = {'%Y-%m-%d %H:%M:%S' : ['\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}', '%Y-%m-%d %H:%M:%S'],
-                            '%Y-%m-%d %H:%M' : ['\d{4}-\d{2}-\d{2} \d{2}:\d{2}', '%Y-%m-%d %H:%M'],
-                            '%Y-%m-%d %H' : ['\d{4}-\d{2}-\d{2} \d{2}', '%Y-%m-%d %H'],
-                            '%Y-%m-%d' : ['\d{4}-\d{2}-\d{2}', '%Y-%m-%d'],
-                            '%Y-%m' : ['\d{4}-\d{2}-\d{2}', '%Y-%m-%d'],
-                            '%Y' : ['\d{4}-\d{2}-\d{2}', '%Y-%m-%d'],}
+        time_format_dict = {'%Y-%m-%d %H:%M:%S' : ['\d{4}[-/]\d{2}[-/]\d{2} \d{2}:\d{2}:\d{2}', ['%Y-%m-%d %H:%M:%S','%Y/%m/%d %H:%M:%S']],
+                            '%Y-%m-%d %H:%M' : ['\d{4}[-/]\d{2}[-/]\d{2} \d{2}:\d{2}', ['%Y-%m-%d %H:%M','%Y/%m/%d %H:%M']],
+                            '%Y-%m-%d %H' : ['\d{4}[-/]\d{2}[-/]\d{2} \d{2}', ['%Y-%m-%d %H','%Y/%m/%d %H']],
+                            '%Y-%m-%d' : ['\d{4}[-/]\d{2}[-/]\d{2}', ['%Y-%m-%d','%Y/%m/%d']],
+                            '%Y-%m' : ['\d{4}[-/]\d{2}[-/]\d{2}', ['%Y-%m-%d','%Y/%m/%d']],
+                            '%Y' : ['\d{4}[-/]\d{2}[-/]\d{2}', ['%Y-%m-%d','%Y/%m/%d']]}
 
         if input_dict.get('-ge') != None:
             for input_time_format, time_format in time_format_dict.items():

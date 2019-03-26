@@ -48,7 +48,11 @@ class Match(object):
                 return log_time >= rule[0]
             except:
                 log_time = re.findall(rule[1], logline)[0]
-                log_time = time.strptime(log_time, rule[2])
+                try:
+                    print(log_time, rule[1], rule[2][0], rule[2][1])
+                    log_time = time.strptime(log_time, rule[2][0])
+                except:
+                    log_time = time.strptime(log_time, rule[2][1])
                 log_time = time.mktime(log_time)
                 return log_time >= rule[0]
         except:
@@ -70,7 +74,10 @@ class Match(object):
                 return log_time <= rule[0]
             except:
                 log_time = re.findall(rule[1], logline)[0]
-                log_time = time.strptime(log_time, rule[2])
+                try:
+                    log_time = time.strptime(log_time, rule[2][0])
+                except:
+                    log_time = time.strptime(log_time, rule[2][1])
                 log_time = time.mktime(log_time)
                 return log_time <= rule[0]
         except:
