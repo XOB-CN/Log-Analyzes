@@ -49,7 +49,6 @@ class Match(object):
             except:
                 log_time = re.findall(rule[1], logline)[0]
                 try:
-                    print(log_time, rule[1], rule[2][0], rule[2][1])
                     log_time = time.strptime(log_time, rule[2][0])
                 except:
                     log_time = time.strptime(log_time, rule[2][1])
