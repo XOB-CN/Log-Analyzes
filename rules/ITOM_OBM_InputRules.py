@@ -62,13 +62,14 @@ need_files = {
         'OvSvcDiscServer\.log',         # 接收部分 OBM 动态拓扑，同步
         'opr-topologysync\.log',        # OBM 拓扑同步应用程序的日志条目
 
-
-        # 用户/登陆
+        # 用户/登陆/界面操作
         # Gateway Server
           # <OMi_HOME>\log\jboss\login.log
           # <OMi_HOME>\log\jboss\UserActions.servlets.log
+          # <OMi_HOME>\log\pmi\root.log
         'login\.log',                   # LDAP, LWSSO
         'UserActions\.servlets\.log',   # Log-in attempts（尝试登陆）
+        'root.log',                     # 与界面操作相关
 
         # jboss (MercuryAS) 相关
         # Gateway Server

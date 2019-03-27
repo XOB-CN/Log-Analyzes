@@ -2,6 +2,7 @@
 
 # 分析模块规则匹配库
 # 注意：如果想要匹配 < 或 >, 则匹配的规则需要替换为 &lt; 或 &gt;
+# 注意：如果想要显示空格，需要写 &ensp;
 log_rules_list = [
     {
         'name': '日记配置文件错误',
@@ -22,6 +23,21 @@ log_rules_list = [
         'type': 'Memory',
         'match': "OutOfMemory|Java heap space",
         'solution': '请参考 Case: 5318358550/SD01828653',
+    },
+    {
+        'name': '未分配角色的用户所引发的问题',
+        'type': '产品 Bug',
+        'match': "unexpected exception caught: Origin: UserController at line 105|ERROR ExceptionTranslatorImpl.* - Ambiguous method overloading for method",
+        'solution': '在 OMi 10.12 上是一个已知的问题，已经在 OMi version 10.6x (or the latest version 10.70) 上得到修复<br>'
+                    '引发原因<br>'
+                    '&ensp;&ensp;有未分配角色的用户导致 OMi 处理逻辑出现错误<br>'
+                    '解决办法<br>'
+                    '&ensp;&ensp;方法1：升级到 OMi 10.6x 版本<br>'
+                    '&ensp;&ensp;方法2：安装更新补丁，具体内容请参考 SD02339162<br>'
+                    '&ensp;&ensp;方法3：将为被分配角色的用户删除掉<br>'
+                    '参考链接<br>'
+                    '&ensp;&ensp;https://quixy.swinfra.net/quixy/query/detail.php?ISSUEID=QCIM8D104692<br>'
+                    '&ensp;&ensp;https://quixy.swinfra.net/quixy/query/detail.php?ISSUEID=SD01591764',
     },
     {
         'name': '其余 Warn 信息',
