@@ -78,20 +78,20 @@ other_rule_list = [
         'type': 'Information',
         'match': "ip address:",
         'rule': "line.split(':')[-1].strip()",
-        'mult-value':True
+        'mult-value':True,
     },
     {
         'name': 'Mac Address',
         'type': 'Information',
         'match': "mac address:",
         'rule': "line.split(':',1)[-1].strip()",
-        'mult-value':True
+        'mult-value':True,
     },
     {
         'name': 'Hotfix Info',
         'type': 'Information',
         'match': "Hotfix:",
         'rule': "line.split(':',1)[-1].strip()",
-        'mult-value':True
+        'mult-value':True,
     },
 ]
