@@ -60,21 +60,23 @@ def archive_general_report(Queue_Input, ruledict, Queue_Output, black_list):
                     for rule in tmp_rule_other:
                         if Match.match_any(rule.get('match'), line):
                             cmd = rule.get('rule')
-                            # 常规记录模式 或 特殊模式的第一次匹配，仅保留最后一行记录
-                            if rule.get('content') == None:
+                            # 特殊记录模式，所有匹配到的值都保留，例如 IP地址， Mac地址等
+                            if rule.get('mult-value') == True and rule.get('content') != None:
+                                try:
+                                    rule['content'] = rule.get('content') + '<br>' + eval(cmd).strip()
+                                except Exception as e:
+                                    rule['content'] = rule.get('content') + '<br>' + line
+                                    msg.analysis_content_warn(str(e))
+
+                            else:
+                                # 常规记录模式 或 特殊模式的第一次匹配
                                 try:
                                     rule['content'] = eval(cmd).strip()
                                 except Exception as e:
                                     rule['content'] = line
                                     msg.analysis_content_warn(str(e))
-                            # 特殊记录模式，所有匹配到的值都保留，例如 IP地址， Mac地址等
-                            elif rule.get('mult-value') == True and rule.get('content') != None:
-                                try:
-                                    rule['content'] = rule.get('content') + '<br>' + eval(cmd).strip()
-                                except Exception as e:
-                                    rule['content'] = line  + '<br>' + line
-                                    msg.analysis_content_warn(str(e))
 
+                            # 记录剩余内容
                             tmp_log_line = rule.get('log_line')
                             if tmp_log_line == None:
                                 rule['log_line'] = Template_Report.html_font(filepath, color='Green') + '<br>' +log_line

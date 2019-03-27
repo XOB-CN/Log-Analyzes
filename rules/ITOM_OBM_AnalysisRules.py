@@ -45,21 +45,9 @@ other_rule_list = [
         'rule': "line.split(':')[-1].strip()",
     },
     {
-        'name': 'OBM Version',
-        'type': 'Information',
-        'match': "Version: \d+\.\d+",
-        'rule': "line.split(':')[-1].strip()",
-    },
-    {
         'name': 'Hostname',
         'type': 'Information',
         'match': "hostname:",
-        'rule': "line.split(':')[-1].strip()",
-    },
-    {
-        'name': 'Domain',
-        'type': 'Information',
-        'match': "domain:",
         'rule': "line.split(':')[-1].strip()",
     },
     {
