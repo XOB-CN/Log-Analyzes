@@ -22,7 +22,7 @@ Windows
 ## 使用方法
 * 分析日记内容并生成分析结果
 ```bash
-LogAnalyzes.py -f logfile -out report [-detail on] [-ge 日期 [-le 日期]] /*日期格式:年-月-日, 例如 2019-10-10 */
+LogAnalyzes.py -f logfile -out report [-detail on] [-ge 日期 [-le 日期]]   # 日期格式:年-月-日, 例如 2019-10-10
 ```
 * 如果添加 -h 或 -help 参数，则会显示提示信息
 ```
