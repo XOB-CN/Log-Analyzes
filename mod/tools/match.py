@@ -57,29 +57,29 @@ class Match(object):
         return False
 
     @staticmethod
-    def match_time_ge(rule, logline):
+    def match_time_ge(input_time, logline):
         """
         比较日志中的时间与指定时间，如果日志中的时间大于等于指定的时间，则返回 True
-        :param rule: 数据格式：[rule_time:指定时间的时间戳, re_format:抓取时间字符串的正则表达式, time_format:需要进行时间转换的字符串格式]
+        :param input_time: 指定时间的时间戳
         :param logline: 待分析的日志内容
         :return:
         """
         try:
             log_time = Match.match_log_time(logline)
-            return log_time >= rule[0]
+            return log_time >= input_time
         except:
             return False
 
     @staticmethod
-    def match_time_le(rule, logline):
+    def match_time_le(input_time, logline):
         """
         比较日志中的时间与指定时间，如果日志中的时间小于等于指定的时间，则返回 True
-        :param rule: 数据格式：[rule_time:指定时间的时间戳, re_format:抓取时间字符串的正则表达式, time_format:需要进行时间转换的字符串格式]
+        :param input_time: 指定时间的时间戳
         :param logline: 待分析的日志内容
         :return:
         """
         try:
             log_time = Match.match_log_time(logline)
-            return log_time <= rule[0]
+            return log_time <= input_time
         except:
             return False
