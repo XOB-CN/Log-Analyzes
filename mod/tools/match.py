@@ -33,6 +33,30 @@ class Match(object):
             return logline[-len(rule):] == rule
 
     @staticmethod
+    def match_log_time(logline):
+        """
+        获取日志中的时间，并返回时间戳
+        :param logline: 待匹配的日志
+        :return: 时间戳 / False
+        """
+        time_format = {
+            "[a-z|A-Z]{3} [a-z|A-Z]{3} \d{1,2} \d{2}:\d{2}:\d{2} \d{4}": "%a %b %d %H:%M:%S %Y",
+            "\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}": "%Y-%m-%d %H:%M:%S",
+            "\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}": "%Y/%m/%d %H:%M:%S",
+            "\d{2}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}": "%y/%m/%d %H:%M:%S",
+            "\d{4} [a-z|A-Z]{3} \d{2} \d{2}:\d{2}:\d{2}": "%Y %b %d %H:%M:%S",
+        }
+        for re_rule, time_rule in time_format.items():
+            try:
+                log_time = re.findall(re_rule, logline)[0]
+                log_time = time.strptime(log_time, time_rule)
+                log_time = time.mktime(log_time)
+                return log_time
+            except:
+                pass
+        return False
+
+    @staticmethod
     def match_time_ge(rule, logline):
         """
         比较日志中的时间与指定时间，如果日志中的时间大于等于指定的时间，则返回 True
@@ -41,19 +65,8 @@ class Match(object):
         :return:
         """
         try:
-            try:
-                log_time = re.findall("[a-z|A-Z]{3} [a-z|A-Z]{3} \d{1,2} \d{2}:\d{2}:\d{2} \d{4}", logline)[0]
-                log_time = time.strptime(log_time, '%a %b %d %H:%M:%S %Y')
-                log_time = time.mktime(log_time)
-                return log_time >= rule[0]
-            except:
-                log_time = re.findall(rule[1], logline)[0]
-                try:
-                    log_time = time.strptime(log_time, rule[2][0])
-                except:
-                    log_time = time.strptime(log_time, rule[2][1])
-                log_time = time.mktime(log_time)
-                return log_time >= rule[0]
+            log_time = Match.match_log_time(logline)
+            return log_time >= rule[0]
         except:
             return False
 
@@ -66,18 +79,7 @@ class Match(object):
         :return:
         """
         try:
-            try:
-                log_time = re.findall("[a-z|A-Z]{3} [a-z|A-Z]{3} \d{1,2} \d{2}:\d{2}:\d{2} \d{4}", logline)[0]
-                log_time = time.strptime(log_time, '%a %b %d %H:%M:%S %Y')
-                log_time = time.mktime(log_time)
-                return log_time <= rule[0]
-            except:
-                log_time = re.findall(rule[1], logline)[0]
-                try:
-                    log_time = time.strptime(log_time, rule[2][0])
-                except:
-                    log_time = time.strptime(log_time, rule[2][1])
-                log_time = time.mktime(log_time)
-                return log_time <= rule[0]
+            log_time = Match.match_log_time(logline)
+            return log_time <= rule[0]
         except:
             return False
