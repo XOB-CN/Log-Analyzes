@@ -77,7 +77,7 @@ other_rule_list = [
         'name': 'IP Address',
         'type': 'Information',
         'match': "ip address:",
-        'rule': "line.split(':')[-1].strip()",
+        'rule': "line.split(':',1)[-1].strip()",
         'mult-value':True,
     },
     {
