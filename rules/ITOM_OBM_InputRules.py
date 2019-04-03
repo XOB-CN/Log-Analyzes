@@ -90,7 +90,7 @@ need_files = {
         # Tomcat 部分
         # Gateway Server
           # <OMi_HOME>\log\wde\*  -->   # Tomcat (wde) log files
-        
+
         # opr-* Command-Line Interfaces
         # Gateway Server
           # <OMi_HOME>\log\opr-clis.log

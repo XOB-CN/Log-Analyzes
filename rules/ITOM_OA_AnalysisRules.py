@@ -36,6 +36,12 @@ log_rules_list = [
         '如果在短时间内发生这个问题，则这个问题可以被忽略，如果持续发生，则需要做继续调查，调查步骤请参考 KM633951',
     },
     {
+        'name': 'OpC30-613/OpC20-37 - Unknown monitor DBSPI-xxxx',
+        'type': 'OA Error ID',
+        'match': "OpC30-613|OpC20-37",
+        'solution': '请参考 KM1226922<br>',
+    },
+    {
         'name': '数据延期/翻滚',
         'type': 'OA Core Error',
         'match':'(oacore-0).*DATA ROLLOVER',
