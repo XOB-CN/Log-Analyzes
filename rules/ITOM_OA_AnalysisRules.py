@@ -39,7 +39,12 @@ log_rules_list = [
         'name': 'OpC30-613/OpC20-37 - Unknown monitor DBSPI-xxxx',
         'type': 'OA Error ID',
         'match': "OpC30-613|OpC20-37",
-        'solution': '请参考 KM1226922<br>',
+        'solution':'详细内容请参考 KM1226922<br>'
+        '当 DBSPI 收集器发出对度量标准 xxxx 的 opcmon 调用时，相应的 DBSPI-xxxx 模板尚未分配给受管节点，此时就会记录该警告信息<br>'
+        'SPI for Databases 使用两组策略进行正常操作<br>'
+        '- Scheduled Task policies<br>'
+        '- Measurement Threshold policies<br>'
+        '解决办法是需要确保将正确的“测量阈值”策略部署到受管节点，或者如果不需要收集该策略，则会从每个“计划任务”策略中删除该度量标准<br>',
     },
     {
         'name': '数据延期/翻滚',
