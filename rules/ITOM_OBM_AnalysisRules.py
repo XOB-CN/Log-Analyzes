@@ -6,23 +6,11 @@
 log_rules_list = [
     {
         'name': '日记配置文件错误',
-        'type': 'Log 配置文件',
+        'type': '配置文件错误',
         'match': "ERROR Attempted to append to closed appender named",
         'solution': '配置文件位置：%topaz_home%conf\\core\\Tools\\log4j\\<br>'
                     '方法1：找到日记配置文件并修改错误的地方<br>'
                     '方法2：重新安装软件，用来还原默认配置<br>',
-    },
-    {
-        'name': '无法正常连接 SQL Server',
-        'type': 'DataBase',
-        'match': "com\.microsoft\.sqlserver\.jdbc\.SQLServerException",
-        'solution': '请考虑数据库问题',
-    },
-    {
-        'name': '内存溢出',
-        'type': 'Memory',
-        'match': "OutOfMemory|Java heap space",
-        'solution': '请参考 Case: 5318358550/SD01828653',
     },
     {
         'name': '未分配角色的用户所引发的问题',
@@ -38,6 +26,33 @@ log_rules_list = [
                     '参考链接<br>'
                     '&ensp;&ensp;https://quixy.swinfra.net/quixy/query/detail.php?ISSUEID=QCIM8D104692<br>'
                     '&ensp;&ensp;https://quixy.swinfra.net/quixy/query/detail.php?ISSUEID=SD01591764',
+    },
+    {
+        'name': '无法正常连接 SQL Server',
+        'type': 'DataBase',
+        'match': "com\.microsoft\.sqlserver\.jdbc\.SQLServerException",
+        'solution': '请考虑数据库问题',
+    },
+    {
+        'name': '内存溢出',
+        'type': 'Memory',
+        'match': "OutOfMemory|Java heap space",
+        'solution': '请参考 Case 5318358550/SD01828653',
+    },
+    {
+        'name': '没有 core id 的情况下获得该 Node 特定的健康检查配置',
+        'type': 'HeartBeat',
+        'match': "Got node specific health check config without agent core id",
+        'solution': '请参考 Case SD01976057<br>'
+        '此问题需要搜集 HeartBeat 的 debug 级别日志来做进一步的调查，搜集方法如下：<br>'
+        '<br>Gateway 组件<br>'
+        '&ensp;%TOPAZ_HOME%\\conf\\core\\Tools\\log4j\\wde\\opr-heartbeat.properties<br>'
+        'DPS 组件<br>'
+        '&ensp;%TOPAZ_HOME%\\conf\\core\\Tools\\log4j\\opr-backend\\opr-heartbeat.properties<br>'
+        '&ensp;%TOPAZ_HOME%\\conf\\core\\Tools\\log4j\\opr-backend\\opr-backend.properties<br>'
+        '<br>将上述配置文件修改下列内容<br>'
+        '&ensp;loglevel=DEBUG<br>'
+        '&ensp;def.file.max.size=20000KB<br>',
     },
     {
         'name': '其余 Warn 信息',
