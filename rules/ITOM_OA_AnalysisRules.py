@@ -26,7 +26,7 @@ log_rules_list = [
     {
         'name': 'OpC40-1905/OpC40-1906/OpC30-36 - 可能是连接性问题',
         'type': 'OA Error ID',
-        'match': "OpC30-36|OpC40-1905|OpC40-1906",
+        'match': "OpC30-36|OpC40-1905|OpC40-1906|サーバーに障害があります。OVO メッセージ レシーバへの|WRN.*Forwarding message/action response to OVO message",
         'solution':
         'OMU 服务器上的心跳轮询 (HBP, Heartbeat polling) 有时会检测到以下错误：<br>' 
         '- Message Agent on node ... is buffering messages. (OpC40-1905)<br>' 
@@ -35,7 +35,7 @@ log_rules_list = [
         '- Forwarding message/action response to OVO message receiver failed due to server failure. (OpC30-36)<br>'
         '如果在短时间内发生这个问题，则这个问题可以被忽略，如果持续发生，则需要做继续调查，调查步骤请参考 KM633951<br>'
         '<br>可能的原因<br>'
-        '- 由于代理节点上的 System\.txt 具有 OpC30-36，因此消息代理（opcmsga）可能在当时存在通信问题<br>'
+        '- 由于代理节点上的 System.txt 具有 OpC30-36，因此消息代理（opcmsga）可能在当时存在通信问题<br>'
         '- 但是，即使您没有看到（或没有猜测）明显可能的通信问题原因，也可能发生意外缓冲<br>'
         '- 例如，如果 opcmsga(在代理上) 和 ovbbccb (在 OMU 服务器上) 之间建立的 HTTPS(实际上是TCP) 连接被强制断开,<br>'
         '- opcmsga 将无法重用现有连接来发送进一步的消息或动作响应.<br>'
@@ -45,7 +45,9 @@ log_rules_list = [
         '- 如果缓冲在一分钟内自动解决，则可以忽略缓冲消息<br>'
         '- 检查网络连接问题<br>'
         '- 更新 OM Agent 以获取最新的 BBC 组件(最新的BBC组件被增强，以处理未使用的TCP连接)<br>'
-        '- 推荐使用最新的 OM 代理版本<br>',
+        '- 推荐使用最新的 OM 代理版本<br>'
+        '<br>补充信息<br>'
+        '- 只要在代理上实际发生缓冲，就不能避免 HBP 进行缓冲检测 (OpC40-1905/OpC40-1906)',
     },
     {
         'name': 'OpC30-613/OpC20-37 - Unknown monitor DBSPI-xxxx',
