@@ -27,13 +27,25 @@ log_rules_list = [
         'name': 'OpC40-1905/OpC40-1906/OpC30-36 - 可能是连接性问题',
         'type': 'OA Error ID',
         'match': "OpC30-36|OpC40-1905|OpC40-1906",
-        'solution': '请参考 KM633951<br>'
-        '在 OMi 上的 Heartbeat polling 有时候会出现下列错误：<br>' 
+        'solution':
+        'OMU 服务器上的心跳轮询 (HBP, Heartbeat polling) 有时会检测到以下错误：<br>' 
         '- Message Agent on node ... is buffering messages. (OpC40-1905)<br>' 
         '- Message Agent on node ... is buffering messages for this Management Server. (OpC40-1906)<br>'
         '在 System.txt 的对应节点上出现下列错误，则表明出现了消息缓冲已经发生<br>'
         '- Forwarding message/action response to OVO message receiver failed due to server failure. (OpC30-36)<br>'
-        '如果在短时间内发生这个问题，则这个问题可以被忽略，如果持续发生，则需要做继续调查，调查步骤请参考 KM633951',
+        '如果在短时间内发生这个问题，则这个问题可以被忽略，如果持续发生，则需要做继续调查，调查步骤请参考 KM633951<br>'
+        '<br>可能的原因<br>'
+        '- 由于代理节点上的 System\.txt 具有 OpC30-36，因此消息代理（opcmsga）可能在当时存在通信问题<br>'
+        '- 但是，即使您没有看到（或没有猜测）明显可能的通信问题原因，也可能发生意外缓冲<br>'
+        '- 例如，如果 opcmsga(在代理上) 和 ovbbccb (在 OMU 服务器上) 之间建立的 HTTPS(实际上是TCP) 连接被强制断开,<br>'
+        '- opcmsga 将无法重用现有连接来发送进一步的消息或动作响应.<br>'
+        '- 因此，opcmsga 将 System.txt 中的 OpC30-36 删除，并移动到缓冲状态<br>'
+        '- 默认情况下，连接在一分钟内重新建立，如果没有真正的通信问题，缓冲也在一分钟内解决<br>'
+        '<br>调查方向<br>'
+        '- 如果缓冲在一分钟内自动解决，则可以忽略缓冲消息<br>'
+        '- 检查网络连接问题<br>'
+        '- 更新 OM Agent 以获取最新的 BBC 组件(最新的BBC组件被增强，以处理未使用的TCP连接)<br>'
+        '- 推荐使用最新的 OM 代理版本<br>',
     },
     {
         'name': 'OpC30-613/OpC20-37 - Unknown monitor DBSPI-xxxx',
