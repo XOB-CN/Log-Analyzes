@@ -65,6 +65,8 @@ def archive_general(file_abspath_dict, Queue_Input, InputRule, input_argv):
             with open(filepath, mode='r', encoding=def_encoding) as f:
                 tag_start = False
                 for line in f:
+                    # 记录该文件已经读取的行数
+                    src_log_line += 1
                     # 额外的匹配条件
                     if input_argv.get('-ge') == input_argv.get('-le') == None:
                         tag_start = True
@@ -75,7 +77,6 @@ def archive_general(file_abspath_dict, Queue_Input, InputRule, input_argv):
 
                     if tag_start == True:
                         section_line += 1
-                        src_log_line += 1
                         log_content.append(['[' + str(src_log_line) + '] ', line])
 
                         if section_line >= Check.get_segment_number() and Check.check_input_rule(match_start=InputRule.get('match_start'), match_end=InputRule.get('match_end'), match_any=InputRule.get('match_any'), line=line):
@@ -100,6 +101,8 @@ def archive_general(file_abspath_dict, Queue_Input, InputRule, input_argv):
                 with open(filepath, mode='r', encoding=encoding) as f:
                     tag_start = False
                     for line in f:
+                        # 记录该文件已经读取的行数
+                        src_log_line += 1
                         # 额外的匹配条件
                         if input_argv.get('-ge') == input_argv.get('-le') == None:
                             tag_start = True
@@ -110,7 +113,6 @@ def archive_general(file_abspath_dict, Queue_Input, InputRule, input_argv):
 
                         if tag_start == True:
                             section_line += 1
-                            src_log_line += 1
                             log_content.append(['[' + str(src_log_line) + '] ', line])
 
                             if section_line >= Check.get_segment_number() and Check.check_input_rule(match_start=InputRule.get('match_start'), match_end=InputRule.get('match_end'), match_any=InputRule.get('match_any'), line=line):
