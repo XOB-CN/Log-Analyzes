@@ -26,7 +26,7 @@ log_rules_list = [
     {
         'name': 'OpC40-1905/OpC40-1906/OpC30-36 - 可能是连接性问题',
         'type': 'OA Error ID',
-        'match': "OpC30-36|OpC40-1905|OpC40-1906|サーバーに障害があります。OVO メッセージ レシーバへの|WRN.*Forwarding message/action response to OVO message",
+        'match': "OpC30-36|OpC40-1905|OpC40-1906|OpC30-100|サーバーに障害があります。OVO メッセージ レシーバへの|WRN.*Forwarding message/action response to OVO message",
         'solution':
         'OMU 服务器上的心跳轮询 (HBP, Heartbeat polling) 有时会检测到以下错误：<br>' 
         '- Message Agent on node ... is buffering messages. (OpC40-1905)<br>' 
@@ -47,7 +47,8 @@ log_rules_list = [
         '- 更新 OM Agent 以获取最新的 BBC 组件(最新的BBC组件被增强，以处理未使用的TCP连接)<br>'
         '- 推荐使用最新的 OM 代理版本<br>'
         '<br>补充信息<br>'
-        '- 只要在代理上实际发生缓冲，就不能避免 HBP 进行缓冲检测 (OpC40-1905/OpC40-1906)',
+        '- 只要在代理上实际发生缓冲，就不能避免 HBP 进行缓冲检测 (OpC40-1905/OpC40-1906)<br>'
+        '- OpC30-100 一般代表着 OA 已不再缓存信息',
     },
     {
         'name': 'OpC30-613/OpC20-37 - Unknown monitor DBSPI-xxxx',
