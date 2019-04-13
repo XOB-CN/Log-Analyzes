@@ -107,6 +107,11 @@ need_files = {
           # <OvDataDir>\ shared\server\log\ovpmtrace.0.txt
           # 调试：OBM GUI：Administration  > Setup and Maintenance > Infrastructure Settings （选择 Performance Dashboard 上下文并将跟踪级别设置为2）
         'ovpmtrace',
+
+        # 其余未分类
+        'odb_boot\.log',                # 10.7x 开始改名为 ucmdb
+        'upgrade\.wizard\.log',         # <TOPAZ_HOME>/log/upgrade/upgrade.wizard.log
+        'setting\.log',                 # <TOPAZ_HOME>/log/jboss/setting.log
     ],
     # 其余类型
     'other':[
