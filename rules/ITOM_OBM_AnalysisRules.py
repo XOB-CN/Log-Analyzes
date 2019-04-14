@@ -149,7 +149,7 @@ other_rule_list = [
     {
         'name': 'OS Name',
         'type': 'Information',
-        'match': "os:",
+        'match': "^os:",
         'rule': "line.split(':')[-1].strip()",
     },
     {
