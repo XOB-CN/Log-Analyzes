@@ -19,10 +19,28 @@ log_rules_list = [
 ]
 
 other_rule_list = [
-    # {
-    #     'name': 'OS 分类',
-    #     'type': 'Information',
-    #     'match': "os\.name",
-    #     'rule': "line.split('=')[-1]"
-    # },
+    {
+        'name': 'OS 分类',
+        'type': 'Information',
+        'match': "OS Name:",
+        'rule': "line.split(':')[-1]"
+    },
+    {
+        'name': 'OS 版本',
+        'type': 'Information',
+        'match': "OS Version:",
+        'rule': "line.split(':')[-1]"
+    },
+    {
+        'name': 'Tomcat 版本',
+        'type': 'Information',
+        'match': "Server version:",
+        'rule': "line.split(':')[-1]"
+    },
+    {
+        'name': 'JRE 版本',
+        'type': 'Information',
+        'match': "JVM Version:",
+        'rule': "line.split(':')[-1]"
+    },
 ]

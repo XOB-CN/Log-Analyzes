@@ -17,11 +17,17 @@ need_files = {
         # 以 .log 结尾的日志信息
         'ssc\.log',
         'ssc_.*\.log',
+
+        # Tomcat catalina 引擎的日志
+        'catalina\.out',
+        'catalina.*\.log',
     ],
     # 其余类型
     'other':[
         # 信息搜集
         'ssc\.log',
+        # Tomcat catalina 引擎的日志
+        'catalina\.out',
     ],
 }
 

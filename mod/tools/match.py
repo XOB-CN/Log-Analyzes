@@ -45,6 +45,7 @@ class Match(object):
             "\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}": "%Y/%m/%d %H:%M:%S",
             "\d{2}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}": "%y/%m/%d %H:%M:%S",
             "\d{4} [a-z|A-Z]{3} \d{2} \d{2}:\d{2}:\d{2}": "%Y %b %d %H:%M:%S",
+            "\d{2}-[a-z|A-Z]{3}-\d{4} \d{2}:\d{2}:\d{2}": "%d-%b-%Y %H:%M:%S",
         }
         for re_rule, time_rule in time_format.items():
             try:

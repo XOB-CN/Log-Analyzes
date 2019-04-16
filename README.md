@@ -40,23 +40,23 @@ LogAnalyzes.py -f logfile -out report [-detail on] [-ge 日期 [-le 日期]]   #
 * Apache
     * Tomcat
     ```bash
-    Apache-Tomcat.py -f archivefile -out report [-detail on] [-detail on] [-ge 日期 [-le 日期]]
+    Apache-Tomcat.py -f archivefile -out report [-detail on] [-ge 日期 [-le 日期]]
     ```
 * Microfocus
     * Connected Backup
         * 输出到 Report
         ```bash
-        CBK-ZipAgent.py -f zipfile -out report [-detail on] [-detail on] [-ge 日期 [-le 日期]]
+        CBK-ZipAgent.py -f zipfile -out report [-detail on] [-ge 日期 [-le 日期]]
         ```
     * Fortify SSC/SCA/WI/WIE
         * 输出到 Report
         ```bash
-        Fortify-[SSC|SCA|WI|WIE].py -f archivefile -out report [-detail on] [-detail on] [-ge 日期 [-le 日期]]
+        Fortify-[SSC|SCA|WI|WIE].py -f archivefile -out report [-detail on] [-ge 日期 [-le 日期]]
         ```
     * ITOM OA / OBM
         * 输出到 Report
         ```bash
-        ITOM-OA.py -f archivefile -out report [-detail on] [-detail on] [-ge 日期 [-le 日期]]
+        ITOM-OA.py -f archivefile -out report [-detail on] [-ge 日期 [-le 日期]]
         ```
 
 ## 授权模式

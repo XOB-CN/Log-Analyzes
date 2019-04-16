@@ -16,10 +16,15 @@ need_files = {
     'logs':[
         # 以 .log 结尾的日志信息
         '.*\.log',
+
+        # Tomcat catalina 引擎的日志
+        'catalina\.out',
+        'catalina.*\.log',
     ],
     # 其余类型
     'other':[
-        # 信息搜集
+        # Tomcat catalina 引擎的日志
+        'catalina\.out',
     ],
 }
 

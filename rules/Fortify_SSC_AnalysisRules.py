@@ -45,6 +45,12 @@ other_rule_list = [
         'rule': "line.split(':')[-1]"
     },
     {
+        'name': 'Tomcat 版本',
+        'type': 'Information',
+        'match': "Server version:",
+        'rule': "line.split(':')[-1]"
+    },
+    {
         'name': 'JRE 版本',
         'type': 'Information',
         'match': "java\.runtime\.version",
