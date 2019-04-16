@@ -19,10 +19,10 @@ log_rules_list = [
 ]
 
 other_rule_list = [
-    {
-        'name': 'APP 版本',
-        'type': 'Information',
-        'match': "appVersion=",
-        'rule': "line.split('=')[-1]"
-    },
+    # {
+    #     'name': 'OS 分类',
+    #     'type': 'Information',
+    #     'match': "os\.name",
+    #     'rule': "line.split('=')[-1]"
+    # },
 ]

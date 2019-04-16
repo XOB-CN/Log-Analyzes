@@ -20,6 +20,7 @@ need_files = {
     # 其余类型
     'other':[
         # 信息搜集
+        'ManagerWS_trace\.log',
     ],
 }
 

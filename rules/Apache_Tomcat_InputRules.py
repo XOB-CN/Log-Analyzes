@@ -15,13 +15,11 @@ need_files = {
     # 日志类型
     'logs':[
         # 以 .log 结尾的日志信息
-        'ssc\.log',
-        'ssc_.*\.log',
+        '.*\.log',
     ],
     # 其余类型
     'other':[
         # 信息搜集
-        'ssc\.log',
     ],
 }
 
