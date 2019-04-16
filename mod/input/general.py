@@ -44,6 +44,8 @@ def archive_general(file_abspath_dict, Queue_Input, InputRule, input_argv):
 
         except:
             try:
+                # log_content.clear(): 如果上面的数据中途出错，则将之前的数据全部清除掉，然后重新开始录入，防止数据出现重复的情况
+                log_content.clear()
                 encoding = Check.get_encoding(filepath)
                 with open(filepath, mode='r', encoding=encoding) as f:
                     n = 0
@@ -97,6 +99,8 @@ def archive_general(file_abspath_dict, Queue_Input, InputRule, input_argv):
 
         except:
             try:
+                # log_content.clear(): 如果上面的数据中途出错，则将之前的数据全部清除掉，然后重新开始录入，防止数据出现重复的情况
+                log_content.clear()
                 encoding = Check.get_encoding(filepath)
                 with open(filepath, mode='r', encoding=encoding) as f:
                     tag_start = False
