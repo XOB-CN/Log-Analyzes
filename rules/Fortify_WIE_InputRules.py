@@ -14,7 +14,12 @@ match_any=[]
 need_files = {
     # 日志类型
     'logs':[
-        # 以 .log 结尾的日志信息
+        'Console_trace\.log',
+        'ManagerWS_trace\.log',
+        'Scheduler_trace\.log',
+        'TaskService_trace\.log',
+        'UploaderService_trace\.log',
+        # 所有以 .log 结尾的日志信息
         '.*\.log',
     ],
     # 其余类型
