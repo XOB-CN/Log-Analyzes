@@ -265,4 +265,5 @@ class ArchiveCheck(Check):
         for path in file_path_dict.get('other'):
             abspath_other.append(os.path.join(unzip_path, path))
 
-        return {'logs':abspath_logs, 'other':abspath_other}
+        # list(set(数组)) 为了去重，防止后续会出现重复的结果
+        return {'logs':list(set(abspath_logs)), 'other':abspath_other}
