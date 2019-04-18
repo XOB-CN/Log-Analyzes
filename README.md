@@ -39,9 +39,10 @@ LogAnalyzes.py -f logfile -out report [-detail on] [-ge 日期 [-le 日期]]   #
 ## 支持情况
 * Apache
     * Tomcat
-    ```bash
-    Apache-Tomcat.py -f archivefile -out report [-detail on] [-ge 日期 [-le 日期]]
-    ```
+        * 输出到 Report
+        ```bash
+        Apache-Tomcat.py -f archivefile -out report [-detail on] [-ge 日期 [-le 日期]]
+        ```
 * Microfocus
     * Connected Backup
         * 输出到 Report
