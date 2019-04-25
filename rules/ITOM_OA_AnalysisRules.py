@@ -61,10 +61,11 @@ log_rules_list = [
                     '解决办法是需要确保将正确的“测量阈值”策略部署到受管节点，或者如果不需要收集该策略，则会从每个“计划任务”策略中删除该度量标准<br>',
     },
     {
-        'name': '数据延期/翻滚',
-        'type': 'OA Core Error',
-        'match':'(oacore-0).*DATA ROLLOVER',
-        'solution': '未知，仅仅捕获现象，待后续在分析',
+        'name': 'Perl 脚本执行时发生超时',
+        'type': 'Perl Script',
+        'match': 'perl.*に対する実行でタイムアウトが発生しました',
+        'solution': '可能原因<br>'
+                    '- 考虑 Perl 在执行中发生崩溃，请检查系统日志，应该会有相应的记录信息，必要时可以考虑搜集 OA 的 trace 信息',
     },
     {
         'name': '其余 Warn 信息',
