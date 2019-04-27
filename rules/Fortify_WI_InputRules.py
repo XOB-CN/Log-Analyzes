@@ -46,6 +46,22 @@ black_list = [
 
     # Client.log
     'Process browser with pId.*was killed',
-    # Crawl.log - 通常意味着此网站不存在
+    'App.Main - entering Main',
+    'App.Main - exiting Main',
+    # Crawl.log
     'SPI.Scanners.Web.Crawl.Crawler in getIncludeResponse, request rejected, returning null',
+    # Framework.log
+    'SPI.Scanners.Web.Framework.Scan entering Scan()',
+    'SPI.Scanners.Web.Framework.Scan exiting Scan()',
+    # Memory.log
+    'HandleOutOfMemoryExceptionCount.0',        # 处理内存异常数：0
+    'SPI.Utils.Memory.MemoryMonitor starting memory monitor',       # 内存监控开始，没有实际意义
+    'SPI.Utils.Memory.MemoryMonitor in timerCallback',
+    'SPI.Diagnostics.GCUtils.*forceGCInternal',
+    # Proxy.log
+    'SPI.Net.Proxy.RequestReaderThreadPool in startThreadsIfNecessary.*MaximumConcurrency:.*',      # 感觉没啥用
+    'SPI.Net.Proxy.RequestReaderThreadPool in Stop.*PoolName.*MaximumConcurrency:.*',               # 感觉没啥用
+    'SPI.Net.Proxy.RequestReaderThreadPool entering Stop',      # 代理停止，目前看应该不是核心问题
+    # Statistic.log
+    'SPI.Scanners.Web.Statistics.ScanStatisticsWriter exiting _writerThreadProc, maxCount:',
 ]

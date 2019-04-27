@@ -129,6 +129,13 @@ log_rules_list = [
                     "- 确保 Fortify WebInspect 已获得适当许可",
     },
     {
+        'name': 'exception testing for Firefox safe mode',
+        'type': 'WebInspectWCFService',
+        'match': "WebInspectWCFService.PoolBrowserInstance exception testing for Firefox safe mode",
+        'endmatch': 'at WebInspectWCFService\.PoolBrowserInstance',
+        'solution': '测试规则',
+    },
+    {
         'name': '其余 Warn 信息',
         'type': 'Others',
         'match': "warn|wrn",
