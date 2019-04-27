@@ -14,15 +14,28 @@ match_any=[]
 need_files = {
     # 日志类型
     'logs':[
-        # 以 .log 结尾的日志信息
-        'ScanLog\.log',
-        'Scanner\.log$',
-        'WebInspectWCFService\.log'
+        # log 类型的日志信息
+        'Framework\.log',
+        'Scanner\.log',
+        'StateRequestor\.log',
+        'Client\.log',
+        'Memory\.log',
+        'FailedRequests\.log',
+        'Statistics\.log',
+        'Crawl\.log',
+        'WebInspectWCFService\.log',
+        'Error\.log',
+        'Scanner\.log',
+        'App\.log',
+        'RejectManager\.log',
+        'Proxy\.log',
+
     ],
     # 其余类型
     'other':[
         # 信息搜集
-        '.*\.log',
+        'Audit\.log',
+        'ScanLog\.log',
     ],
 }
 
@@ -30,4 +43,9 @@ need_files = {
 black_list = [
     # eg:如果该行包括 content 则直接忽略
     # 'content',
+
+    # Client.log
+    'Process browser with pId.*was killed',
+    # Crawl.log - 通常意味着此网站不存在
+    'SPI.Scanners.Web.Crawl.Crawler in getIncludeResponse, request rejected, returning null',
 ]
