@@ -166,21 +166,21 @@ def archive_general_report(Queue_Input, ruledict, Queue_Output, black_list):
                                 tmp_log_line = rule.get('log_line')
                                 if tmp_log_line == None:
                                     rule['log_line'] = Template_Report.html_font(filepath, color='Green') + '<br>' + log_line
-                                    rule['detail'] = Template_Report.html_font(log_index, color='Green') + ' ' + line
+                                    rule['detail'] = Template_Report.html_font(log_index, color='Blue') + ' ' + line
                                 else:
                                     rule['log_line'] = tmp_log_line + ', ' + log_line
-                                    rule['detail'] = rule['detail'].strip() + "<br>" + Template_Report.html_font(log_index, color='Green') + ' ' + line
+                                    rule['detail'] = rule['detail'].strip() + "<br>" + Template_Report.html_font(log_index, color='Blue') + ' ' + line
                                 break
 
                             # 单行匹配流程
                             elif Match.match_any(rule.get('match'), line):
                                 if rule.get('log_line') == None:
                                     rule['log_line'] = Template_Report.html_font(filepath, color='Green') + '<br>' + log_line
-                                    rule['detail'] = Template_Report.html_font(log_index, color='Green') + ' ' + line
+                                    rule['detail'] = Template_Report.html_font(log_index, color='Blue') + ' ' + line
                                     break
                                 else:
                                     rule['log_line'] = rule.get('log_line') + ', ' + log_line
-                                    rule['detail'] = rule.get('detail') + '<br>' + Template_Report.html_font(log_index, color='Green') + ' ' + line
+                                    rule['detail'] = rule.get('detail') + '<br>' + Template_Report.html_font(log_index, color='Blue') + ' ' + line
                                     # break 的作用是如果匹配到了相应的规则，则不再进行匹配，防止重复匹配的问题
                                     break
 
