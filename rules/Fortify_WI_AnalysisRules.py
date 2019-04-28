@@ -143,7 +143,7 @@ log_rules_list = [
                     "- SD02454909",
     },
     {
-        'name': '其异常 - swallowing exception',
+        'name': '其它异常 - swallowing exception',
         'type': 'Others',
         'match': "swallowing exception",
         'endmatch':'at ',
