@@ -132,7 +132,7 @@ log_rules_list = [
         'name': 'SendResponse 异常',
         'type': 'Network',
         'match': "SPI.Net.Proxy.RequestReader in SendResponse.*swallowing exception",
-        'endmatch': 'at ',
+        'endmatch': 'at SPI',
         'solution': "问题描述<br>"
                     "- 可能是由于 Network 或 connection 问题引起的<br><br>"
                     "解决办法<br>"

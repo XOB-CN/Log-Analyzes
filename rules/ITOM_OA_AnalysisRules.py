@@ -52,13 +52,27 @@ log_rules_list = [
     {
         'name': 'OpC30-613/OpC20-37 - Unknown monitor DBSPI-xxxx',
         'type': 'OA Error ID',
-        'match': "OpC30-613|OpC20-37",
+        'match': "DBSPI-.*OpC30-613|DBSPI-.*OpC20-37",
         'solution': '详细内容请参考 KM1226922<br>'
                     '当 DBSPI 收集器发出对度量标准 xxxx 的 opcmon 调用时，相应的 DBSPI-xxxx 模板尚未分配给受管节点，此时就会记录该警告信息<br>'
                     'SPI for Databases 使用两组策略进行正常操作<br>'
                     '- Scheduled Task policies<br>'
                     '- Measurement Threshold policies<br>'
                     '解决办法是需要确保将正确的“测量阈值”策略部署到受管节点，或者如果不需要收集该策略，则会从每个“计划任务”策略中删除该度量标准<br>',
+    },
+    {
+        'name': 'OpC30-613/OpC20-37/OpC30-3404',
+        'type': 'OA Error ID',
+        'match': "OpC30-613|OpC20-37|OpC30-3404|opcmon の値を受信しないうちに、ポリシー.*の最大待ち時間に達しました",
+        'solution': '问题原因<br>'
+                    '- OpC30-613/OpC20-37 一般指 OA 收到了一个 policy named 的值，但是这个 policy 并没有部署在此节点上，所以 OA 会忽略这个接收到的值<br>'
+                    '- OpC30-3404 一般指 OA 没有收到此 policy 的值，所以 OA 认为应提供此值的脚本未正确运行<br>'
+                    '- policy name 可以在这些报错内容中找到, 如果这两个 policy name 不一样，可能是因为重命名过<br><br>'
+                    '解决思路<br>'
+                    '- 在重命名策略时，还应确保 policy  调用的脚本将值返回到新策略名称<br>'
+                    '- 可以在 Program parameters 框中，检查配置的脚本参数<br><br>'
+                    '参考资料<br>'
+                    'KM00709940 - 很有参考意义的一个KM',
     },
     {
         'name': 'Perl 脚本执行时发生超时',
@@ -70,7 +84,7 @@ log_rules_list = [
     {
         'name': '其余 Warn 信息',
         'type': 'Others',
-        'match': "Wrn",
+        'match': "Wrn|Warn",
         'rule': "line",
     },
     {
