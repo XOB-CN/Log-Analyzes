@@ -12,6 +12,12 @@ log_rules_list = [
                     '&ensp;mysql - 推荐 5.1.4x 以后的版本, 但不能安装 8.x 版本'
     },
     {
+        'name': 'Duplicate entry（条目）',
+        'type': 'MySQL',
+        'match': "SQL Error: 1062, SQLState: 23000|Duplicate entry",
+        'solution': '如果是全新安装的，可以考虑删除数据库后然后重建'
+    },
+    {
         'name': '其余 Warn 信息',
         'type': 'Others',
         'match': "warn|wrn",

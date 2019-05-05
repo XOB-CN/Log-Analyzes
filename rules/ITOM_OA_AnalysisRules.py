@@ -70,9 +70,16 @@ log_rules_list = [
                     '- policy name 可以在这些报错内容中找到, 如果这两个 policy name 不一样，可能是因为重命名过<br><br>'
                     '解决思路<br>'
                     '- 在重命名策略时，还应确保 policy  调用的脚本将值返回到新策略名称<br>'
-                    '- 可以在 Program parameters 框中，检查配置的脚本参数<br><br>'
+                    '- 可以在 Program parameters 框中，检查配置的脚本参数<br>'
+                    '- 如果日志中没有 OpC30-3404，那么很可能该 policy 已经被删除掉，那么可以考虑使用下列方法来处理<br>'
+                    '&ensp;&ensp;# 清除缓存<br>'
+                    '&ensp;&ensp;&ensp;&ensp;/opt/OV/bin/opcagt -cleanstart<br>'
+                    '&ensp;&ensp;# 重启 OA<br>'
+                    '&ensp;&ensp;&ensp;&ensp;ovc -kill<br>'
+                    '&ensp;&ensp;&ensp;&ensp;ovc -start<br><br>'
                     '参考资料<br>'
-                    'KM00709940 - 很有参考意义的一个KM',
+                    'KM00709940 - 很有参考意义的一个KM<br>'
+                    'SD02447785',
     },
     {
         'name': 'Perl 脚本执行时发生超时',
