@@ -59,7 +59,7 @@ def archive_general(file_abspath_dict, Queue_Input, InputRule, input_argv):
                 msg.input_info(section_id)
 
             except:
-                msg.input_warn(filepath)
+                msg.input_warn(encoding +' '+ filepath)
 
     # logs 类型的日志内容可能有进一步过滤的需求
     for filepath in file_abspath_dict.get('logs'):
@@ -136,7 +136,7 @@ def archive_general(file_abspath_dict, Queue_Input, InputRule, input_argv):
                 msg.input_info(section_id)
 
             except:
-                msg.input_warn(filepath)
+                msg.input_warn(encoding +' '+ filepath)
 
     # 放入 False, 作为进程终止的判断条件
     for i in range(Check.get_multiprocess_counts() - 1):
