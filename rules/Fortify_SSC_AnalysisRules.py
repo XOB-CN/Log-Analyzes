@@ -15,7 +15,8 @@ log_rules_list = [
         'name': 'Duplicate entry（条目）',
         'type': 'MySQL',
         'match': "SQL Error: 1062, SQLState: 23000|Duplicate entry",
-        'solution': '如果是全新安装的，可以考虑删除数据库后然后重建'
+        'solution': '如果是全新安装的，可以考虑删除数据库后然后重建<br>'
+                    '注意：一定需要注意数据库连接的字符集，SSC 的字符集必须要区分大小写，否则容易出现这个问题！'
     },
     {
         'name': '其余 Warn 信息',

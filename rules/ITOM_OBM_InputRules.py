@@ -58,6 +58,7 @@ need_files = {
           # <OvDataDir>\shared\server\log\OvSvcDiscServer.log
         # DPS
           # <OMi_HOME>\log\opr-topologysync\opr-topologysync.log
+
         'opr-svcdiscserver\.log',       # 映射/过滤 OBM 动态拓扑的一部分（Mapping/filtering part of OBM dynamic topology），同步
         'OvSvcDiscServer\.log',         # 接收部分 OBM 动态拓扑，同步
         'opr-topologysync\.log',        # OBM 拓扑同步应用程序的日志条目
@@ -89,11 +90,11 @@ need_files = {
 
         # Tomcat 部分
         # Gateway Server
-          # <OMi_HOME>\log\wde\*  -->   # Tomcat (wde) log files
+        # <OMi_HOME>\log\wde\*  -->   # Tomcat (wde) log files
 
         # opr-* Command-Line Interfaces
         # Gateway Server
-          # <OMi_HOME>\log\opr-clis.log
+        # <OMi_HOME>\log\opr-clis.log
         'opr-clis.log',                 # opr-* Command-Line Interfaces
 
         # Downtime
