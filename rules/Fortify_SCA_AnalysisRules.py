@@ -5,6 +5,12 @@
 # 注意：如果想要显示空格，需要写 &ensp;
 log_rules_list = [
     {
+        'name': 'nsconsumed-mismatch is currently enabled, but was not in the PCH file',
+        'type': 'Bug',
+        'match': "error: -Werror=nsconsumed-mismatch is currently enabled, but was not in the PCH file",
+        'solution': '在 Fortify SCA 18.20 版本上可能是一个 Bug, 请参考 <a href="https://rdapps.swinfra.net/quixy/#/viewEntity/OCTCR11G188074">OCTCR11G188074</a>',
+    },
+    {
         'name': '其余 Warn 信息',
         'type': 'Others',
         'match': "warn|wrn",
