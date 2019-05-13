@@ -41,16 +41,17 @@ log_rules_list = [
                     '修复请参考 QCCR8D107613<br>',
     },
     {
+        'name': 'Event 被抑制',
+        'type': 'Event Suppression',
+        'match': "Dropped event.*by suppression rule.*",
+        'solution': '如果频繁出现，并且客户说有 event 无法显示的话，请考虑检查对应的 Policy,有可能是 Policy 编写错误导致的这个问题<br>'
+                    '请参考 SD02462879<br>',
+    },
+    {
         'name': '无法正常连接 SQL Server',
         'type': 'DataBase',
         'match': "com\.microsoft\.sqlserver\.jdbc\.SQLServerException",
         'solution': '请考虑数据库问题',
-    },
-    {
-        'name': '内存溢出',
-        'type': 'Memory',
-        'match': "OutOfMemory|Java heap space",
-        'solution': '请参考 Case 5318358550/SD01828653',
     },
     {
         'name': '没有 core id 的情况下获得该 Node 特定的健康检查配置',
@@ -130,6 +131,12 @@ log_rules_list = [
                     '&ensp;ERROR - Failed to install ucmdb. Exit code 12<br>'
                     '解决方法<br>'
                     '&ensp;确保磁盘上至少有 15-20 GB 的剩余空间，否则，导出 IATEMPDIR 和_JAVA_OPTIONS 来指向具有足够空间的驱动器',
+    },
+    {
+        'name': '内存溢出',
+        'type': 'Memory',
+        'match': "OutOfMemory|Java heap space",
+        'solution': '请参考 Case 5318358550/SD01828653',
     },
     {
         'name': '其余 Warn 信息',
