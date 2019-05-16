@@ -4,6 +4,13 @@
 # 注意：如果想要匹配 < 或 >, 则匹配的规则需要替换为 &lt; 或 &gt;
 # 注意：如果想要显示空格，需要写 &ensp;
 log_rules_list = [
+    # 此规则待后续整理
+    # {
+    #     'name': '登陆问题 Demo',
+    #     'type': 'Login',
+    #     'match': "Finished.*SSO.*reloadFromString",
+    #     'solution': '登陆问题 Demo',
+    # },
     {
         'name': '日记配置文件错误',
         'type': '配置文件错误',
