@@ -5,6 +5,12 @@
 # 注意：如果想要显示空格，需要写 &ensp;
 log_rules_list = [
     {
+        'name': 'Java Out Of Memory',
+        'type': 'Java',
+        'match': "java.lang.OutOfMemoryError: GC overhead limit exceeded",
+        'solution': '请尝试调整 Tomcat 的 memory pool 大小<br>'
+    },
+    {
         'name': 'JDBC Driver 不兼容',
         'type': 'JDBC Driver',
         'match': "Found unsupported JDBC driver name",
