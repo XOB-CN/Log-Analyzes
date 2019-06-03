@@ -8,9 +8,15 @@ log_rules_list = [
         'name': '无法连接数据库',
         'type': 'DataBase',
         'match': "Unable to connect to Repository database",
+<<<<<<< HEAD
         'endmatch': 'at SPI',
         'solution': "检查数据库连接是否正常<br>"
                     "- 请详细检查报错的详细内容，里面可能会包含无法连接的 sql 账户以及 database 的名字"
+=======
+        'endmatch':'at SPI',
+        'solution': "检查数据库连接是否正常<br>"
+                    "- 请详细检查报错的详细内容，里面可能会包含无法连接的 sql 账户以及 database 的名字！！！"
+>>>>>>> 2b3f081fd05a40befa2dd9ca5cd2f5fc2274beec
     },
     {
         'name': '其余 Warn 信息',
