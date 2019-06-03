@@ -23,7 +23,7 @@ general_no_need_file ='''\
 No files found to be analyzed.'''
 
 archive_type_error ='''\
-Archive format is not supported, only '.zip' and '.tar.gz' formats are supported.'''
+Archive format is not supported, only '.zip' or '.tar.gz' or '.txt' or '.log' formats are supported.'''
 
 archive_decompressing_info = '''\
 [info] Main: Decompressing...'''

@@ -30,12 +30,8 @@ if __name__ == '__main__':
     if input_argv.get('-out') not in ['report','Report']:
         msg.general_output_error()
 
-    # 执行到此，参数没有问题，继续过滤压缩包中的内容
-    file_path_dict = ArchiveCheck.check_archive(filepath, WIE_In_Rules.need_files)
-    # 解压压缩包，获取解压路径
-    unarchive_path = ArchiveCheck.unarchive(filepath, basepath)
-    # 获取需要分析文件列表的绝对路径
-    file_abspath_dict = ArchiveCheck.get_abspath_dict(unarchive_path, file_path_dict)
+    # 过滤待分析的文件或压缩包
+    file_abspath_dict, unarchive_path = Check.check_files(filepath, WIE_In_Rules.need_files, basepath)
 
     # 生成多进程需要的数据
     InputRule = {}

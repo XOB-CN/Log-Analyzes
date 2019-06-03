@@ -148,6 +148,31 @@ class Check(object):
     def get_display_segments():
         return cfg.getint('display', 'display_segments')
 
+    @staticmethod
+    def check_files(filepath, InputRules_NeedFiles, basepath):
+        '''
+        如果是压缩包，则检查压缩包中是否包含需要分析的文件
+        如果是单文件，则直接返回该文件的绝对路径(仅支持 .log / .txt 文件)
+        :param filepath: 待分析的原始文件路径
+        :param InputRules: Input 规则列表
+        :param basepath: os.path.abspath(os.path.join(os.path.realpath(__file__),'..\..'))
+        :return:list:[file_abspath_dict, unarchive_path]
+        '''
+        if Match.match_any('\.log', filepath) or Match.match_any('\.txt', filepath):
+            file_abspath_dict = {'logs':[filepath,], 'other':''}
+            unarchive_path = filepath
+            return [file_abspath_dict, unarchive_path]
+
+        else:
+        # 过滤压缩包中的内容
+            file_path_dict = ArchiveCheck.check_archive(filepath, InputRules_NeedFiles)
+            # 解压压缩包，获取解压路径
+            unarchive_path = ArchiveCheck.unarchive(filepath, basepath)
+            # 获取需要分析文件列表的绝对路径
+            file_abspath_dict = ArchiveCheck.get_abspath_dict(unarchive_path, file_path_dict)
+
+            return [file_abspath_dict, unarchive_path]
+
 class ArchiveCheck(Check):
     """检查类，主要针对的是压缩包文件（多文件）"""
     @staticmethod

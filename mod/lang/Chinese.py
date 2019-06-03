@@ -23,7 +23,7 @@ general_no_need_file ='''\
 没有需要分析的文件'''
 
 archive_type_error ='''\
-不支持此格式，仅支持'.zip'和'.tar.gz'格式的压缩包'''
+不支持此格式，仅支持'.zip'和'.tar.gz'格式的压缩包, 或者'.txt'和'.log'单文件'''
 
 archive_decompressing_info = '''\
 [info] 主进程：正在解压压缩包'''
