@@ -18,10 +18,17 @@ log_rules_list = [
                     'QCCR1A189077：同时执行多个相同类型的 policies 可能会引发 OpC30-797/OpC30-728/OpC30-714/OpC30-750 errors',
     },
     {
-        'name': 'OpC30-797 - Policies cannot connect to coda',
+        'name': 'OpC30-797 - OA 在处理 Policy 时发生了错误',
         'type': 'OA Error ID',
-        'match': "OpC30-797",
-        'solution': '请参考 KM1208518',
+        'match': "OpC30-797|OpC30-724|OpC30-761|OpC30-760|OpC30-3400",
+        'solution': '请参考 KM1208518'
+                    'OpC30-797 报错仅仅说明 OA 在处理一个 Policy 时发生了错误，但是具体问题需要具体分析<br>'
+                    '<br>可能情况 - coda 未完成初始化 - KM433328<br>'
+                    '&ensp;- 出现 OpC30-797, OpC30-724, OpC30-761, OpC30-760<br>'
+                    '&ensp;- 原因：OA 在启动的过程中，Coda Agent 将经历一个初始化阶段，在此期间它无法响应请求，如果此时连接 Coda，就会出现上述错误代码<br>'
+                    '&ensp;- 解决：一般不需要处理，会自动恢复<br>'
+                    '&ensp;--- OA 会尝试多次连接 coda，也可以使用 ovconfchg -ns eaagt -set FAILED_COLLECTION_RETRIES 5 命令将尝试次数调整到 5 次（默认为 3 次）<br>'
+                    '&ensp;--- OA 如果长时间无法连接 Coda，可能会报出 OpC30-3400 错误，可以使用 ovconfchg -ns eaagt -set FAILED_POLICY_TIME_TO_REACTIVATE 8 命令来减小重试间隔的时间（默认为 24h）<br>',
     },
     {
         'name': 'OpC40-1905/OpC40-1906/OpC30-36 - 可能是连接性问题',
