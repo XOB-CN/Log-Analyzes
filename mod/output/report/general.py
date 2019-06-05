@@ -67,6 +67,7 @@ def archive_to_report(Queue_Output, ruleldict, input_argv, unarchive_path):
 
     # 将结果写入到 html 文件中
     write_to_html(finish_data, input_argv)
+
     # 清除临时目录
     temp_path = os.path.join(os.path.abspath(os.path.join(os.path.realpath(__file__), '..\..\..\..')), Check.get_temp_path())
     # 代表分析的是压缩包，需要清空临时目录
