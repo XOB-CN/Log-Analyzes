@@ -159,12 +159,21 @@ class Check(object):
         :return:list:[file_abspath_dict, unarchive_path]
         '''
         if Match.match_any('\.log', filepath) or Match.match_any('\.txt', filepath):
-            file_abspath_dict = {'logs':[filepath,], 'other':''}
-            unarchive_path = filepath
-            return [file_abspath_dict, unarchive_path]
+            if Match.match_end('.zip', filepath, isInclsEnter=False) or Match.match_end('tar.gz', filepath, isInclsEnter=False):
+                # 针对压缩包进行处理，与最下方的 else 处理方式一致
+                file_path_dict = ArchiveCheck.check_archive(filepath, InputRules_NeedFiles)
+                unarchive_path = ArchiveCheck.unarchive(filepath, basepath)
+                file_abspath_dict = ArchiveCheck.get_abspath_dict(unarchive_path, file_path_dict)
+                return [file_abspath_dict, unarchive_path]
+
+            else:
+                # 针对单文件进行处理
+                file_abspath_dict = {'logs':[filepath,], 'other':''}
+                unarchive_path = filepath
+                return [file_abspath_dict, unarchive_path]
 
         else:
-        # 过滤压缩包中的内容
+            # 过滤压缩包中的内容
             file_path_dict = ArchiveCheck.check_archive(filepath, InputRules_NeedFiles)
             # 解压压缩包，获取解压路径
             unarchive_path = ArchiveCheck.unarchive(filepath, basepath)
