@@ -26,10 +26,10 @@ class Match(object):
             return False
 
         elif isInclsEnter:
-            print(logline[-len(rule) - 1:-1])
+            #print(logline[-len(rule) - 1:-1])
             return logline[-len(rule) - 1:-1] == rule
         else:
-            print(logline[-len(rule):])
+            #print(logline[-len(rule):])
             return logline[-len(rule):] == rule
 
     @staticmethod
