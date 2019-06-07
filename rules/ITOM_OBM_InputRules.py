@@ -113,7 +113,7 @@ need_files = {
         'odb_boot\.log',                # 10.7x 开始改名为 ucmdb
         'upgrade\.wizard\.log',         # <TOPAZ_HOME>/log/upgrade/upgrade.wizard.log
         'setting\.log',                 # <TOPAZ_HOME>/log/jboss/setting.log
-        'license.\.log',
+        'license.*\.log',
     ],
     # 其余类型
     'other':[
