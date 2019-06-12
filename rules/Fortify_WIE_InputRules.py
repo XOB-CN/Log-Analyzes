@@ -33,4 +33,14 @@ need_files = {
 black_list = [
     # eg:如果该行包括 content 则直接忽略
     # 'content',
+
+    # 目前看这些信息对排查错误帮助不大，都是警告信息
+    'SMTP.Server setting not configured',
+    'SMTP.Sender setting not configured',
+    'SMTP.UserName property not configured',
+    'SMTP.Password property not configured',
+    'SNMP.HostIp setting not configured',
+    'SNMP.Community setting not configured',
+    'SNMP.MibSubject setting not configured',
+    'SNMP.MibBody setting not configured',
 ]
