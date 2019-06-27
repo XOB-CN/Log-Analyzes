@@ -182,6 +182,10 @@ class Check(object):
 
             return [file_abspath_dict, unarchive_path]
 
+    @staticmethod
+    def get_mongodb_connect_url():
+        return cfg.get('MongoDB', 'mongodb_connect_url')
+
 class ArchiveCheck(Check):
     """检查类，主要针对的是压缩包文件（多文件）"""
     @staticmethod

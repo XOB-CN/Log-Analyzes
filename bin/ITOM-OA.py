@@ -13,6 +13,7 @@ from mod.tools.check import Check, ArchiveCheck
 from mod.input.general import archive_general
 from mod.output.report.general import archive_to_report
 from mod.analysis.general import archive_general_report
+from mod.analysis.itom_oa import to_mongodb
 
 from multiprocessing import Queue, Process
 
@@ -27,7 +28,7 @@ if __name__ == '__main__':
         msg.general_file_error()
 
     # 检查输出方法
-    if input_argv.get('-out') not in ['report','Report']:
+    if input_argv.get('-out') not in ['report','Report','mongodb','MongoDB','mongoDB']:
         msg.general_output_error()
 
     # 过滤待分析的文件或压缩包
@@ -56,3 +57,9 @@ if __name__ == '__main__':
         for p in range(Check.get_multiprocess_counts()-1):
             p = Process(target=archive_general_report, args=(Queue_Input, ruleldict, Queue_Output, OA_In_Rules.black_list))
             p.start()
+
+    if input_argv.get('-out') in ['mongodb','MongoDB','mongoDB']:
+        p1 = Process(target=archive_general, args=(file_abspath_dict, Queue_Input, InputRule, input_argv), name='Input Process')
+        p2 = Process(target=to_mongodb, args=(Queue_Input,Queue_Input))
+        p1.start()
+        p2.start()
