@@ -6,7 +6,7 @@ from mod.tools.match import Match
 def to_mongodb(Queue_Input, Queue_Output):
     # 初始化参数
     n = True
-    data_dict = {}
+    datas = []
     log_section = None
 
     # 从 Queue 中获取数据
@@ -23,10 +23,19 @@ def to_mongodb(Queue_Input, Queue_Output):
                 if Match.match_any('system.txt', filepath):
                     log_section = 'system.txt'
 
-                # 处理日志内容
-                for line, log_content in queue_data.get('log_content'):
-                    print(line)
-                    print(log_content.strip())
+                    # 继续处理日志内容
+                    for line, log_content in queue_data.get('log_content'):
+                        log_file = filepath
+                        log_line = line[1:-2]
+                        log_content = log_content.strip()
+
+                        # 截取日志的最后一段, 通常是日志详细内容, 分下列几种情况
+                        log_detail = log_content.split(':')[-1]
+                        #
+                        if re.match(' \d+', log_detail) == None:
+                            print(log_detail)
+
+
 
     # 分析结束, 放入 False
     Queue_Output.put(False)
