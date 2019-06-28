@@ -28,4 +28,5 @@ need_files = {
 black_list = [
     # eg:如果该行包括 content 则直接忽略
     # 'content',
+    'rolled=0',
 ]
