@@ -12,8 +12,9 @@ from rules import ITOM_OA_AnalysisRules as OA_Alysis_Rules
 from mod.tools.check import Check, ArchiveCheck
 from mod.input.general import archive_general
 from mod.output.report.general import archive_to_report
+from mod.output.mongo.general import add_to_mongodb
 from mod.analysis.general import archive_general_report
-from mod.analysis.itom_oa import to_mongodb
+from mod.analysis.itom_oa import analysis_to_mongodb
 
 from multiprocessing import Queue, Process
 
@@ -60,6 +61,10 @@ if __name__ == '__main__':
 
     if input_argv.get('-out') in ['mongodb','MongoDB','mongoDB']:
         p1 = Process(target=archive_general, args=(file_abspath_dict, Queue_Input, InputRule, input_argv), name='Input Process')
-        p2 = Process(target=to_mongodb, args=(Queue_Input, Queue_Input, OA_In_Rules.black_list))
+        p2 = Process(target=add_to_mongodb, args=(Queue_Output,), name='Output Process')
         p1.start()
         p2.start()
+
+        for p in range(Check.get_multiprocess_counts()-1):
+            p = Process(target=analysis_to_mongodb, args=(Queue_Input, Queue_Output, OA_In_Rules.black_list))
+            p.start()

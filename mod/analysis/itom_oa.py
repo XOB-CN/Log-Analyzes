@@ -3,12 +3,13 @@
 import re
 from mod.tools.match import Match
 
-def to_mongodb(Queue_Input, Queue_Output, black_list):
+def analysis_to_mongodb(Queue_Input, Queue_Output, black_list):
     # 初始化参数
     n = True
-    log_section = None
     IsMuline = False
-    Tmp_list = []
+    tmp_list = []
+    fin_list = []
+    fin_data = []
 
     # 从 Queue 中获取数据
     while n:
@@ -20,16 +21,14 @@ def to_mongodb(Queue_Input, Queue_Output, black_list):
             if queue_data.get('type') == 'logs':
                 filepath = queue_data.get('filepath')
                 log_file = filepath
-                idx_number = 0
 
                 # 判断是什么文件, 如果文件路径包含 system.txt, 则 log_type 为 system.txt
                 if Match.match_any('system.txt', filepath):
                     log_type = 'system.txt'
 
-                    # 继续处理日志的每一行内容
+                    # 对日志的事件进行整合和预处理, 生成预处理数据
                     for line, log_content in queue_data.get('log_content'):
                         black_rule = True
-                        print(IsMuline)
 
                         # 黑名单规则
                         for blk_rule in black_list:
@@ -37,92 +36,76 @@ def to_mongodb(Queue_Input, Queue_Output, black_list):
                                 black_rule = False
 
                         if black_rule == True:
-                            if IsMuline == True:
-                                try:
-                                    if len(log_content.split(':')[1].strip()) == 3:
-                                        log_level = log_content.split(':')[1].strip()
+                            # 先将每行数据放入临时列表中
+                            tmp_list.append({'log_line':line, 'log_content':log_content.strip()})
+                            # 判断本行是否是事件的开头, 如果是, 则将本行内容从临时列表中弹出, 并放入到最终的列表中, 否则开启多行匹配
+                            if re.findall('INF|WRN|ERR', log_content):
+                                fin_list.append(tmp_list.pop())
+                                # 如果本行已经是事件的开始, 那么意味着上一个事件已经结束, 需要将数据进行合并
+                                while IsMuline:
+                                    if len(tmp_list) > 0:
+                                        dict = {'log_line':'','log_content':''}
+                                        for tmp_dict in tmp_list:
+                                            dict['log_line'] = dict.get('log_line') + tmp_dict.get('log_line')
+                                            dict['log_content'] = dict.get('log_content') + '\n' + tmp_dict.get('log_content')
+                                        fin_list[-2]['log_line'] = fin_list[-2].get('log_line') + dict.get('log_line')
+                                        fin_list[-2]['log_content'] = fin_list[-2].get('log_content') + dict.get('log_content')
+                                        tmp_list.clear()
+                                    else:
                                         IsMuline = False
-                                except:
-                                    print(idx_number)
-                                    pass
+                            else:
+                                IsMuline = True
 
-                            # 该行为事件的起始行, 则执行下列处理步骤
-                            if IsMuline == False:
-                                # 初始化变量
-                                log_line = []
-                                log_level = None
-                                log_time = None
-                                log_component = None
-                                log_detail = None
-                                log_event_id = []
-                                log_unknow = None
+                    # 对预处理的数据进行进一步的分析, 并生成符合 mongodb 的数据
+                    for dict in fin_list:
+                        # 获取需要的各项的值
+                        log_type = log_type
+                        log_file = log_file
+                        log_line = dict.get('log_line')
+                        log_time = dict.get('log_content').split(':',2)[-1].split('(')[0].split(': o')[0].strip()
+                        try:
+                            log_level = dict.get('log_content').split(':')[1].strip()
+                        except:
+                            log_level = None
+                        try:
+                            log_component = dict.get('log_content').split(':')[5].split('(')[0].strip()
+                        except:
+                            log_component = None
+                        try:
+                            log_unknow1 = dict.get('log_content').split(':')[5].split('(')[1].strip()[:-2]
+                        except:
+                            log_unknow1 = None
+                        if Match.match_any('PID: \d+', dict.get('log_content')):
+                            log_detail = dict.get('log_content').split(':')[-2] + dict.get('log_content').split(':')[-1]
+                        else:
+                            log_detail = dict.get('log_content').split(':')[-1]
+                        log_event_id = re.findall('\(.*?-\d+\)', log_detail)
 
-                                # log_line 部分
-                                log_line.append(line)
+                        # 生成单个 event 数据
+                        tmp_data = {}
+                        tmp_data['log_type'] = log_type
+                        tmp_data['log_file'] = log_file
+                        tmp_data['log_line'] = log_line
+                        tmp_data['log_time'] = log_time
+                        if log_level != None:
+                            tmp_data['log_level'] = log_level
+                        if log_component != None:
+                            tmp_data['log_component'] = log_component
+                        tmp_data['log_detail'] = log_detail
+                        if log_unknow1 != None:
+                            tmp_data['log_unknow1'] = log_unknow1
+                        if log_event_id != []:
+                            tmp_data['log_event_id'] = log_event_id
 
-                                # log_level 部分
-                                try:
-                                    if len(log_content.split(':')[1].strip()) == 3:
-                                        log_level = log_content.split(':')[1].strip()
-                                        IsMuline = False
-                                except:
-                                    IsMuline = True
-                                    pass
+                        # 将数据放入最终的数据列表中
+                        tmp_data_copy = tmp_data.copy()
+                        fin_data.append(tmp_data_copy)
+                        tmp_data.clear()
 
-                                # log_time 部分
-                                if IsMuline == False:
-                                    try:
-                                        log_time = log_content.split(':',2)[2].split(': ')[0]
-                                    except:
-                                        pass
-
-                                # log_component / log_unkonw 部分
-                                if IsMuline == False:
-                                    try:
-                                        tmp_log_component = log_content.split(':')[5]
-                                        log_component = tmp_log_component.split('(')[0]
-                                        log_unknow = tmp_log_component.split('(')[1][:-2]
-                                    except:
-                                        pass
-
-                                # log_detail 部分
-                                if IsMuline == False:
-                                    log_detail = log_content.split(':')[-1]
-                                    # 如果是以 PID: \d+ 结尾的, 则切分出来的则会是仅数字，为了防止这种情况，则需要调整切分策略
-                                    if re.match(' \d+', log_detail) != None:
-                                        log_detail = log_content.split(':',6)[-1]
-                                else:
-                                    log_detail = log_content.strip()
-
-                                # log_event_id 部分
-                                if Match.match_any('\(.*?\)', log_detail):
-                                    log_event_id = re.findall('\(.*?-\d+\)', log_detail)
-
-                                # 将获取的数据存入到临时的字典中
-                                Tmp_list.append({'log_line':log_line,
-                                                 'log_level':log_level,
-                                                 'log_time':log_time,
-                                                 'log_component':log_component,
-                                                 'log_detail':log_detail,
-                                                 'log_event_id':log_event_id,
-                                                 'log_unknow':log_unknow})
-                                idx_number += 1
-
-                            # 该行不是事件的起始行，则需要执行下列处理步骤
-                            if IsMuline == True:
-                                print(idx_number)
-                                log_detail = log_content.strip()
-                                log_event_id = re.findall('\(.*?-\d+\)', log_detail)
-
-                                # 存入数据
-                                print(Tmp_list[idx_number-2])
-                                print(Tmp_list[-1])
-                                Tmp_list[idx_number-2]['log_level'] = 'INFO'
-                                print(Tmp_list[idx_number-2])
-
-
-                    # for dict in Tmp_list:
-                    #     print(dict)
+                    # 将数据放入到消息队列中
+                    fin_data_copy = fin_data.copy()
+                    Queue_Output.put(fin_data_copy)
+                    fin_data.clear()
 
     # 分析结束, 放入 False
     Queue_Output.put(False)
