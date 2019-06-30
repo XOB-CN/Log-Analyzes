@@ -23,7 +23,7 @@ class Check(object):
         """
         input_argv = sys.argv
         input_dict = {}
-        check_list = ['-f', '-out', '-detail', '-t', '-le', '-ge']
+        check_list = ['-f', '-out', '-detail', '-t', '-le', '-ge', '-db_name', '-col_name']
 
         # 实例化 message 类
         from mod.tools.message import Message

@@ -11,7 +11,10 @@
 
 ## 安装方法
 1. 安装 Python 3
-2. 安装 第三方库 chardet
+2. 安装 第三方库 chardet, pymongo
+```
+    pip install chardet pymongo
+```
 3. 如果想要在任意目录下执行该脚本，请将 bin 目录添加到系统的环境变量中
 ```
 Windows
@@ -27,7 +30,7 @@ LogAnalyzes.py -f logfile -out report [-detail on] [-ge 日期 [-le 日期]]   #
 * 如果添加 -h 或 -help 参数，则会显示提示信息
 ```
 -f      必须，指定需要分析的文件名
--out    必须，指定需要输出结果的形式，值可以是 report / csv / mysql
+-out    必须，指定需要输出结果的形式，值可以是 report / mongodb
 -detail 可选，是否生成详细信息，值为 on 时开启，默认不开启
 -ge     可选，只有当日志中的时间大于指定值时才会开启分析功能
 -le     可选，只有当日志中的时间小于指定值时才会开启分析功能，注意，需要同时指定 -ge 参数
@@ -41,23 +44,27 @@ LogAnalyzes.py -f logfile -out report [-detail on] [-ge 日期 [-le 日期]]   #
     * Tomcat
         * 输出到 Report
         ```bash
-        Apache-Tomcat.py -f archivefile -out report [-detail on] [-ge 日期 [-le 日期]]
+        Apache-Tomcat.py -f logfile -out report [-detail on] [-ge 日期 [-le 日期]]
         ```
 * Microfocus
     * Connected Backup
         * 输出到 Report
         ```bash
-        CBK-ZipAgent.py -f zipfile -out report [-detail on] [-ge 日期 [-le 日期]]
+        CBK-ZipAgent.py -f logfile -out report [-detail on] [-ge 日期 [-le 日期]]
         ```
     * Fortify SSC/SCA/WI/WIE
         * 输出到 Report
         ```bash
-        Fortify-[SSC|SCA|WI|WIE].py -f archivefile -out report [-detail on] [-ge 日期 [-le 日期]]
+        Fortify-[SSC|SCA|WI|WIE].py -f logfile -out report [-detail on] [-ge 日期 [-le 日期]]
         ```
     * ITOM OA / OBM
         * 输出到 Report
         ```bash
-        ITOM-OA.py -f archivefile -out report [-detail on] [-ge 日期 [-le 日期]]
+        ITOM-OA.py -f logfile -out report [-detail on] [-ge 日期 [-le 日期]]
+        ```
+        * 输出到 MongoDB
+        ```bash
+        ITOM-OA.py -f logfile -out mongodb [-db_name DBname] [-col_name ColName]
         ```
 
 ## 授权模式

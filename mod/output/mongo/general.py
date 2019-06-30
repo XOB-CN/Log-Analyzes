@@ -11,10 +11,15 @@ def add_to_mongodb(Queue_Output, input_argv):
     false_number = Check.get_multiprocess_counts() - 1
     false_number_count = 0
 
-    if input_argv.get('db_name') == None:
+    if input_argv.get('-db_name') == None:
         db_name = datetime.now().strftime('%Y%m%d%H%M%S')
-    if input_argv.get('cl_name') == None:
+    else:
+        db_name = input_argv.get('-db_name')
+
+    if input_argv.get('-col_name') == None:
         cl_name = 'system_txt'
+    else:
+        cl_name = input_argv.get('-col_name')
 
     # 开始生成 MongoDB 的会话连接
     mongo_sess = MongoDB()
