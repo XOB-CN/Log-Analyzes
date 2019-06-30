@@ -6,7 +6,6 @@ from mod.tools.check import Check
 from mod.tools.io_mongo import MongoDB
 
 def add_to_mongodb(Queue_Output, input_argv):
-
     # 初始化变量
     n = True
     false_number = Check.get_multiprocess_counts() - 1
@@ -31,4 +30,5 @@ def add_to_mongodb(Queue_Output, input_argv):
             if false_number_count == false_number:
                 n = False
         else:
+            # 将数据写入到 MongoDB 中
             cl_sess.insert_many(mongo_data)

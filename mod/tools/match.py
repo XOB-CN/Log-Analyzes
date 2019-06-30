@@ -1,5 +1,6 @@
 # -*- coding:utf-8 -*-
 import re, time
+from datetime import datetime
 
 class Match(object):
     """内容匹配类"""
@@ -84,3 +85,27 @@ class Match(object):
             return log_time <= input_time
         except:
             return False
+
+    @staticmethod
+    def convert_time(log_time):
+        """
+        将字符串形式保存的时间转换成时间对象
+        :param log_time: 字符串形式的时间
+        :return: python 的 datetime 格式
+        """
+        time_format = [
+            "%a %b %d %H:%M:%S %Y",
+            "%Y-%m-%d %H:%M:%S",
+            "%Y/%m/%d %H:%M:%S",
+            "%y/%m/%d %H:%M:%S",
+            "%Y %b %d %H:%M:%S",
+            "%d-%b-%Y %H:%M:%S",
+        ]
+
+        for time_fmt in time_format:
+            try:
+                log_date = datetime.strptime(log_time, time_fmt)
+                return log_date
+            except:
+                pass
+        return False

@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
 
 import re
+from datetime import datetime
 from mod.tools.match import Match
 
 def analysis_to_mongodb(Queue_Input, Queue_Output, black_list):
@@ -63,6 +64,7 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list):
                         log_file = log_file
                         log_line = dict.get('log_line')
                         log_time = dict.get('log_content').split(':',2)[-1].split('(')[0].split(': o')[0].strip()
+                        log_time = Match.convert_time(log_time)
                         try:
                             log_level = dict.get('log_content').split(':')[1].strip()
                         except:
