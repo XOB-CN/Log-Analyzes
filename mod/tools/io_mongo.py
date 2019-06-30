@@ -3,7 +3,7 @@
 import pymongo
 from mod.tools.check import Check
 
-class MongoDB():
+class MongoDB(object):
     """
     针对 MongoDB 操作的类
     """
