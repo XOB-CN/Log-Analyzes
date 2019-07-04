@@ -32,3 +32,9 @@ class MongoDB(object):
         """
         conn = db_session
         return conn[col_name]
+
+    def get_mongo_docs(self, db_name, col_name):
+        db_sess = self.add_db(db_name)
+        qy_sess = self.add_col(db_sess, col_name)
+
+        return qy_sess
