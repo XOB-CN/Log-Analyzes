@@ -21,11 +21,11 @@ def add_to_mongodb(Queue_Output, input_argv):
     else:
         cl_name = input_argv.get('-col_name')
 
-    # 开始生成 MongoDB 的会话连接
-    mongo_sess = MongoDB()
-    # 创建一个数据库
-    db_sess = mongo_sess.add_db(db_name)
-    cl_sess = mongo_sess.add_col(db_sess, cl_name)
+    # 实例化一个 MongoDB 的 session 类
+    mongo = MongoDB()
+
+    # 创建一个 MongoDB 的数据库会话链接, 准备插入数据
+    mg_sess = mongo.get_mongo_sess(db_name, cl_name)
 
     # 循环从 Queue_Output 中获取数据
     while n:
@@ -36,4 +36,4 @@ def add_to_mongodb(Queue_Output, input_argv):
                 n = False
         else:
             # 将数据写入到 MongoDB 中
-            cl_sess.insert_many(mongo_data)
+            mg_sess.insert_many(mongo_data)
