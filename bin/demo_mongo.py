@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 from mod.tools.io_mongo import MongoDB
 
 sess = MongoDB()
@@ -12,6 +13,11 @@ del pd_data['_id']
 
 # 开始构造最终数据
 data_index = pd_data.log_time
-data = pd.Series(np.arange(len(data_index)), index=data_index)
+data = pd.Series(np.random.randint(1,2,len(data_index)), index=data_index)
+data = data.resample('T').sum()
+data = data[data.values > 0]
 print(data)
-print(data.resample('3600min'))
+
+# 开始绘图
+plt.bar(data.index, data.values)
+plt.show()
