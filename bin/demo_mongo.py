@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from mod.tools.io_mongo import MongoDB
 
 sess = MongoDB()
@@ -9,13 +10,8 @@ mo_data = mydb.find({'$or':[{'log_level':'WRN'},{'log_level':'ERR'}]})
 pd_data = pd.DataFrame(list(mo_data))
 del pd_data['_id']
 
-# 对数据做进一步的处理
-# data = pd_data[['log_time','log_component']]
-
 # 开始构造最终数据
-# 确定数据中包含的最大时间
-time_max = pd_data['log_time'].max()
-# 确定数据中包含的最小时间
-time_min = pd_data['log_time'].min()
-
-print(pd_data[['log_time','log_component']])
+data_index = pd_data.log_time
+data = pd.Series(np.arange(len(data_index)), index=data_index)
+print(data)
+print(data.resample('3600min'))
