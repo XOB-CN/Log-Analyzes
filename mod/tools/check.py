@@ -24,6 +24,7 @@ class Check(object):
         input_argv = sys.argv
         input_dict = {}
         check_list = ['-f', '-out', '-detail', '-t', '-le', '-ge', '-db_name', '-col_name']
+        to_graph = False
 
         # 实例化 message 类
         from mod.tools.message import Message
@@ -72,9 +73,14 @@ class Check(object):
             have_out = '-out' in sys.argv
             have_out_data = sys.argv[sys.argv.index('-out') + 1]
         except:
-            msg.general_input_error()
+            if input_dict.get('-out') in ['summary_by_time','summary_by_date']:
+                to_graph = True
+            else:
+                msg.general_input_error()
 
-        if have_f and have_f_data and have_out and have_out_data:
+        if to_graph:
+            return input_dict
+        elif have_f and have_f_data and have_out and have_out_data:
             return input_dict
         else:
             msg.general_input_error()
