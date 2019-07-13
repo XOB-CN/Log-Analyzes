@@ -83,6 +83,9 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list):
                             log_detail = dict.get('log_content').split(':')[-1]
                         log_event_id = re.findall('\(.*?-\d+\)', log_detail)
 
+                        # 分析并处理日志的权重, 默认值是1
+                        log_weight = 1
+
                         # 生成单个 event 数据
                         tmp_data = {}
                         tmp_data['log_type'] = log_type
@@ -98,6 +101,7 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list):
                             tmp_data['log_unknow1'] = log_unknow1
                         if log_event_id != []:
                             tmp_data['log_event_id'] = log_event_id
+                        tmp_data['log_weight'] = log_weight
 
                         # 将数据放入最终的数据列表中
                         tmp_data_copy = tmp_data.copy()

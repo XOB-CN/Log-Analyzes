@@ -17,7 +17,7 @@ def add_to_mongodb(Queue_Output, input_argv):
         db_name = input_argv.get('-db_name')
 
     if input_argv.get('-col_name') == None:
-        cl_name = 'system_txt'
+        cl_name = 'default'
     else:
         cl_name = input_argv.get('-col_name')
 
