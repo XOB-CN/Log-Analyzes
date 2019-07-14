@@ -69,3 +69,6 @@ output_delete_finish_info = '''\
 
 output_delete_warn = '''\
 [warn] Output: Can't delete temp directory, please delete by manually.'''
+
+output_graph_dbname_error = '''\
+[error] Output: No input -db_name, please check it again.'''

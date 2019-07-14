@@ -83,5 +83,5 @@ if __name__ == '__main__':
 
     # 生成统计图
     if input_argv.get('-out') in ['summary_by_time','summary_by_date']:
-        p = Process(target=graph_itom_oa.summary_by_date, args=(input_argv))
+        p = Process(target=graph_itom_oa.summary_by_date, args=(input_argv,))
         p.start()

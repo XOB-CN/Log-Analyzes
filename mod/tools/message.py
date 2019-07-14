@@ -108,3 +108,7 @@ class Message(object):
         print(self.dsplay_language.output_delete_warn)
         print(str(e))
         exit(1)
+
+    def output_graph_dbname_error(self):
+        print(self.dsplay_language.output_graph_dbname_error)
+        exit(1)
