@@ -6,6 +6,10 @@ from mod.tools.io_mongo import MongoDB
 from mod.tools.message import Message
 msg = Message()
 
+# 需要明确注册 matplotlib 转换器
+from pandas.plotting import register_matplotlib_converters
+register_matplotlib_converters()
+
 def summary_by_date(input_argv):
     """
     从 MongoDB 中获取数据, 并生成统计图表
@@ -36,6 +40,8 @@ def summary_by_date(input_argv):
     tmp2_data = tmp1_data.log_weight.resample('T').sum()
     tmp3_data = tmp2_data[tmp2_data.values > 0]
 
-    # 绘制图表：基于时间的事件权重（柱状图）
+    # 生成图表：基于时间的事件权重（柱状图）
+    plt.figure(figsize=(8,4))
+    plt.title('Time Based Event Weight')
     plt.bar(tmp3_data.index, tmp3_data)
     plt.show()
