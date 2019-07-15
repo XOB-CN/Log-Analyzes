@@ -4,11 +4,21 @@ general_help = '''\
 Please input '-h' or '-help' to see how to use this command.'''
 
 general_help_command = '''\
--f      must, Specify the filename.
--out    must, Specify the form in which you want to output the result. The value can be 'report' or 'csv' or 'mysql'.
--detail optional, Generates details when the value is on, default it's disable.
--ge     optional, The analysis function is enabled only when the time in the log is greater than the specified value.
--le     optional, The analysis function is enabled only when the time in the log is less than the specified value. you need to specify the '-ge' parameter at the same time.'''
+Report / MongoDB mode:
+-f          must, Specify the filename.
+-out        must, Specify the form in which you want to output the result. The value can be 'report' or 'csv' or 'mysql'.
+-detail     optional, Generates details when the value is on, default it's disable.
+-ge         optional, The analysis function is enabled only when the time in the log is greater than the specified value.
+-le         optional, The analysis function is enabled only when the time in the log is less than the specified value. you need to specify the '-ge' parameter at the same time.
+
+Summary_by_*** mode:
+-out        must, Specify the out mode, now can use "summary_by_date" or "summary_by_count"
+-db_name    must, Specify the MongoDB Database name.
+-col_name   optional, Specify the MongoDB Collection name，default name it's "default"
+-ge         optional, Count only data greater than or equal to the specified date
+-le         optional, Count only data less than or equal to the specified date
+-freq       optional, only use by "summary_by_date" mode，set pandas Resampling frequency，default it's H，representing hourly
+            for example: T - per minute, H - hourly, D - every day, M - per month'''
 
 general_input_error = '''\
 Input parameters are incorrect, Please check and re-enter.'''

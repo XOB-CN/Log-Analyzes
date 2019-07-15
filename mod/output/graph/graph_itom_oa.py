@@ -20,7 +20,7 @@ def summary_by_date(input_argv):
     db_name = input_argv.get('-db_name', None)
     col_name = input_argv.get('-col_name','default')
     # pandas 重采样的频率值, 默认为每小时
-    _freq = input_argv.get('-freq', 'T')
+    _freq = input_argv.get('-freq', 'H')
 
     # 判断是否没有输入 db_name, 如果没有输入, 则终止程序继续执行
     if db_name == None:
@@ -38,20 +38,21 @@ def summary_by_date(input_argv):
     del pd_data['_id']
 
     # 开始处理 pandas 数据
-    tmp1_data = pd_data.set_index('log_time')
-    tmp1_data = tmp1_data.log_weight.resample(_freq).sum()
-    tmp1_data = tmp1_data[tmp1_data.values > 0]
+    full_data = pd_data.set_index('log_time')
 
     # 可选：基于时间进一步过滤数据
     if input_argv.get('-ge', False):
-        tmp1_data = tmp1_data[tmp1_data.index > input_argv.get('-ge')]
+        full_data = full_data[full_data.index > input_argv.get('-ge')]
     if input_argv.get('-le', False):
-        tmp1_data = tmp1_data[tmp1_data.index < input_argv.get('-le')]
+        full_data = full_data[full_data.index < input_argv.get('-le')]
+
+    full_data = full_data.log_weight.resample(_freq).sum()
+    full_data = full_data[full_data.values > 0]
 
     # 生成图表：基于时间的事件权重（柱状图）
     plt.figure(figsize=(8,4))
     plt.title('Time Based Event Weight')
-    plt.bar(tmp1_data.index, tmp1_data)
+    plt.bar(full_data.index, full_data)
     plt.show()
 
 def summary_by_count(input_argv):
@@ -62,8 +63,6 @@ def summary_by_count(input_argv):
     # 初始化参数
     db_name = input_argv.get('-db_name', None)
     col_name = input_argv.get('-col_name','default')
-    # pandas 重采样的频率值, 默认为每小时
-    _freq = input_argv.get('-freq', 'T')
 
     # 判断是否没有输入 db_name, 如果没有输入, 则终止程序继续执行
     if db_name == None:
