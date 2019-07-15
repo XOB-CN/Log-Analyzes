@@ -41,7 +41,7 @@ Summary_by_*** 模式
 -db_name    必须，指定 MongoDB 的数据库名字
 -col_name   可选，指定 MongoDB 的集合的名字，默认值是 default
 -ge         可选，只统计大于等于指定日期的数据
--le         可选，止痛剂小于等于指定日期的数据
+-le         可选，只统计小于等于指定日期的数据
 -freq       可选，仅用于 summary_by_date 模式，设定 pandas 重采样的频率，默认为H，代表每小时
 ```
 
