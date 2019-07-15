@@ -5,6 +5,13 @@
 # 注意：如果想要显示空格，需要写 &ensp;
 log_rules_list = [
     {
+        'name': 'Tomcat Session 异常',
+        'type': 'Tomcat',
+        'match': "Catalina.*Session attribute event listener threw exception",
+        'endmatch':'在| at|\.\.\. \d+ more',
+        'solution': '请检查 Tomcat 相关日志，请结合日志中的内容做进一步的判断<br>'
+    },
+    {
         'name': 'Java Out Of Memory',
         'type': 'Java',
         'match': "java.lang.OutOfMemoryError: GC overhead limit exceeded",
@@ -23,6 +30,36 @@ log_rules_list = [
         'match': "SQL Error: 1062, SQLState: 23000|Duplicate entry",
         'solution': '如果是全新安装的，可以考虑删除数据库后然后重建<br>'
                     '注意：一定需要注意数据库连接的字符集，SSC 的字符集必须要区分大小写，否则容易出现这个问题！'
+    },
+    {
+        'name': 'Unable to seed all init seed bundles',
+        'type': 'SSC Seed Bundles',
+        'match': "Unable to seed all init seed bundles",
+        'endmatch':'在| at|\.\.\. \d+ more',
+        'solution': '问题原因<br>'
+                    '- 请向客户确认 SSC Seed 上传的时候是否都成功了, 如果有失败的请尝试重新初始化 SSC Seed Bundles'
+    },
+    {
+        'name': 'Token 问题',
+        'type': 'Authentication',
+        'match': "Invalid token|Token not found",
+        'solution': '问题原因<br>'
+                    '- 说明 Token 目前是无效的状态，请结合日志中的具体内容来做进一步的分析'
+    },
+    {
+        'name': 'Token 认证错误',
+        'type': 'Authentication',
+        'match': "Error performing token authentication",
+        'endmatch':'在| at|\.\.\. \d+ more',
+        'solution': '问题原因<br>'
+                    '- 说明 Token 目前是无效的状态，请结合日志中的具体内容来做进一步的分析'
+    },
+    {
+        'name': 'Unable to lookup LDAP object',
+        'type': 'Authentication',
+        'match': "Unable to lookup LDAP object",
+        'solution': '问题原因<br>'
+                    '- 通常来说不是问题的最终原因，但是需要检查 LDAP 相关的权限配置，例如 token 是否过期，另外，数据库条目出现问题也有可能导致此问题'
     },
     {
         'name': '其余 Warn 信息',

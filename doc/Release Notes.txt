@@ -1,3 +1,8 @@
+2019-07-15 v3.2.0
+# 添加：ITOM OA 目前可以将日志数据保存到 MongoDB
+# 添加：ITOM OA 目前可以输出统计图，一个是基于时间的警告/错误权重(summary_by_date)，另一个是指定时间内各组件的警告/错误百分比(summary_by_count)
+# 添加：添加了 Fortify SSC 的相关规则
+
 2019-06-12 v3.1.3
 # 修改：修改了 OA 的一条规则（OpC30-797）
 # 修改：完善了 Fortify WIE 的匹配规则

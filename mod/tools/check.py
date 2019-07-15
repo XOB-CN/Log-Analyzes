@@ -23,7 +23,8 @@ class Check(object):
         """
         input_argv = sys.argv
         input_dict = {}
-        check_list = ['-f', '-out', '-detail', '-t', '-le', '-ge']
+        check_list = ['-f', '-out', '-detail', '-t', '-le', '-ge', '-db_name', '-col_name', '-freq']
+        to_summary = False
 
         # 实例化 message 类
         from mod.tools.message import Message
@@ -49,22 +50,24 @@ class Check(object):
         time_format_list = ['%Y-%m-%d %H:%M:%S','%Y-%m-%d %H:%M','%Y-%m-%d %H','%Y-%m-%d','%Y-%m','%Y']
 
         if input_dict.get('-ge') != None:
-            for time_format in time_format_list:
-                try:
-                    input_time = time.strptime(input_dict.get('-ge'), time_format)
-                    input_time = time.mktime(input_time)
-                    input_dict['-ge'] = input_time
-                except:
-                    pass
+            if input_dict.get('-out') not in ['summary_by_time','summary_by_date','summary_by_count']:
+                for time_format in time_format_list:
+                    try:
+                        input_time = time.strptime(input_dict.get('-ge'), time_format)
+                        input_time = time.mktime(input_time)
+                        input_dict['-ge'] = input_time
+                    except:
+                        pass
 
         if input_dict.get('-le') != None:
-            for time_format in time_format_list:
-                try:
-                    input_time = time.strptime(input_dict.get('-le'), time_format)
-                    input_time = time.mktime(input_time)
-                    input_dict['-le'] = input_time
-                except:
-                    pass
+            if input_dict.get('-out') not in ['summary_by_time','summary_by_date','summary_by_count']:
+                for time_format in time_format_list:
+                    try:
+                        input_time = time.strptime(input_dict.get('-le'), time_format)
+                        input_time = time.mktime(input_time)
+                        input_dict['-le'] = input_time
+                    except:
+                        pass
 
         try:
             have_f = '-f' in sys.argv
@@ -72,9 +75,14 @@ class Check(object):
             have_out = '-out' in sys.argv
             have_out_data = sys.argv[sys.argv.index('-out') + 1]
         except:
-            msg.general_input_error()
+            if input_dict.get('-out') in ['summary_by_time','summary_by_date','summary_by_count']:
+                to_summary = True
+            else:
+                msg.general_input_error()
 
-        if have_f and have_f_data and have_out and have_out_data:
+        if to_summary:
+            return input_dict
+        elif have_f and have_f_data and have_out and have_out_data:
             return input_dict
         else:
             msg.general_input_error()
@@ -181,6 +189,10 @@ class Check(object):
             file_abspath_dict = ArchiveCheck.get_abspath_dict(unarchive_path, file_path_dict)
 
             return [file_abspath_dict, unarchive_path]
+
+    @staticmethod
+    def get_mongodb_connect_url():
+        return cfg.get('MongoDB', 'mongodb_connect_url')
 
 class ArchiveCheck(Check):
     """检查类，主要针对的是压缩包文件（多文件）"""
