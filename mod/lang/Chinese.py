@@ -70,5 +70,8 @@ output_delete_finish_info = '''\
 output_delete_warn = '''\
 [warn] 输出端：无法删除临时文件，请手动删除'''
 
+output_mongo_insert_info = '''\
+[info] 输出端：已存储第 {num} 段'''
+
 output_graph_dbname_error = '''\
 [error] 输出端：没有指定 -db_name 参数，无法继续执行'''

@@ -1,15 +1,17 @@
 # -*- coding:utf-8 -*-
 
-import pymongo
 from datetime import datetime
 from mod.tools.check import Check
 from mod.tools.io_mongo import MongoDB
+from mod.tools.message import Message
+msg = Message()
 
 def add_to_mongodb(Queue_Output, input_argv):
     # 初始化变量
     n = True
     false_number = Check.get_multiprocess_counts() - 1
     false_number_count = 0
+    insert_number = 0
 
     if input_argv.get('-db_name') == None:
         db_name = datetime.now().strftime('%Y%m%d%H%M%S')
@@ -37,3 +39,10 @@ def add_to_mongodb(Queue_Output, input_argv):
         else:
             # 将数据写入到 MongoDB 中
             mg_sess.insert_many(mongo_data)
+            # 显示进度信息
+            insert_number += 1
+            msg.output_mongo_insert_info(insert_number)
+
+    # 待数据完全录入到 MongoDB 后, 返回 "数据库" 和 "集合" 的名字
+    print('DB Name: ', db_name)
+    print('CL Name: ', cl_name)

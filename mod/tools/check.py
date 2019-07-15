@@ -23,7 +23,7 @@ class Check(object):
         """
         input_argv = sys.argv
         input_dict = {}
-        check_list = ['-f', '-out', '-detail', '-t', '-le', '-ge', '-db_name', '-col_name']
+        check_list = ['-f', '-out', '-detail', '-t', '-le', '-ge', '-db_name', '-col_name', '-freq']
         to_graph = False
 
         # 实例化 message 类
@@ -50,22 +50,24 @@ class Check(object):
         time_format_list = ['%Y-%m-%d %H:%M:%S','%Y-%m-%d %H:%M','%Y-%m-%d %H','%Y-%m-%d','%Y-%m','%Y']
 
         if input_dict.get('-ge') != None:
-            for time_format in time_format_list:
-                try:
-                    input_time = time.strptime(input_dict.get('-ge'), time_format)
-                    input_time = time.mktime(input_time)
-                    input_dict['-ge'] = input_time
-                except:
-                    pass
+            if input_dict.get('-out') not in ['summary_by_time','summary_by_date']:
+                for time_format in time_format_list:
+                    try:
+                        input_time = time.strptime(input_dict.get('-ge'), time_format)
+                        input_time = time.mktime(input_time)
+                        input_dict['-ge'] = input_time
+                    except:
+                        pass
 
         if input_dict.get('-le') != None:
-            for time_format in time_format_list:
-                try:
-                    input_time = time.strptime(input_dict.get('-le'), time_format)
-                    input_time = time.mktime(input_time)
-                    input_dict['-le'] = input_time
-                except:
-                    pass
+            if input_dict.get('-out') not in ['summary_by_time', 'summary_by_date']:
+                for time_format in time_format_list:
+                    try:
+                        input_time = time.strptime(input_dict.get('-le'), time_format)
+                        input_time = time.mktime(input_time)
+                        input_dict['-le'] = input_time
+                    except:
+                        pass
 
         try:
             have_f = '-f' in sys.argv

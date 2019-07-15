@@ -109,6 +109,11 @@ class Message(object):
         print(str(e))
         exit(1)
 
+    def output_mongo_insert_info(self, section_id):
+        """根据 section_id 的数值来显示提示信息"""
+        if section_id % Check.get_display_segments() == 0:
+            print(self.dsplay_language.output_mongo_insert_info.format(num=section_id))
+
     def output_graph_dbname_error(self):
         print(self.dsplay_language.output_graph_dbname_error)
         exit(1)
