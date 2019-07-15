@@ -27,7 +27,7 @@ if __name__ == '__main__':
 
     # 检查文件是否存在
     # 例外情况, 此情况下可以没有 -f 参数
-    if input_argv.get('-out') in ['summary_by_time','summary_by_date']:
+    if input_argv.get('-out') in ['summary_by_time','summary_by_date','summary_by_count']:
         pass
     else:
         filepath = input_argv.get('-f')
@@ -35,12 +35,12 @@ if __name__ == '__main__':
             msg.general_file_error()
 
     # 检查输出方法
-    if input_argv.get('-out') not in ['report','Report','mongodb','MongoDB','mongoDB','summary_by_time','summary_by_date']:
+    if input_argv.get('-out') not in ['report','Report','mongodb','MongoDB','mongoDB','summary_by_time','summary_by_date','summary_by_count']:
         msg.general_output_error()
 
     # 过滤待分析的文件或压缩包
     # 例外情况, 此情况下可以没有 -f 参数
-    if input_argv.get('-out') in ['summary_by_time','summary_by_date']:
+    if input_argv.get('-out') in ['summary_by_time','summary_by_date','summary_by_count']:
         pass
     else:
         file_abspath_dict, unarchive_path = Check.check_files(filepath, OA_In_Rules.need_files, basepath)
@@ -81,7 +81,12 @@ if __name__ == '__main__':
             p = Process(target=analysis_to_mongodb, args=(Queue_Input, Queue_Output, OA_In_Rules.black_list))
             p.start()
 
-    # 生成统计图
+    # 生成统计图: summary_by_date / time
     if input_argv.get('-out') in ['summary_by_time','summary_by_date']:
         p = Process(target=graph_itom_oa.summary_by_date, args=(input_argv,))
+        p.start()
+
+    # 生产统计图：summary_by_count
+    if input_argv.get('-out') in ['summary_by_count',]:
+        p = Process(target=graph_itom_oa.summary_by_count, args=(input_argv,))
         p.start()

@@ -24,7 +24,7 @@ class Check(object):
         input_argv = sys.argv
         input_dict = {}
         check_list = ['-f', '-out', '-detail', '-t', '-le', '-ge', '-db_name', '-col_name', '-freq']
-        to_graph = False
+        to_summary = False
 
         # 实例化 message 类
         from mod.tools.message import Message
@@ -50,7 +50,7 @@ class Check(object):
         time_format_list = ['%Y-%m-%d %H:%M:%S','%Y-%m-%d %H:%M','%Y-%m-%d %H','%Y-%m-%d','%Y-%m','%Y']
 
         if input_dict.get('-ge') != None:
-            if input_dict.get('-out') not in ['summary_by_time','summary_by_date']:
+            if input_dict.get('-out') not in ['summary_by_time','summary_by_date','summary_by_count']:
                 for time_format in time_format_list:
                     try:
                         input_time = time.strptime(input_dict.get('-ge'), time_format)
@@ -60,7 +60,7 @@ class Check(object):
                         pass
 
         if input_dict.get('-le') != None:
-            if input_dict.get('-out') not in ['summary_by_time', 'summary_by_date']:
+            if input_dict.get('-out') not in ['summary_by_time','summary_by_date','summary_by_count']:
                 for time_format in time_format_list:
                     try:
                         input_time = time.strptime(input_dict.get('-le'), time_format)
@@ -75,12 +75,12 @@ class Check(object):
             have_out = '-out' in sys.argv
             have_out_data = sys.argv[sys.argv.index('-out') + 1]
         except:
-            if input_dict.get('-out') in ['summary_by_time','summary_by_date']:
-                to_graph = True
+            if input_dict.get('-out') in ['summary_by_time','summary_by_date','summary_by_count']:
+                to_summary = True
             else:
                 msg.general_input_error()
 
-        if to_graph:
+        if to_summary:
             return input_dict
         elif have_f and have_f_data and have_out and have_out_data:
             return input_dict
