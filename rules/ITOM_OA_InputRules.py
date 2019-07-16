@@ -14,8 +14,23 @@ match_any=[]
 need_files = {
     # 日志类型
     'logs':[
-        # OA 的日志信息
+        # 12.x 版本 OA 的日志
         'system\.txt',
+
+        # Unix 系统 / 11.x 版本
+        'status\.scope',
+        'status\.mi',
+        'status\.perfalarm',
+        'status\.perfd',
+
+        # 未知日志
+        'rc\.log',
+        'syslog\.log',
+
+        # 匹配所有
+        # '.*\.log',
+        # '.*\.txt',
+
     ],
     # 其余类型
     'other':[
