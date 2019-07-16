@@ -21,14 +21,15 @@ if __name__ == '__main__':
     input_argv= Check.get_input_args()
     if input_argv == 'cmd_help':
         msg.general_help_command()
+
+    # 检查输出方法
+    if input_argv.get('-out') not in ['report', 'Report']:
+        msg.general_output_error()
+
     # 检查文件是否存在
     filepath = input_argv.get('-f')
     if os.path.exists(filepath) == False:
         msg.general_file_error()
-
-    # 检查输出方法
-    if input_argv.get('-out') not in ['report','Report']:
-        msg.general_output_error()
 
     # 过滤待分析的文件或压缩包
     file_abspath_dict, unarchive_path = Check.check_files(filepath, OBM_In_Rules.need_files, basepath)
