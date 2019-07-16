@@ -1,12 +1,14 @@
 # -*- coding:utf-8 -*-
 
+import os
 from datetime import datetime
 from mod.tools.check import Check
 from mod.tools.io_mongo import MongoDB
+from mod.tools.io_tools import delete_directory
 from mod.tools.message import Message
 msg = Message()
 
-def add_to_mongodb(Queue_Output, input_argv):
+def add_to_mongodb(Queue_Output, input_argv, unarchive_path):
     # 初始化变量
     n = True
     false_number = Check.get_multiprocess_counts() - 1
@@ -42,6 +44,15 @@ def add_to_mongodb(Queue_Output, input_argv):
             # 显示进度信息
             insert_number += 1
             msg.output_mongo_insert_info(insert_number)
+
+    # 清除临时目录
+    temp_path = os.path.join(os.path.abspath(os.path.join(os.path.realpath(__file__), '..\..\..\..')), Check.get_temp_path())
+    # 代表分析的是压缩包，需要清空临时目录
+    if temp_path == unarchive_path:
+        delete_directory(unarchive_path)
+    # 代表分析的是单独的文件，不需要执行此步骤
+    else:
+        pass
 
     # 待数据完全录入到 MongoDB 后, 返回 "数据库" 和 "集合" 的名字
     print('DB Name: ', db_name)

@@ -73,7 +73,7 @@ if __name__ == '__main__':
     # 将获取的数据最终写入到 MongoDB 中
     if input_argv.get('-out') in ['mongodb','MongoDB','mongoDB']:
         p1 = Process(target=archive_general, args=(file_abspath_dict, Queue_Input, InputRule, input_argv), name='Input Process')
-        p2 = Process(target=add_to_mongodb, args=(Queue_Output,input_argv,), name='Output Process')
+        p2 = Process(target=add_to_mongodb, args=(Queue_Output, input_argv, unarchive_path), name='Output Process')
         p1.start()
         p2.start()
 
