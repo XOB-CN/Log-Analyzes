@@ -45,13 +45,16 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list):
                                 # 如果本行已经是事件的开始, 那么意味着上一个事件已经结束, 需要将数据进行合并
                                 while IsMuline:
                                     if len(tmp_list) > 0:
-                                        dict = {'log_line':'','log_content':''}
-                                        for tmp_dict in tmp_list:
-                                            dict['log_line'] = dict.get('log_line') + tmp_dict.get('log_line')
-                                            dict['log_content'] = dict.get('log_content') + '\n' + tmp_dict.get('log_content')
-                                        fin_list[-2]['log_line'] = fin_list[-2].get('log_line') + dict.get('log_line')
-                                        fin_list[-2]['log_content'] = fin_list[-2].get('log_content') + dict.get('log_content')
-                                        tmp_list.clear()
+                                        try:
+                                            dict = {'log_line':'','log_content':''}
+                                            for tmp_dict in tmp_list:
+                                                dict['log_line'] = dict.get('log_line') + tmp_dict.get('log_line')
+                                                dict['log_content'] = dict.get('log_content') + '\n' + tmp_dict.get('log_content')
+                                            fin_list[-2]['log_line'] = fin_list[-2].get('log_line') + dict.get('log_line')
+                                            fin_list[-2]['log_content'] = fin_list[-2].get('log_content') + dict.get('log_content')
+                                            tmp_list.clear()
+                                        except:
+                                            IsMuline = False
                                     else:
                                         IsMuline = False
                             else:
