@@ -63,6 +63,6 @@ if __name__ == '__main__':
     # Mode: MongoDB
     if input_argv.get('-out') in ['mongodb','MongoDB','mongoDB']:
         p1 = Process(target=archive_general, args=(file_abspath_dict, Queue_Input, InputRule, input_argv), name='Input Process')
-        p2 = Process(target=analysis_to_mongodb, args=(Queue_Input, Queue_Output, OBM_In_Rules.black_list), name='Output Process')
+        p2 = Process(target=analysis_to_mongodb, args=(Queue_Input, Queue_Output, OBM_In_Rules.black_list, unarchive_path), name='Output Process')
         p1.start()
         p2.start()

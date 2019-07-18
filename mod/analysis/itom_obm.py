@@ -4,7 +4,10 @@ import re, os
 from datetime import datetime
 from mod.tools.match import Match
 
-def analysis_to_mongodb(Queue_Input, Queue_Output, black_list):
+# test mode
+from mod.tools.io_tools import delete_directory
+
+def analysis_to_mongodb(Queue_Input, Queue_Output, black_list, dir_path):
     # 初始化参数
     n = True
     IsMuline = False
@@ -25,3 +28,46 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list):
             # queue_data: {'section_id': id, 'type': 'log', 'filepath': filepath, 'log_content': [行数, 日志内容]}
             if queue_data.get('type') == 'logs':
                 file_type = os.path.basename(queue_data.get('filepath')).split('.')[0]
+
+                # 对日志的事件进行整合和预处理, 生成预处理数据
+                for line, log_content in queue_data.get('log_content'):
+                    black_rule = True
+
+                    # 黑名单规则
+                    for blk_rule in black_list:
+                        if Match.match_any(blk_rule, log_content):
+                            black_rule = False
+
+                    if black_rule == True:
+                        # 先将每行数据放入临时列表中
+                        tmp_list.append({'log_line': line, 'log_content': log_content.strip()})
+                        # 判断本行是否是事件的开头, 如果是, 则将本行内容从临时列表中弹出, 并放入到最终的列表中, 否则开启多行匹配
+                        if re.findall('] INFO |] WARN |] ERR', log_content):
+                            fin_list.append(tmp_list.pop())
+                            # 如果本行已经是事件的开始, 那么意味着上一个事件已经结束, 需要将数据进行合并
+                            while IsMuline:
+                                if len(tmp_list) > 0:
+                                    try:
+                                        dict = {'log_line': '', 'log_content': ''}
+                                        for tmp_dict in tmp_list:
+                                            dict['log_line'] = dict.get('log_line') + tmp_dict.get('log_line')
+                                            dict['log_content'] = dict.get('log_content') + '\n' + tmp_dict.get(
+                                                'log_content')
+                                        fin_list[-2]['log_line'] = fin_list[-2].get('log_line') + dict.get('log_line')
+                                        fin_list[-2]['log_content'] = fin_list[-2].get('log_content') + dict.get(
+                                            'log_content')
+                                        tmp_list.clear()
+                                    except:
+                                        IsMuline = False
+                                else:
+                                    IsMuline = False
+                        else:
+                            IsMuline = True
+
+                        for i in fin_list:
+                            print(i)
+
+
+
+    # test mode
+    # delete_directory(dir_path)
