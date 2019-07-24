@@ -28,6 +28,7 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list, dir_path):
             # queue_data: {'section_id': id, 'type': 'log', 'filepath': filepath, 'log_content': [行数, 日志内容]}
             if queue_data.get('type') == 'logs':
                 file_type = os.path.basename(queue_data.get('filepath')).split('.')[0]
+                file_path = queue_data.get('filepath')
 
                 # 对日志的事件进行整合和预处理, 生成预处理数据
                 for line, log_content in queue_data.get('log_content'):
@@ -38,11 +39,11 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list, dir_path):
                         if Match.match_any(blk_rule, log_content):
                             black_rule = False
 
-                    if black_rule == True:
+                    if black_rule == True and file_type not in []:
                         # 先将每行数据放入临时列表中
                         tmp_list.append({'log_line': line, 'log_content': log_content.strip()})
                         # 判断本行是否是事件的开头, 如果是, 则将本行内容从临时列表中弹出, 并放入到最终的列表中, 否则开启多行匹配
-                        if re.findall('] INFO |] WARN |] ERR', log_content):
+                        if re.findall('INF:|INFO|WRN:|WARN|ERR|DEBUG| - ', log_content):
                             fin_list.append(tmp_list.pop())
                             # 如果本行已经是事件的开始, 那么意味着上一个事件已经结束, 需要将数据进行合并
                             while IsMuline:
@@ -51,11 +52,9 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list, dir_path):
                                         dict = {'log_line': '', 'log_content': ''}
                                         for tmp_dict in tmp_list:
                                             dict['log_line'] = dict.get('log_line') + tmp_dict.get('log_line')
-                                            dict['log_content'] = dict.get('log_content') + '\n' + tmp_dict.get(
-                                                'log_content')
+                                            dict['log_content'] = dict.get('log_content') + '\n' + tmp_dict.get('log_content')
                                         fin_list[-2]['log_line'] = fin_list[-2].get('log_line') + dict.get('log_line')
-                                        fin_list[-2]['log_content'] = fin_list[-2].get('log_content') + dict.get(
-                                            'log_content')
+                                        fin_list[-2]['log_content'] = fin_list[-2].get('log_content') + dict.get('log_content')
                                         tmp_list.clear()
                                     except:
                                         IsMuline = False
@@ -64,10 +63,18 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list, dir_path):
                         else:
                             IsMuline = True
 
-                        for i in fin_list:
-                            print(i)
+                # 对每行数据进行进一步的处理：fin_list
+                # print(fin_list)
+                for i in fin_list:
+                    log_line = i.get('log_line')
+                    log_content = i.get('log_content')
+                    if len(log_line) > 10:
+                        print(log_line)
+                        print(file_type)
+                        print(file_path)
+                        print(log_content)
 
 
 
     # test mode
-    # delete_directory(dir_path)
+    delete_directory(dir_path)
