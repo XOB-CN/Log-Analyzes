@@ -39,7 +39,7 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list, dir_path):
                         if Match.match_any(blk_rule, log_content):
                             black_rule = False
 
-                    if black_rule == True and file_type not in []:
+                    if black_rule == True and file_type not in ['UserActions','OvSvcDiscServer',]:
                         # 先将每行数据放入临时列表中
                         tmp_list.append({'log_line': line, 'log_content': log_content.strip()})
                         # 判断本行是否是事件的开头, 如果是, 则将本行内容从临时列表中弹出, 并放入到最终的列表中, 否则开启多行匹配
@@ -63,18 +63,13 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list, dir_path):
                         else:
                             IsMuline = True
 
-                # 对每行数据进行进一步的处理：fin_list
-                # print(fin_list)
+                # 对每行数据进行进一步的处理：fin_list, 并且生成最终数据
                 for i in fin_list:
                     log_line = i.get('log_line')
                     log_content = i.get('log_content')
-                    if len(log_line) > 10:
-                        print(log_line)
-                        print(file_type)
-                        print(file_path)
-                        print(log_content)
 
-
+                # 注意, 在完成处理的操作后需要将清空 fin_list
+                fin_list.clear()
 
     # test mode
     delete_directory(dir_path)

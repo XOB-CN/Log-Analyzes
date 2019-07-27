@@ -69,7 +69,6 @@ need_files = {
           # <OMi_HOME>\log\jboss\UserActions.servlets.log
           # <OMi_HOME>\log\pmi\root.log
         'login\.log',                   # LDAP, LWSSO
-        'UserActions\.servlets\.log',   # Log-in attempts（尝试登陆）
         'root.log',                     # 与界面操作相关
 
         # jboss (MercuryAS) 相关
@@ -126,4 +125,5 @@ need_files = {
 black_list = [
     # eg:如果该行包括 content 则直接忽略
     # 'content',
+    'rolled=0',     # 针对 System.txt 日志做的特殊处理，否则经常容易出问题
 ]
