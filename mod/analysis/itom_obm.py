@@ -64,9 +64,33 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list, dir_path):
                             IsMuline = True
 
                 # 对每行数据进行进一步的处理：fin_list, 并且生成最终数据
-                for i in fin_list:
-                    log_line = i.get('log_line')
-                    log_content = i.get('log_content')
+                for dict in fin_list:
+                    log_line = dict.get('log_line')
+                    log_content = dict.get('log_content')
+                    log_time = Match.match_log_time(log_content)
+
+                    # 事件等级
+                    if Match.match_any('INF:|INFO', log_content):
+                        log_level = 'INFO'
+                    elif Match.match_any('WRN:|WARN', log_content):
+                        log_level = 'WARN'
+                    elif Match.match_any('ERR', log_content):
+                        log_level = 'ERR'
+                    elif Match.match_any('DEBUG', log_content):
+                        log_level = 'DEBUG'
+                    else:
+                        log_level = None
+
+                    # 事件组件
+                    # OBM 中的 OA 组件
+                    if file_type in ['System','system']:
+                        log_component = re.findall(': [o|c]\w+', log_content)[0][2:]
+                        log_component = 'OA' + '.' + log_component
+
+                    elif file_type in ['opr-heartbeat','opr-gateway']:
+                        log_component = re.findall('\[.*?\]', log_content)[0][1:-1]
+                        log_component = file_type + '.' + log_component
+                        print(log_component)
 
                 # 注意, 在完成处理的操作后需要将清空 fin_list
                 fin_list.clear()
