@@ -63,6 +63,7 @@ need_files = {
         'OvSvcDiscServer\.log',         # 接收部分 OBM 动态拓扑，同步
         'opr-topologysync\.log',        # OBM 拓扑同步应用程序的日志条目
 
+
         # 用户/登陆/界面操作
         # Gateway Server
           # <OMi_HOME>\log\jboss\login.log
@@ -113,6 +114,7 @@ need_files = {
         'upgrade\.wizard\.log',         # <TOPAZ_HOME>/log/upgrade/upgrade.wizard.log
         'setting\.log',                 # <TOPAZ_HOME>/log/jboss/setting.log
         'license.*\.log',
+        'bsm_sdk_ucmdb_service\.log',
     ],
     # 其余类型
     'other':[

@@ -39,7 +39,17 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list, dir_path):
                         if Match.match_any(blk_rule, log_content):
                             black_rule = False
 
-                    if black_rule == True and file_type not in ['UserActions','OvSvcDiscServer','opr-backend_boot','opr-backend_shutdown']:
+                    if black_rule == True and file_type not in ['UserActions',
+                                                                'OvSvcDiscServer',
+                                                                'opr-backend_boot',
+                                                                'opr-backend_shutdown',
+                                                                'login',
+                                                                'opr-event-ws',
+                                                                'opr-ws-response',
+                                                                'kes',
+                                                                'opr-ue',
+                                                                'odb_boot',
+                                                                'license',]:
                         # 先将每行数据放入临时列表中
                         tmp_list.append({'log_line': line, 'log_content': log_content.strip()})
                         # 判断本行是否是事件的开头, 如果是, 则将本行内容从临时列表中弹出, 并放入到最终的列表中, 否则开启多行匹配
@@ -84,20 +94,61 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list, dir_path):
                     # 事件组件
                     # OBM 中的 OA 组件
                     if file_type in ['System','system']:
-                        log_component = re.findall(': [o|c]\w+', log_content)[0][2:]
-                        log_component = 'OA' + '.' + log_component
+                        try:
+                            log_component = re.findall(': [o|c]\w+', log_content)[0][2:]
+                            log_component = 'OA' + '.' + log_component
+                        except:
+                            print(file_type)
+                            print(log_content)
 
-                    elif file_type in ['opr-heartbeat','opr-gateway','opr-scripting-host','opr-backend','opr-ciresolver','opr-scripting-host']:
-                        log_component_1 = re.findall('\[.*?\]', log_content)[0][1:-1]
-                        log_component_2 = re.findall('  .*?-',log_content)[0][2:-2]
-                        log_component = file_type + '.' + log_component_1 + '.' + log_component_2
-                        # print(log_component)
+                    elif file_type in ['root']:
+                        try:
+                            log_component_1 = re.findall('\[.*?\]', log_content)[0][1:-1]
+                            log_component_2 = re.findall(' :.*?->|G:.*?->', log_content)[0][2:-2]
+                            log_component = file_type + '.' + log_component_1 + '.' + log_component_2
+                            print(log_component)
+                        except:
+                            print(file_type)
+                            print(log_content)
+
+                    elif file_type in ['opr-heartbeat',
+                                       'opr-gateway',
+                                       'opr-scripting-host',
+                                       'opr-backend',
+                                       'opr-ciresolver',
+                                       'opr-scripting-host',
+                                       'opr-webapp',
+                                       'opr-configserver',
+                                       'opr-svcdiscserver',
+                                       'content-manager',
+                                       'downtime',
+                                       'setting',
+                                       'bsm_sdk_ucmdb_service',]:
+                        try:
+                            log_component_1 = re.findall('\[.*?\]', log_content)[0][1:-1]
+                            if Match.match_any('  .*?-',log_content):
+                                log_component_2 = re.findall('  .*?-', log_content)[0][2:-2]
+                            elif Match.match_any('\].*?-',log_content):
+                                log_component_2 = re.findall('\].*?-', log_content)[0].split(' ')[2]
+                            log_component = file_type + '.' + log_component_1 + '.' + log_component_2
+                            print(log_component)
+                        except:
+                            print(file_type)
+                            print(log_content)
 
                     elif file_type in ['scripts']:
-                        log_component_1 = re.findall('\[.*?\]', log_content)[0][1:-1]
-                        log_component_2 = re.findall('ERROR.*?-|WARN.*?-|INFO.*?-', log_content)[0][4:-2]
-                        log_component = file_type + '.' + log_component_1 + '.' + log_component_2
-                        # print(log_component)
+                        try:
+                            log_component_1 = re.findall('\[.*?\]', log_content)[0][1:-1]
+                            log_component_2 = re.findall('ERROR.*?-|WARN.*?-|INFO.*?-', log_content)[0][4:-2]
+                            log_component = file_type + '.' + log_component_1 + '.' + log_component_2
+                            print(log_component)
+                        except:
+                            print(file_type)
+                            print(log_content)
+
+                    elif file_type in ['jboss7_boot','opr-clis','upgrade']:
+                        # 暂时还没想好要怎么处理
+                        pass
 
                 # 注意, 在完成处理的操作后需要将清空 fin_list
                 fin_list.clear()
