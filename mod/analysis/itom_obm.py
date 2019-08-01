@@ -111,19 +111,16 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list, dir_path):
                             print(file_type)
                             print(log_content)
 
+                    # 针对其余部分
                     elif file_type in ['opr-heartbeat',
                                        'opr-gateway',
-                                       'opr-scripting-host',
                                        'opr-backend',
                                        'opr-ciresolver',
-                                       'opr-scripting-host',
                                        'opr-webapp',
                                        'opr-configserver',
                                        'opr-svcdiscserver',
                                        'content-manager',
-                                       'downtime',
-                                       'setting',
-                                       'bsm_sdk_ucmdb_service',]:
+                                       'setting',]:
                         try:
                             log_component_1 = re.findall('\[.*?\]', log_content)[0][1:-1]
                             if Match.match_any('  .*?-',log_content):
@@ -136,7 +133,71 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list, dir_path):
                             print(file_type)
                             print(log_content)
 
-                    elif file_type in ['scripts']:
+                    # 针对 downtime.log 的处理
+                    elif file_type in ['downtime',]:
+                        try:
+                            # 针对 log_componet_1 的处理
+                            if Match.match_any('MSC service thread', log_content):
+                                log_component_1 = 'MSC service thread'
+                            elif Match.match_any('ServerService Thread Pool', log_content):
+                                log_component_1 = 'ServerService Thread Pool'
+                            else:
+                                log_component_1 = re.findall('\[.*?\]', log_content)[0][1:-1]
+                            # 针对 log_component_2 的处理
+                            if Match.match_any('\(.*?\.',log_content):
+                                log_component_2 = re.findall('\(.*?\.', log_content)[0][1:-2]
+                            else:
+                                log_component_2 = 'Unknow'
+                            # 整合 log_component
+                            log_component = file_type + '.' + log_component_1 + '.' + log_component_2
+                            print(log_component)
+                        except:
+                            print(file_type)
+                            print(log_content)
+
+                    # 针对 opr-scripting-host.log 的处理
+                    elif file_type in ['opr-scripting-host', ]:
+                        try:
+                            # 针对 log_component_1 的处理
+                            if Match.match_any('ActiveMQ.*client.*global.*threads', log_content):
+                                log_component_1 = 'ActiveMQ-client-global-threads'
+                            else:
+                                log_component_1 = re.findall('\[.*?\]', log_content)[0][1:-1]
+                            # 针对 log_component_2 的处理
+                            if Match.match_any('lambda.*logStatus',log_content):
+                                log_component_2 = 'lambda:logStatus'
+                            else:
+                                log_component_2 = re.findall('  .*?\(', log_content)[0][1:-2].strip()
+                            log_component = file_type + '.' + log_component_1 + '.' + log_component_2
+                            print(log_component)
+                        except:
+                            print(file_type)
+                            print(log_content)
+
+                    # 针对 bsm_sdk_ucmdb_service.log 的处理
+                    elif file_type in ['bsm_sdk_ucmdb_service',]:
+                        try:
+                            # 针对 log_component_1 的处理
+                            if Match.match_any('CiResolverIndexManager', log_content):
+                                log_component_1 = 'CiResolverIndexManager'
+                            elif Match.match_any('RMI TCP Connection', log_content):
+                                log_component_1 = 'RMI TCP Connection'
+                            else:
+                                log_component_1 = re.findall('\[.*?\]', log_content)[0][1:-1]
+                            # 针对 log_component_2 的处理
+                            if Match.match_any('\(.*?\)', log_content):
+                                log_component_2 = re.findall('\(.*?\)', log_content)[0][2:-4]
+                                if len(log_component_2) == 0:
+                                    log_component_2 = re.findall('\(.*?\)', log_content)[-1][2:-4]
+                            else:
+                                log_component_2 = re.findall('\].*?-', log_content)[0].split(' ')[2]
+                            log_component = file_type + '.' + log_component_1 + '.' + log_component_2
+                            print(log_component)
+                        except:
+                            print(file_type)
+                            print(log_content)
+
+                    elif file_type in ['scripts',]:
                         try:
                             log_component_1 = re.findall('\[.*?\]', log_content)[0][1:-1]
                             log_component_2 = re.findall('ERROR.*?-|WARN.*?-|INFO.*?-', log_content)[0][4:-2]
