@@ -112,15 +112,10 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list, dir_path):
                             print(log_content)
 
                     # 针对其余部分
-                    elif file_type in ['opr-heartbeat',
-                                       'opr-gateway',
+                    elif file_type in ['opr-gateway',
                                        'opr-backend',
                                        'opr-ciresolver',
-                                       'opr-webapp',
-                                       'opr-configserver',
-                                       'opr-svcdiscserver',
-                                       'content-manager',
-                                       'setting',]:
+                                       'opr-svcdiscserver',]:
                         try:
                             log_component_1 = re.findall('\[.*?\]', log_content)[0][1:-1]
                             if Match.match_any('  .*?-',log_content):
@@ -182,6 +177,12 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list, dir_path):
                                 log_component_1 = 'CiResolverIndexManager'
                             elif Match.match_any('RMI TCP Connection', log_content):
                                 log_component_1 = 'RMI TCP Connection'
+                            elif Match.match_any('quartzScheduler', log_content):
+                                log_component_1 = 'quartzScheduler'
+                            elif Match.match_any('localhost\-startStop', log_content):
+                                log_component_1 = 'startStop'
+                            elif Match.match_any('ActiveMQ\-client\-global\-threads', log_content):
+                                log_component_1 = 'ActiveMQ-client-global-threads'
                             else:
                                 log_component_1 = re.findall('\[.*?\]', log_content)[0][1:-1]
                             # 针对 log_component_2 的处理
@@ -191,6 +192,110 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list, dir_path):
                                     log_component_2 = re.findall('\(.*?\)', log_content)[-1][2:-4]
                             else:
                                 log_component_2 = re.findall('\].*?-', log_content)[0].split(' ')[2]
+                            log_component = file_type + '.' + log_component_1 + '.' + log_component_2
+                            print(log_component)
+                        except:
+                            print(file_type)
+                            print(log_content)
+
+                    # 针对 opr-webapp.log 的处理
+                    elif file_type in ['opr-webapp',]:
+                        try:
+                            # log_component_1 的处理
+                            if Match.match_any('ServerService Thread Pool', log_content):
+                                log_component_1 = 'ServerService Thread Pool'
+                            elif Match.match_any('pool\-\.\-thread', log_content):
+                                log_component_1 = 'pool-**-thread'
+                            elif Match.match_any('ActiveMQ.*client.*global.*threads', log_content):
+                                log_component_1 = 'ActiveMQ-client-global-threads'
+                            elif Match.match_any('Thread\-\d+', log_content):
+                                log_component_1 = 'Thread'
+                            elif Match.match_any('ajp\-\/\d+', log_content):
+                                log_component_1 = 'ajp-/ip_address:port'
+                            elif Match.match_any('quartzScheduler_Worker', log_content):
+                                log_component_1 ='quartzScheduler_Worker'
+                            else:
+                                log_component_1 = re.findall('\[.*?\]', log_content)[0][1:-1]
+                            # log_component_2 的处理
+                            if Match.match_any('lambda.*logStatus',log_content):
+                                log_component_2 = 'lambda:logStatus'
+                            elif Match.match_any('  .*?\(', log_content):
+                                log_component_2 = re.findall('  .*?\(', log_content)[0][2:-1]
+                            elif Match.match_any('\].*?-', log_content):
+                                log_component_2 = re.findall('\].*?-', log_content)[0].split(' ')[2]
+                            else:
+                                log_component_2 = 'unkonw'
+                            log_component = file_type + '.' + log_component_1 + '.' + log_component_2
+                            print(log_component)
+                        except:
+                            print(file_type)
+                            print(log_content)
+
+                    # 针对 setting.log 的处理
+                    elif file_type in ['setting',]:
+                        try:
+                            log_component_1 = re.findall('\[.*?\]', log_content)[0][1:-1]
+                            log_component_2 = re.findall('  .*?\(', log_content)[0].strip()[:-1]
+                            log_component = file_type + '.' + log_component_1 + '.' + log_component_2
+                            print(log_component)
+                        except:
+                            print(file_type)
+                            print(log_content)
+
+                    # 针对 content-manager.log 的处理
+                    elif file_type in ['content-manager',]:
+                        try:
+                            # log_component_1 部分
+                            if Match.match_any('pool\-\d+\-thread', log_content):
+                                log_component_1 = 'pool-**-thread'
+                            else:
+                                log_component_1 = re.findall('\[.*?\]', log_content)[0][1:-1]
+                            # log_component_2 部分
+                            log_component_2 = re.findall('\(.*?:', log_content)[0][1:-1]
+                            log_component = file_type + '.' + log_component_1 + '.' + log_component_2
+                            print(log_component)
+                        except:
+                            print(file_type)
+                            print(log_content)
+
+                    # 针对 opr-configserver.log 的处理
+                    elif file_type in ['opr-configserver']:
+                        try:
+                            if Match.match_any('ServerService Thread Pool', log_content):
+                                log_component_1 = 'ServerService Thread Pool'
+                            elif Match.match_any('quartzScheduler.*Worker', log_content):
+                                log_component_1 = 'quartzScheduler_Worker'
+                            elif Match.match_any('pool\-\d+\-thread', log_content):
+                                log_component_1 = 'pool-**-thread'
+                            elif Match.match_any('RMI TCP Connection', log_content):
+                                log_component_1 = 'RMI TCP Connection'
+                            elif Match.match_any('localhost\-startStop', log_content):
+                                log_component_1 = 'startStop'
+                            elif Match.match_any('Thread\-\d+', log_content):
+                                log_component_1 = 'Thread'
+                            else:
+                                log_component_1 = re.findall('\[.*?\]', log_content)[0][1:-1]
+                            if Match.match_any('ERROR .*?\(', log_content):
+                                log_component_2 = re.findall('ERROR .*?\(', log_content)[0][6:-1]
+                            elif Match.match_any('  .*?\(', log_content):
+                                log_component_2 = re.findall('  .*?\(', log_content)[0].strip()[:-1]
+                            log_component = file_type + '.' + log_component_1 + '.' + log_component_2
+                            print(log_component)
+                        except:
+                            print(file_type)
+                            print(log_content)
+
+                    # 针对 opr-heartbeat.log 的处理
+                    elif file_type in ['opr-heartbeat']:
+                        try:
+                            if Match.match_any('HeartBeatConfig', log_content):
+                                log_component_1 = 'HeartBeatConfig'
+                            else:
+                                log_component_1 = re.findall('\[.*?\]', log_content)[0][1:-1]
+                            if Match.match_any('ERROR .*?\(', log_content):
+                                log_component_2 = re.findall('ERROR .*?\(', log_content)[0][6:-1]
+                            elif Match.match_any('  .*?\(', log_content):
+                                log_component_2 = re.findall('  .*?\(', log_content)[0].strip()[:-1]
                             log_component = file_type + '.' + log_component_1 + '.' + log_component_2
                             print(log_component)
                         except:
