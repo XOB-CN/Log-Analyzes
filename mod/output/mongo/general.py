@@ -40,6 +40,7 @@ def add_to_mongodb(Queue_Output, input_argv, unarchive_path):
                 n = False
         else:
             if mongo_data == []:
+                print('mongo_data it is null')
                 pass
             else:
                 mg_sess.insert_many(mongo_data)

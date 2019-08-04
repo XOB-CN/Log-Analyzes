@@ -317,7 +317,8 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list):
                 # 将数据放入到消息队列中
                 # 注意, 在完成处理的操作后需要将清空 fin_list
                 fin_data_copy = fin_data.copy()
-                Queue_Output.put(fin_data_copy)
+                if fin_data_copy != []:
+                    Queue_Output.put(fin_data_copy)
                 fin_data.clear()
                 fin_list.clear()
 
