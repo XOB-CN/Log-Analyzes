@@ -77,7 +77,13 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list, dir_path):
                 for dict in fin_list:
                     log_line = dict.get('log_line')
                     log_content = dict.get('log_content')
-                    log_time = Match.match_log_time(log_content)
+                    try:
+                        log_time = Match.match_log_time(log_content)
+                        log_time = datetime.fromtimestamp(log_time)
+                    except Exception as e:
+                        # print(e)
+                        log_time = None
+                    log_weight = 1
 
                     # 事件等级
                     if Match.match_any('INF:|INFO', log_content):
@@ -105,25 +111,6 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list, dir_path):
                         try:
                             log_component_1 = re.findall('\[.*?\]', log_content)[0][1:-1]
                             log_component_2 = re.findall(' :.*?->|G:.*?->', log_content)[0][2:-2]
-                            log_component = file_type + '.' + log_component_1 + '.' + log_component_2
-                            print(log_component)
-                        except:
-                            print(file_type)
-                            print(log_content)
-
-                    # 针对其余部分
-                    elif file_type in ['opr-gateway',
-                                       'opr-backend',
-                                       'opr-ciresolver',
-                                       'opr-svcdiscserver',]:
-                        try:
-                            log_component_1 = re.findall('\[.*?\]', log_content)[0][1:-1]
-                            if Match.match_any('  .*?-',log_content):
-                                log_component_2 = re.findall('  .*?-', log_content)[0][2:-2]
-                            elif Match.match_any('\].*?-',log_content):
-                                log_component_2 = re.findall('\].*?-', log_content)[0].split(' ')[2]
-                            log_component = file_type + '.' + log_component_1 + '.' + log_component_2
-                            print(log_component)
                         except:
                             print(file_type)
                             print(log_content)
@@ -143,9 +130,6 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list, dir_path):
                                 log_component_2 = re.findall('\(.*?\.', log_content)[0][1:-2]
                             else:
                                 log_component_2 = 'Unknow'
-                            # 整合 log_component
-                            log_component = file_type + '.' + log_component_1 + '.' + log_component_2
-                            print(log_component)
                         except:
                             print(file_type)
                             print(log_content)
@@ -163,8 +147,6 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list, dir_path):
                                 log_component_2 = 'lambda:logStatus'
                             else:
                                 log_component_2 = re.findall('  .*?\(', log_content)[0][1:-2].strip()
-                            log_component = file_type + '.' + log_component_1 + '.' + log_component_2
-                            print(log_component)
                         except:
                             print(file_type)
                             print(log_content)
@@ -192,8 +174,6 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list, dir_path):
                                     log_component_2 = re.findall('\(.*?\)', log_content)[-1][2:-4]
                             else:
                                 log_component_2 = re.findall('\].*?-', log_content)[0].split(' ')[2]
-                            log_component = file_type + '.' + log_component_1 + '.' + log_component_2
-                            print(log_component)
                         except:
                             print(file_type)
                             print(log_content)
@@ -225,8 +205,6 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list, dir_path):
                                 log_component_2 = re.findall('\].*?-', log_content)[0].split(' ')[2]
                             else:
                                 log_component_2 = 'unkonw'
-                            log_component = file_type + '.' + log_component_1 + '.' + log_component_2
-                            print(log_component)
                         except:
                             print(file_type)
                             print(log_content)
@@ -236,8 +214,6 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list, dir_path):
                         try:
                             log_component_1 = re.findall('\[.*?\]', log_content)[0][1:-1]
                             log_component_2 = re.findall('  .*?\(', log_content)[0].strip()[:-1]
-                            log_component = file_type + '.' + log_component_1 + '.' + log_component_2
-                            print(log_component)
                         except:
                             print(file_type)
                             print(log_content)
@@ -252,14 +228,12 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list, dir_path):
                                 log_component_1 = re.findall('\[.*?\]', log_content)[0][1:-1]
                             # log_component_2 部分
                             log_component_2 = re.findall('\(.*?:', log_content)[0][1:-1]
-                            log_component = file_type + '.' + log_component_1 + '.' + log_component_2
-                            print(log_component)
                         except:
                             print(file_type)
                             print(log_content)
 
                     # 针对 opr-configserver.log 的处理
-                    elif file_type in ['opr-configserver']:
+                    elif file_type in ['opr-configserver', 'opr-ciresolver','opr-gateway','opr-backend','opr-svcdiscserver',]:
                         try:
                             if Match.match_any('ServerService Thread Pool', log_content):
                                 log_component_1 = 'ServerService Thread Pool'
@@ -273,14 +247,16 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list, dir_path):
                                 log_component_1 = 'startStop'
                             elif Match.match_any('Thread\-\d+', log_content):
                                 log_component_1 = 'Thread'
+                            elif Match.match_any('JdbcIndex\-\d', log_content):
+                                log_component_1 = 'JdbcIndex'
                             else:
                                 log_component_1 = re.findall('\[.*?\]', log_content)[0][1:-1]
                             if Match.match_any('ERROR .*?\(', log_content):
                                 log_component_2 = re.findall('ERROR .*?\(', log_content)[0][6:-1]
+                            elif Match.match_any('lambda.*logStatus',log_content):
+                                log_component_2 = 'lambda:logStatus'
                             elif Match.match_any('  .*?\(', log_content):
                                 log_component_2 = re.findall('  .*?\(', log_content)[0].strip()[:-1]
-                            log_component = file_type + '.' + log_component_1 + '.' + log_component_2
-                            print(log_component)
                         except:
                             print(file_type)
                             print(log_content)
@@ -296,18 +272,18 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list, dir_path):
                                 log_component_2 = re.findall('ERROR .*?\(', log_content)[0][6:-1]
                             elif Match.match_any('  .*?\(', log_content):
                                 log_component_2 = re.findall('  .*?\(', log_content)[0].strip()[:-1]
-                            log_component = file_type + '.' + log_component_1 + '.' + log_component_2
-                            print(log_component)
                         except:
                             print(file_type)
                             print(log_content)
 
+                    # 针对 scripts.log 的处理
                     elif file_type in ['scripts',]:
                         try:
-                            log_component_1 = re.findall('\[.*?\]', log_content)[0][1:-1]
+                            if Match.match_any('ActiveMQ\-client\-global\-threads', log_content):
+                                log_component_1 = 'ActiveMQ-client-global-threads'
+                            else:
+                                log_component_1 = re.findall('\[.*?\]', log_content)[0][1:-1]
                             log_component_2 = re.findall('ERROR.*?-|WARN.*?-|INFO.*?-', log_content)[0][4:-2]
-                            log_component = file_type + '.' + log_component_1 + '.' + log_component_2
-                            print(log_component)
                         except:
                             print(file_type)
                             print(log_content)
@@ -316,8 +292,27 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list, dir_path):
                         # 暂时还没想好要怎么处理
                         pass
 
+                    # 生成单个 event 数据
+                    tmp_data = {}
+                    tmp_data['log_type'] = file_type
+                    tmp_data['log_file'] = file_path
+                    tmp_data['log_line'] = log_line
+                    tmp_data['log_time'] = log_time
+                    tmp_data['log_level'] = log_level
+                    tmp_data['log_comp1'] = log_component_1
+                    tmp_data['log_comp2'] = log_component_2
+                    tmp_data['log_weight'] = log_weight
+
+                    tmp_data_copy = tmp_data.copy()
+                    fin_data.append(tmp_data.copy())
+                    tmp_data.clear()
+
+                for i in fin_data:
+                    print(i)
+
                 # 注意, 在完成处理的操作后需要将清空 fin_list
                 fin_list.clear()
+                fin_data.clear()
 
     # test mode
     delete_directory(dir_path)
