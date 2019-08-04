@@ -39,11 +39,13 @@ def add_to_mongodb(Queue_Output, input_argv, unarchive_path):
             if false_number_count == false_number:
                 n = False
         else:
-            # 将数据写入到 MongoDB 中
-            mg_sess.insert_many(mongo_data)
-            # 显示进度信息
-            insert_number += 1
-            msg.output_mongo_insert_info(insert_number)
+            if mongo_data == []:
+                pass
+            else:
+                mg_sess.insert_many(mongo_data)
+                # 显示进度信息
+                insert_number += 1
+                msg.output_mongo_insert_info(insert_number)
 
     # 清除临时目录
     temp_path = os.path.join(os.path.abspath(os.path.join(os.path.realpath(__file__), '..\..\..\..')), Check.get_temp_path())

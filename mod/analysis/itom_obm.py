@@ -4,16 +4,15 @@ import re, os
 from datetime import datetime
 from mod.tools.match import Match
 
-# test mode
-from mod.tools.io_tools import delete_directory
-
-def analysis_to_mongodb(Queue_Input, Queue_Output, black_list, dir_path):
+def analysis_to_mongodb(Queue_Input, Queue_Output, black_list):
     # 初始化参数
     n = True
     IsMuline = False
     tmp_list = []
     fin_list = []
     fin_data = []
+    # log_component_1 = 'unknow'
+    # log_component_2 = 'unknow'
 
     # 初始化数据变量
     file_type = None
@@ -74,7 +73,8 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list, dir_path):
                             IsMuline = True
 
                 # 对每行数据进行进一步的处理：fin_list, 并且生成最终数据
-                for dict in fin_list:
+                fin_list_copy = fin_list.copy()
+                for dict in fin_list_copy:
                     log_line = dict.get('log_line')
                     log_content = dict.get('log_content')
                     try:
@@ -299,20 +299,27 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list, dir_path):
                     tmp_data['log_line'] = log_line
                     tmp_data['log_time'] = log_time
                     tmp_data['log_level'] = log_level
-                    tmp_data['log_comp1'] = log_component_1
-                    tmp_data['log_comp2'] = log_component_2
+                    try:
+                        tmp_data['log_comp1'] = log_component_1
+                    except:
+                        tmp_data['log_comp1'] = 'unknow'
+                    try:
+                        tmp_data['log_comp2'] = log_component_2
+                    except:
+                        tmp_data['log_comp2'] = 'unknow'
                     tmp_data['log_weight'] = log_weight
 
+                    # 汇总 event 数据
                     tmp_data_copy = tmp_data.copy()
-                    fin_data.append(tmp_data.copy())
+                    fin_data.append(tmp_data_copy)
                     tmp_data.clear()
 
-                for i in fin_data:
-                    print(i)
-
+                # 将数据放入到消息队列中
                 # 注意, 在完成处理的操作后需要将清空 fin_list
-                fin_list.clear()
+                fin_data_copy = fin_data.copy()
+                Queue_Output.put(fin_data_copy)
                 fin_data.clear()
+                fin_list.clear()
 
-    # test mode
-    delete_directory(dir_path)
+    # 分析结束, 放入 False
+    Queue_Output.put(False)

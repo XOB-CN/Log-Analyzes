@@ -12,6 +12,7 @@ from rules import ITOM_OBM_AnalysisRules as OBM_Alysis_Rules
 from mod.tools.check import Check, ArchiveCheck
 from mod.input.general import archive_general
 from mod.output.report.general import archive_to_report
+from mod.output.mongo.general import add_to_mongodb
 from mod.analysis.general import archive_general_report
 from mod.analysis.itom_obm import analysis_to_mongodb
 
@@ -63,6 +64,12 @@ if __name__ == '__main__':
     # Mode: MongoDB
     if input_argv.get('-out') in ['mongodb','MongoDB','mongoDB']:
         p1 = Process(target=archive_general, args=(file_abspath_dict, Queue_Input, InputRule, input_argv), name='Input Process')
-        p2 = Process(target=analysis_to_mongodb, args=(Queue_Input, Queue_Output, OBM_In_Rules.black_list, unarchive_path), name='Output Process')
+        p2 = Process(target=add_to_mongodb, args=(Queue_Output, input_argv, unarchive_path), name='Output Process')
         p1.start()
         p2.start()
+
+        # p = Process(target=analysis_to_mongodb, args=(Queue_Input, Queue_Output, OBM_In_Rules.black_list))
+        # p.start()
+        for p in range(Check.get_multiprocess_counts()-1):
+            p = Process(target=analysis_to_mongodb, args=(Queue_Input, Queue_Output, OBM_In_Rules.black_list))
+            p.start()
