@@ -101,17 +101,37 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list):
                     # OBM 中的 OA 组件
                     if file_type in ['System','system']:
                         try:
-                            log_component = re.findall(': [o|c]\w+', log_content)[0][2:]
                             log_component_1 = 'OMi_OA'
-                            log_component_2 = log_component
+                            if Match.match_any(': [o|c]\w+', log_content):
+                                log_component_2 = re.findall(': [o|c]\w+', log_content)[0][2:]
+                            elif Match.match_any('AHSCollector', log_content):
+                                log_component_2 = 'AHSCollector'
+                            elif Match.match_any('System Error Number', log_content):
+                                log_component_2 = 'System Error Number'
+                            else:
+                                log_component_2 = 'unknow'
                         except:
                             print(file_type)
                             print(log_content)
 
                     elif file_type in ['root']:
                         try:
-                            log_component_1 = re.findall('\[.*?\]', log_content)[0][1:-1]
-                            log_component_2 = re.findall(' :.*?->|G:.*?->', log_content)[0][2:-2]
+                            # 针对 log_componet_1 的处理
+                            if Match.match_any('\[.*?\]', log_content):
+                                log_component_1 = re.findall('\[.*?\]', log_content)[0][1:-1]
+                            else:
+                                log_component_1 = 'unknow'
+                            # 针对 log_componet_2 的处理
+                            if Match.match_any('  .*?\(', log_content):
+                                log_component_2 = re.findall('  .*?\(', log_content)[0].strip()[:-1]
+                            elif Match.match_any('ERROR.*?\(', log_content):
+                                log_component_2 = re.findall('ERROR.*?\(', log_content)[0].strip()[6:-1]
+                            elif Match.match_any(' :.*?->|G:.*?->', log_content):
+                                log_component_2 = re.findall(' :.*?->|G:.*?->', log_content)[0][2:-2]
+                            elif Match.match_any('\(.*?\)', log_content):
+                                log_component_2 = re.findall('\(.*?\)', log_content)[0]
+                            else:
+                                log_component_2 = 'unknow'
                         except:
                             print(file_type)
                             print(log_content)
@@ -146,8 +166,10 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list):
                             # 针对 log_component_2 的处理
                             if Match.match_any('lambda.*logStatus',log_content):
                                 log_component_2 = 'lambda:logStatus'
-                            else:
+                            elif Match.match_any('  .*?\(',log_content):
                                 log_component_2 = re.findall('  .*?\(', log_content)[0][1:-2].strip()
+                            elif Match.match_any('\(.*?\)', log_content):
+                                log_component_2 = re.findall('\(.*?\)', log_content)[0]
                         except:
                             print(file_type)
                             print(log_content)
@@ -214,7 +236,11 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list):
                     elif file_type in ['setting',]:
                         try:
                             log_component_1 = re.findall('\[.*?\]', log_content)[0][1:-1]
-                            log_component_2 = re.findall('  .*?\(', log_content)[0].strip()[:-1]
+                            # 针对 log_componet_2 的处理
+                            if Match.match_any('  .*?\(', log_content):
+                                log_component_2 = re.findall('  .*?\(', log_content)[0].strip()[:-1]
+                            elif Match.match_any('ERROR.*?\(', log_content):
+                                log_component_2 = re.findall('ERROR.*?\(', log_content)[0].strip()[6:-1]
                         except:
                             print(file_type)
                             print(log_content)
@@ -236,6 +262,7 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list):
                     # 针对 opr-configserver.log 的处理
                     elif file_type in ['opr-configserver', 'opr-ciresolver','opr-gateway','opr-backend','opr-svcdiscserver',]:
                         try:
+                            # log_component_1 部分
                             if Match.match_any('ServerService Thread Pool', log_content):
                                 log_component_1 = 'ServerService Thread Pool'
                             elif Match.match_any('quartzScheduler.*Worker', log_content):
@@ -250,14 +277,19 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list):
                                 log_component_1 = 'Thread'
                             elif Match.match_any('JdbcIndex\-\d', log_content):
                                 log_component_1 = 'JdbcIndex'
-                            else:
+                            elif Match.match_any('\[.*?\]', log_content):
                                 log_component_1 = re.findall('\[.*?\]', log_content)[0][1:-1]
+                            else:
+                                log_component_1 = 'unknow'
+                            # log_component_1 部分
                             if Match.match_any('ERROR .*?\(', log_content):
                                 log_component_2 = re.findall('ERROR .*?\(', log_content)[0][6:-1]
                             elif Match.match_any('lambda.*logStatus',log_content):
                                 log_component_2 = 'lambda:logStatus'
                             elif Match.match_any('  .*?\(', log_content):
                                 log_component_2 = re.findall('  .*?\(', log_content)[0].strip()[:-1]
+                            else:
+                                log_component_2 = 'unknow'
                         except:
                             print(file_type)
                             print(log_content)
