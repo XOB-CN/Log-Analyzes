@@ -102,12 +102,12 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list):
                     if file_type in ['System','system']:
                         try:
                             log_component_1 = 'OMi_OA'
-                            if Match.match_any(': [o|c]\w+', log_content):
-                                log_component_2 = re.findall(': [o|c]\w+', log_content)[0][2:]
-                            elif Match.match_any('AHSCollector', log_content):
+                            if Match.match_any('AHSCollector', log_content):
                                 log_component_2 = 'AHSCollector'
                             elif Match.match_any('System Error Number', log_content):
                                 log_component_2 = 'System Error Number'
+                            elif Match.match_any(': [o|c]\w+', log_content):
+                                log_component_2 = re.findall(': [o|c]\w+', log_content)[0][2:]
                             else:
                                 log_component_2 = 'unknow'
                         except:
@@ -144,8 +144,10 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list):
                                 log_component_1 = 'MSC service thread'
                             elif Match.match_any('ServerService Thread Pool', log_content):
                                 log_component_1 = 'ServerService Thread Pool'
-                            else:
+                            elif Match.match_any('\[.*?\]', log_content):
                                 log_component_1 = re.findall('\[.*?\]', log_content)[0][1:-1]
+                            else:
+                                log_component_1 = 'unknow'
                             # 针对 log_component_2 的处理
                             if Match.match_any('\(.*?\.',log_content):
                                 log_component_2 = re.findall('\(.*?\.', log_content)[0][1:-2]
