@@ -102,7 +102,8 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list):
                     if file_type in ['System','system']:
                         try:
                             log_component = re.findall(': [o|c]\w+', log_content)[0][2:]
-                            log_component = 'OA' + '.' + log_component
+                            log_component_1 = 'OMi_OA'
+                            log_component_2 = log_component
                         except:
                             print(file_type)
                             print(log_content)

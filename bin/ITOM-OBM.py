@@ -13,6 +13,7 @@ from mod.tools.check import Check, ArchiveCheck
 from mod.input.general import archive_general
 from mod.output.report.general import archive_to_report
 from mod.output.mongo.general import add_to_mongodb
+from mod.output.graph import graph_itom_obm
 from mod.analysis.general import archive_general_report
 from mod.analysis.itom_obm import analysis_to_mongodb
 
@@ -25,16 +26,30 @@ if __name__ == '__main__':
         msg.general_help_command()
 
     # 检查输出方法
-    if input_argv.get('-out') not in ['report', 'Report', 'mongodb','MongoDB','mongoDB',]:
+    if input_argv.get('-out') not in ['report', 'Report', 'mongodb','MongoDB','mongoDB','summary_by_time','summary_by_date']:
         msg.general_output_error()
 
     # 检查文件是否存在
-    filepath = input_argv.get('-f')
-    if os.path.exists(filepath) == False:
-        msg.general_file_error()
+    # 例外情况, 此情况下可以没有 -f 参数
+    if input_argv.get('-out') in ['summary_by_time','summary_by_date',]:
+        pass
+    else:
+        filepath = input_argv.get('-f')
+        if os.path.exists(filepath) == False:
+            msg.general_file_error()
+    ######
+    # filepath = input_argv.get('-f')
+    # if os.path.exists(filepath) == False:
+    #     msg.general_file_error()
 
     # 过滤待分析的文件或压缩包
-    file_abspath_dict, unarchive_path = Check.check_files(filepath, OBM_In_Rules.need_files, basepath)
+    # file_abspath_dict, unarchive_path = Check.check_files(filepath, OBM_In_Rules.need_files, basepath)
+    # 过滤待分析的文件或压缩包
+    # 例外情况, 此情况下可以没有 -f 参数
+    if input_argv.get('-out') in ['summary_by_time', 'summary_by_date']:
+        pass
+    else:
+        file_abspath_dict, unarchive_path = Check.check_files(filepath, OBM_In_Rules.need_files, basepath)
 
     # 生成多进程需要的数据
     InputRule = {}
@@ -73,3 +88,8 @@ if __name__ == '__main__':
         for p in range(Check.get_multiprocess_counts()-1):
             p = Process(target=analysis_to_mongodb, args=(Queue_Input, Queue_Output, OBM_In_Rules.black_list))
             p.start()
+
+    # 生成统计图: summary_by_date / time
+    if input_argv.get('-out') in ['summary_by_time', 'summary_by_date']:
+        p = Process(target=graph_itom_obm.summary_by_date, args=(input_argv,))
+        p.start()
