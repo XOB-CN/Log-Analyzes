@@ -163,8 +163,10 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list):
                             # 针对 log_component_1 的处理
                             if Match.match_any('ActiveMQ.*client.*global.*threads', log_content):
                                 log_component_1 = 'ActiveMQ-client-global-threads'
-                            else:
+                            elif Match.match_any('\[.*?\]', log_content):
                                 log_component_1 = re.findall('\[.*?\]', log_content)[0][1:-1]
+                            else:
+                                log_component_1 = 'Unknow'
                             # 针对 log_component_2 的处理
                             if Match.match_any('lambda.*logStatus',log_content):
                                 log_component_2 = 'lambda:logStatus'
@@ -172,6 +174,8 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list):
                                 log_component_2 = re.findall('  .*?\(', log_content)[0][1:-2].strip()
                             elif Match.match_any('\(.*?\)', log_content):
                                 log_component_2 = re.findall('\(.*?\)', log_content)[0]
+                            else:
+                                log_component_2 = 'Unknow'
                         except:
                             print(file_type)
                             print(log_content)
@@ -190,15 +194,19 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list):
                                 log_component_1 = 'startStop'
                             elif Match.match_any('ActiveMQ\-client\-global\-threads', log_content):
                                 log_component_1 = 'ActiveMQ-client-global-threads'
-                            else:
+                            elif Match.match_any('\[.*?\]', log_content):
                                 log_component_1 = re.findall('\[.*?\]', log_content)[0][1:-1]
+                            else:
+                                log_component_1 = 'unknow'
                             # 针对 log_component_2 的处理
                             if Match.match_any('\(.*?\)', log_content):
                                 log_component_2 = re.findall('\(.*?\)', log_content)[0][2:-4]
                                 if len(log_component_2) == 0:
                                     log_component_2 = re.findall('\(.*?\)', log_content)[-1][2:-4]
-                            else:
+                            elif Match.match_any('\].*?-', log_content):
                                 log_component_2 = re.findall('\].*?-', log_content)[0].split(' ')[2]
+                            else:
+                                log_component_2 = 'unknow'
                         except:
                             print(file_type)
                             print(log_content)
@@ -219,8 +227,10 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list):
                                 log_component_1 = 'ajp-/ip_address:port'
                             elif Match.match_any('quartzScheduler_Worker', log_content):
                                 log_component_1 ='quartzScheduler_Worker'
-                            else:
+                            elif Match.match_any('\[.*?\]', log_content):
                                 log_component_1 = re.findall('\[.*?\]', log_content)[0][1:-1]
+                            else:
+                                log_component_1 =  'unknow'
                             # log_component_2 的处理
                             if Match.match_any('lambda.*logStatus',log_content):
                                 log_component_2 = 'lambda:logStatus'
@@ -237,12 +247,17 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list):
                     # 针对 setting.log 的处理
                     elif file_type in ['setting',]:
                         try:
-                            log_component_1 = re.findall('\[.*?\]', log_content)[0][1:-1]
+                            if Match.match_any('\[.*?\]', log_content):
+                                log_component_1 = re.findall('\[.*?\]', log_content)[0][1:-1]
+                            else:
+                                log_component_1 = 'unknow'
                             # 针对 log_componet_2 的处理
                             if Match.match_any('  .*?\(', log_content):
                                 log_component_2 = re.findall('  .*?\(', log_content)[0].strip()[:-1]
                             elif Match.match_any('ERROR.*?\(', log_content):
                                 log_component_2 = re.findall('ERROR.*?\(', log_content)[0].strip()[6:-1]
+                            else:
+                                log_component_2 = 'unknow'
                         except:
                             print(file_type)
                             print(log_content)
@@ -253,10 +268,16 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list):
                             # log_component_1 部分
                             if Match.match_any('pool\-\d+\-thread', log_content):
                                 log_component_1 = 'pool-**-thread'
-                            else:
+                            elif Match.match_any('\[.*?\]', log_content):
                                 log_component_1 = re.findall('\[.*?\]', log_content)[0][1:-1]
+                            else:
+                                log_component_1 = 'unknow'
+
                             # log_component_2 部分
-                            log_component_2 = re.findall('\(.*?:', log_content)[0][1:-1]
+                            if Match.match_any('\(.*?:', log_content):
+                                log_component_2 = re.findall('\(.*?:', log_content)[0][1:-1]
+                            else:
+                                log_component_2 = 'unknow'
                         except:
                             print(file_type)
                             print(log_content)
@@ -284,8 +305,8 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list):
                             else:
                                 log_component_1 = 'unknow'
                             # log_component_1 部分
-                            if Match.match_any('ERROR .*?\(', log_content):
-                                log_component_2 = re.findall('ERROR .*?\(', log_content)[0][6:-1]
+                            if Match.match_any('ERROR .*?\(|DEBUG .*?\(', log_content):
+                                log_component_2 = re.findall('ERROR .*?\(|DEBUG .*?\(', log_content)[0][6:-1]
                             elif Match.match_any('lambda.*logStatus',log_content):
                                 log_component_2 = 'lambda:logStatus'
                             elif Match.match_any('  .*?\(', log_content):
