@@ -26,12 +26,12 @@ if __name__ == '__main__':
         msg.general_help_command()
 
     # 检查输出方法
-    if input_argv.get('-out') not in ['report', 'Report', 'mongodb','MongoDB','mongoDB','summary_by_time','summary_by_date']:
+    if input_argv.get('-out') not in ['report', 'Report', 'mongodb','MongoDB','mongoDB','summary_by_time','summary_by_date','summary_by_count_lv1','summary_by_count_lv2','summary_by_count_lv3']:
         msg.general_output_error()
 
     # 检查文件是否存在
     # 例外情况, 此情况下可以没有 -f 参数
-    if input_argv.get('-out') in ['summary_by_time','summary_by_date',]:
+    if input_argv.get('-out') in ['summary_by_time','summary_by_date','summary_by_count_lv1','summary_by_count_lv2','summary_by_count_lv3']:
         pass
     else:
         filepath = input_argv.get('-f')
@@ -46,7 +46,7 @@ if __name__ == '__main__':
     # file_abspath_dict, unarchive_path = Check.check_files(filepath, OBM_In_Rules.need_files, basepath)
     # 过滤待分析的文件或压缩包
     # 例外情况, 此情况下可以没有 -f 参数
-    if input_argv.get('-out') in ['summary_by_time', 'summary_by_date']:
+    if input_argv.get('-out') in ['summary_by_time', 'summary_by_date','summary_by_count_lv1','summary_by_count_lv2','summary_by_count_lv3']:
         pass
     else:
         file_abspath_dict, unarchive_path = Check.check_files(filepath, OBM_In_Rules.need_files, basepath)
@@ -83,8 +83,6 @@ if __name__ == '__main__':
         p1.start()
         p2.start()
 
-        # p = Process(target=analysis_to_mongodb, args=(Queue_Input, Queue_Output, OBM_In_Rules.black_list))
-        # p.start()
         for p in range(Check.get_multiprocess_counts()-1):
             p = Process(target=analysis_to_mongodb, args=(Queue_Input, Queue_Output, OBM_In_Rules.black_list))
             p.start()
@@ -92,4 +90,19 @@ if __name__ == '__main__':
     # 生成统计图: summary_by_date / time
     if input_argv.get('-out') in ['summary_by_time', 'summary_by_date']:
         p = Process(target=graph_itom_obm.summary_by_date, args=(input_argv,))
+        p.start()
+
+    # 生成统计信息：summary_by_count_lv1
+    if input_argv.get('-out') in ['summary_by_count_lv1',]:
+        p = Process(target=graph_itom_obm.summary_by_count_lv1, args=(input_argv,))
+        p.start()
+
+    # 生成统计信息：summary_by_count_lv2
+    if input_argv.get('-out') in ['summary_by_count_lv2',]:
+        p = Process(target=graph_itom_obm.summary_by_count_lv2, args=(input_argv,))
+        p.start()
+
+    # 生成统计信息：summary_by_count_lv3
+    if input_argv.get('-out') in ['summary_by_count_lv3',]:
+        p = Process(target=graph_itom_obm.summary_by_count_lv3, args=(input_argv,))
         p.start()
