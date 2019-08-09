@@ -25,12 +25,13 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list):
         else:
             # 如果获取的数据类型是 logs, 则进行进一步的处理
             # queue_data: {'section_id': id, 'type': 'log', 'filepath': filepath, 'log_content': [行数, 日志内容]}
-            if queue_data.get('type') == 'logs':
-                file_type = os.path.basename(queue_data.get('filepath')).split('.')[0]
-                file_path = queue_data.get('filepath')
+            queue_data_copy = queue_data.copy()
+            if queue_data_copy.get('type') == 'logs':
+                file_type = os.path.basename(queue_data_copy.get('filepath')).split('.')[0]
+                file_path = queue_data_copy.get('filepath')
 
                 # 对日志的事件进行整合和预处理, 生成预处理数据
-                for line, log_content in queue_data.get('log_content'):
+                for line, log_content in queue_data_copy.get('log_content'):
                     black_rule = True
 
                     # 黑名单规则
