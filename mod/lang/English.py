@@ -18,7 +18,16 @@ Summary_by_*** mode:
 -ge         optional, Count only data greater than or equal to the specified date
 -le         optional, Count only data less than or equal to the specified date
 -freq       optional, only use by "summary_by_date" mode，set pandas Resampling frequency，default it's H，representing hourly
-            for example: T - per minute, H - hourly, D - every day, M - per month'''
+            for example: T - per minute, H - hourly, D - every day, M - per month
+
+summary_by_count_lv** mode
+-out        must, Specify the out mode，now can use "summary_by_count_lv1 / lv2 / lv3"
+-db_name    must, Specify the MongoDB Database name.
+-col_name   optional, Specify the MongoDB Collection name，default name it's "default"
+-ge         optional, Count only data greater than or equal to the specified date
+-le         optional, Count only data less than or equal to the specified date
+-top        optional, show top rows of data，default it's lv1 - 5; lv2 - 10; lv3 - 15
+-gui        optional, display a histogram, when the value is on will enable (not recommended)'''
 
 general_input_error = '''\
 Input parameters are incorrect, Please check and re-enter.'''

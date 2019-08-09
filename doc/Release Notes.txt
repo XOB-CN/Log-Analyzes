@@ -1,4 +1,4 @@
-2019-08-06 v3.2.2 beta
+2019-08-09 v3.2.2
 # 添加：ITOM OBM 目前可以将日志数据保存到 MongoDB
 # 添加：ITOM OBM 目前可以输出统计图，基于事件的警告/错误权重(summary_by_date)
 # 添加：ITOM OBM 目前可以输出统计信息，基于组件的警告/错误权重所占的百分比(summary_by_count_lv1/2/3)
