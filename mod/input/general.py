@@ -47,7 +47,7 @@ def archive_general(file_abspath_dict, Queue_Input, InputRule, input_argv):
                 # log_content.clear(): 如果上面的数据中途出错，则将之前的数据全部清除掉，然后重新开始录入，防止数据出现重复的情况
                 log_content.clear()
                 encoding = Check.get_encoding(filepath)
-                with open(filepath, mode='r', encoding=encoding) as f:
+                with open(filepath, mode='r', encoding=encoding, errors='replace') as f:
                     n = 0
                     for line in f:
                         n += 1
@@ -102,7 +102,7 @@ def archive_general(file_abspath_dict, Queue_Input, InputRule, input_argv):
                 # log_content.clear(): 如果上面的数据中途出错，则将之前的数据全部清除掉，然后重新开始录入，防止数据出现重复的情况
                 log_content.clear()
                 encoding = Check.get_encoding(filepath)
-                with open(filepath, mode='r', encoding=encoding) as f:
+                with open(filepath, mode='r', encoding=encoding, errors='replace') as f:
                     tag_start = False
                     for line in f:
                         # 记录该文件已经读取的行数

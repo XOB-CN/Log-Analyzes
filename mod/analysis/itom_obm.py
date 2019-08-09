@@ -304,7 +304,7 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list):
                                 log_component_1 = re.findall('\[.*?\]', log_content)[0][1:-1]
                             else:
                                 log_component_1 = 'unknow'
-                            # log_component_1 部分
+                            # log_component_2 部分
                             if Match.match_any('ERROR .*?\(|DEBUG .*?\(', log_content):
                                 log_component_2 = re.findall('ERROR .*?\(|DEBUG .*?\(', log_content)[0][6:-1]
                             elif Match.match_any('lambda.*logStatus',log_content):
@@ -320,14 +320,22 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list):
                     # 针对 opr-heartbeat.log 的处理
                     elif file_type in ['opr-heartbeat']:
                         try:
+                            # log_component_1 部分
                             if Match.match_any('HeartBeatConfig', log_content):
                                 log_component_1 = 'HeartBeatConfig'
-                            else:
+                            elif Match.match_any('Thread\-\d+', log_content):
+                                log_component_1 = 'Thread'
+                            elif Match.match_any('\[.*?\]', log_content):
                                 log_component_1 = re.findall('\[.*?\]', log_content)[0][1:-1]
+                            else:
+                                log_component_1 = 'unknow'
+                            # log_component_2 部分
                             if Match.match_any('ERROR .*?\(', log_content):
                                 log_component_2 = re.findall('ERROR .*?\(', log_content)[0][6:-1]
                             elif Match.match_any('  .*?\(', log_content):
                                 log_component_2 = re.findall('  .*?\(', log_content)[0].strip()[:-1]
+                            else:
+                                log_component_2 = 'unknow'
                         except:
                             print(file_type)
                             print(log_content)
