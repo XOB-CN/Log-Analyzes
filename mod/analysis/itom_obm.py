@@ -87,14 +87,14 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list):
                     log_weight = 1
 
                     # 事件等级
-                    if Match.match_any('INF:|INFO', log_content):
+                    if Match.match_any('DEBUG', log_content):
+                        log_level = 'DEBUG'
+                    elif Match.match_any('INF:|INFO', log_content):
                         log_level = 'INFO'
                     elif Match.match_any('WRN:|WARN', log_content):
                         log_level = 'WARN'
                     elif Match.match_any('ERR', log_content):
                         log_level = 'ERR'
-                    elif Match.match_any('DEBUG', log_content):
-                        log_level = 'DEBUG'
                     else:
                         log_level = None
 

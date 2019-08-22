@@ -128,4 +128,5 @@ black_list = [
     # eg:如果该行包括 content 则直接忽略
     # 'content',
     'rolled=0',     # 针对 System.txt 日志做的特殊处理，否则经常容易出问题
+    'debug',        # debug 级别日志, 默认排除
 ]

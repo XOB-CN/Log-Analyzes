@@ -145,6 +145,12 @@ log_rules_list = [
         'match': "OutOfMemory|Java heap space",
         'solution': '请参考 Case 5318358550/SD01828653',
     },
+    # {
+    #     'name': '其余 Debug 信息',
+    #     'type': 'Others',
+    #     'match': "debug",
+    #     'solution': '剩余的 Debug 信息',
+    # },
     {
         'name': '其余 Warn 信息',
         'type': 'Others',
