@@ -115,6 +115,7 @@ need_files = {
         'setting\.log',                 # <TOPAZ_HOME>/log/jboss/setting.log
         'license.*\.log',
         'bsm_sdk_ucmdb_service\.log',
+        'wde\.all\.log',
     ],
     # 其余类型
     'other':[
@@ -129,4 +130,5 @@ black_list = [
     # 'content',
     'rolled=0',     # 针对 System.txt 日志做的特殊处理，否则经常容易出问题
     'debug',        # debug 级别日志, 默认排除
+    '- JAVA_OPTS',  # JAVA_OPTS 参数
 ]
