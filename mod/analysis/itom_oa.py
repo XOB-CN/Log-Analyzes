@@ -68,6 +68,11 @@ def analysis_to_mongodb(Queue_Input, Queue_Output, black_list):
                         log_line = dict.get('log_line')
                         log_time = dict.get('log_content').split(':',2)[-1].split('(')[0].split(': o')[0].strip()
                         log_time = Match.convert_time(log_time)
+
+                        # 临时修复
+                        if log_time == False:
+                            log_time = None
+
                         try:
                             log_level = dict.get('log_content').split(':')[1].strip()
                         except:
