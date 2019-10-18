@@ -50,7 +50,7 @@ need_files = {
           # <OMi_HOME>\log\jboss\opr-webapp.log
           # <OMi_HOME>\log\jboss\opr-configserver.log
         'opr-webapp\.log',              # OBM Web UI 的日志文件，监控自动化（Monitoring Automation），内容包导入，工具执行
-        'opr-configserver\.log',        # Monitoring Automation 以及其它活动，包括 OMi web UIs, Content Pack import, Tool 的执行
+        'opr-configserver\.log',        # Monitoring Automation 以及其它活动，包括 OMi web UIs, Content Pack import, Tool 的执行  ## policy 部署的时候会看到
 
         # 动态拓扑相关
         # Gateway Server
@@ -59,9 +59,10 @@ need_files = {
         # DPS
           # <OMi_HOME>\log\opr-topologysync\opr-topologysync.log
 
-        'opr-svcdiscserver\.log',       # 映射/过滤 OBM 动态拓扑的一部分（Mapping/filtering part of OBM dynamic topology），同步
-        'OvSvcDiscServer\.log',         # 接收部分 OBM 动态拓扑，同步
-        'opr-topologysync\.log',        # OBM 拓扑同步应用程序的日志条目
+        #### EPI 没关系
+        # 'opr-svcdiscserver\.log',       # 映射/过滤 OBM 动态拓扑的一部分（Mapping/filtering part of OBM dynamic topology），同步
+        # 'OvSvcDiscServer\.log',         # 接收部分 OBM 动态拓扑，同步
+        # 'opr-topologysync\.log',        # OBM 拓扑同步应用程序的日志条目
 
 
         # 用户/登陆/界面操作
