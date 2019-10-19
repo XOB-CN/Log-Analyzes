@@ -44,6 +44,7 @@ need_files = {
         'opr-ciresolver\.log',          # OBM backend process CI resolution
         'opr-scripting-host\.log',      # EPI processing
         'scripts\.log',                 # EPI script errors
+        'bus\.log',                     # Bus 日志
 
         # MA (Monitoring Automation) 相关
         # Gateway Server
