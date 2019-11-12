@@ -118,6 +118,8 @@ need_files = {
         'license.*\.log',
         'bsm_sdk_ucmdb_service\.log',
         'wde\.all\.log',
+        'pmi\.log',
+        'bvd\.log',
     ],
     # 其余类型
     'other':[
