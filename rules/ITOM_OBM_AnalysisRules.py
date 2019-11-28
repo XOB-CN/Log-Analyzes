@@ -51,8 +51,13 @@ log_rules_list = [
         'name': 'Event 被抑制',
         'type': 'Event Suppression',
         'match': "Dropped event.*by suppression rule.*",
-        'solution': '如果频繁出现，并且客户说有 event 无法显示的话，请考虑检查对应的 Policy,有可能是 Policy 编写错误导致的这个问题<br>'
-                    '请参考 SD02462879<br>',
+        'solution':'引发原因<br>'
+                   '&ensp;&ensp;优先检查 “事件抑制” 的规则，通常是由 “事件抑制” 引起的<br>'
+                   '&ensp;&ensp;另外，Policy 编写错误的话也有可能<br><br>'
+                   '解决办法<br>'
+                   '&ensp;&ensp;尝试禁用对应的 “事件抑制” 规则<br><br>'
+                   '参考链接<br>'
+                   '&ensp;&ensp;SD02462879<br><br>',
     },
     {
         'name': '无法正常连接 SQL Server',

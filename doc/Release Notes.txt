@@ -1,5 +1,6 @@
-2019-11-12 v3.2.4 Beta
+2019-11-28 v3.2.4 Beta
 # 修改：默认去掉了动态拓扑相关的日志
+# 修改：更正了 ITOM OBM 对事件抑制（Event Suppression）的解释说明
 # 添加：ITOM OBM 可以读取 bus 的日志信息
 # 添加：ITOM OBM 可以读取 pmi 的日志信息
 # 添加：ITOM OBM 可以读取 bvd 的日志信息
