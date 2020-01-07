@@ -48,6 +48,12 @@ log_rules_list = [
                     '修复请参考 QCCR8D107613<br>',
     },
     {
+        'name': 'CI 解析问题',
+        'type': 'CI / ETI',
+        'match': "No ci ref found for event",
+        'solution': 'OBM 无法精准识别 Event 中所包含的 CI 信息，请根据 Event ID 来做进一步的调查',
+    },
+    {
         'name': 'Event 被抑制',
         'type': 'Event Suppression',
         'match': "Dropped event.*by suppression rule.*",
@@ -79,6 +85,12 @@ log_rules_list = [
                     '<br>将上述配置文件修改下列内容<br>'
                     '&ensp;loglevel=DEBUG<br>'
                     '&ensp;def.file.max.size=20000KB<br>',
+    },
+    {
+        'name': 'Performance Perspective 有时无法显示性能数据',
+        'type': 'Dashboard',
+        'match': "resources are over the configured maximum limit|Data acquisition API single request size",
+        'solution': '请按照提示修改 sitescope 的 "Data acquisition API single request size"',
     },
     {
         'name': 'OpC40-1905/OpC40-1906/OpC30-36 - 可能是连接性问题',
