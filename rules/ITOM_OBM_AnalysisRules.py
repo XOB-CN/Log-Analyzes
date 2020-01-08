@@ -89,7 +89,8 @@ log_rules_list = [
     {
         'name': 'Performance Perspective 有时无法显示性能数据',
         'type': 'Dashboard',
-        'match': "resources are over the configured maximum limit|Data acquisition API single request size",
+        'match': "resources are over the configured maximum limit",
+        'endmatch': 'Data acquisition API single request size',
         'solution': '请按照提示修改 sitescope 的 "Data acquisition API single request size"',
     },
     {
